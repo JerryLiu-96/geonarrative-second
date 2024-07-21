@@ -28,15 +28,36 @@ nav {
   font-style: italic;
 }
 
+
 #introduction {
   position:relative;
   padding-top: 70px;
+  font-family: "Merienda", cursive;
+}
+
+#introduction::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background-image: url('../img/Westport_Marina.jpeg');
   background-size: cover;
   background-attachment: fixed;
-  background-blend-mode: lighten;
+  z-index: -2;
+}
+
+#introduction::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background-color: rgba(255, 255, 255, 0.8);
-  font-family: "Merienda", cursive;
+  mix-blend-mode: lighten;
+  z-index: -1;
 }
 
 .column {
@@ -142,7 +163,7 @@ li {
   position:relative;
   padding-top: 70px;
   background-image: url('../img/dynamic-shoreline.gif');
-  background-size: cover;
+  /* background-size: cover; */
   background-attachment: fixed;
   background-blend-mode: lighten;
   background-color: rgba(255, 255, 255, 0.5);
