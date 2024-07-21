@@ -1,0 +1,1639 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Continuing Adaptation to South Beach's Shifting Shore</title>
+    <link rel="icon" href="img/uw-logo-trans-150x150.png" sizes="192x192" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/geonarrative.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+    <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  </head>
+
+
+  <body>
+
+    <div id="loader" class="loader"></div>
+
+    <nav class="navbar fixed-top navbar-expand-lg" style="background-color: transparent;">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="./" style="color: #154778;">
+          <img src="img/nsf_logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+          <strong>Homepage</strong>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Chapters
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#shore-change">Historical Shoreline Movements</a></li>
+                <li><a class="dropdown-item" href="#indego">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                External Resources
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" target="_blank" href="https://digitalcollections.lib.washington.edu/digital/collection/ohc/search/searchterm/coastal%20hazards/field/all/mode/exact/conn/and"> Interview Transcripts </a></li>
+                <li><a class="dropdown-item" target="_blank" href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1940024"> M9 Project NSF Award Page</a></li>
+                <li><a class="dropdown-item" target="_blank" href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1940024"> CoPe Project NSF Award Page</a></li>
+                <li><a class="dropdown-item" target="_blank" href="https://www.lib.washington.edu">UW Library</a></li>
+                <li><a class="dropdown-item" target="_blank" href="https://hazards.uw.edu/geology/m9/">M9 Project at UW</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section id="cover">
+        <!-- citation -->
+        <li style="background: url('img/bk1.jpg') no-repeat center center;  background-size: cover;">
+          <div class="lp_image_attribution">
+            Image Attribution:
+            <a style="color: white" target="_blank" href="https://www.usgs.gov/media/images/otter-rock-oregon">
+              Janet Watt, USGS
+            </a>
+          </div>
+        </li>
+        <li style="background: url('img/mask.png') no-repeat center center;  background-size: cover;">
+          <div class="lp_image_attribution">
+            Image Attribution:
+            <a style="color: white" target="_blank" href="https://www.researchgate.net/publication/252069651_Dating_the_1700_Cascadia_Earthquake_Great_Coastal_Earthquakes_in_Native_Stories">
+              Figure 3. Swai’xwe mask from mainland British Columbia from Ludwin, Ruth S et al., 2005.
+            </a>
+          </div>
+        </li>
+        <li style="background: url('img/bk5.jpg') no-repeat center center;  background-size: cover;">
+          <div class="lp_image_attribution">
+            Image Attribution:
+              <a style="color: white" target="_blank" href="https://www.usgs.gov/media/images/cascadia-subduction-zone-0">
+                USGS
+              </a>
+            </div>
+        </li>
+
+        <div class="down-arrow-cover animate__animated animate__flash animate__infinite animate__slow">
+            <div class="down-arrow-cover-text">
+                Click down arrow to view the stories
+            </div>
+            <div class="down-arrow-cover-arrow">
+                <i class="bi bi-chevron-double-down animate__animated animate__flash animate__infinite animate__slow" style="font-size: 3em; color:white;text-shadow: 2px 2px 4px rgb(51, 51, 51); position: static;left: auto;transform: none ;bottom: auto;" onclick="scrollToIntroduction()"></i>
+            </div>
+        </div>
+
+        <div id="introText">
+            <div class="flex-column" style="padding-right: 10px;">
+                <h1 style="text-align: left;"><strong>Geonarrative Part <span>&#8545;</span></strong>: The Continuing Adaptation to South Beach's Shifting Shore</h1>
+                <!-- <h5 class="text-center"><i>this line is a place holder for subtitle</i></h5> -->
+                <div class="footnote">
+                    <span>This project was funded by National Science Foundation award #190024</span>
+                    <a target="_blank" href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1940024"> <img src="img/nsf_logo.png" width="40px" style="vertical-align: middle;" /></a>
+                    <a target="_blank" href="https://www.uw.edu"> <img src="img/uw_logo.png" width="40px" style="vertical-align: middle;  margin-top: 6px;" /></a>
+
+                </div>
+            </div>
+            <div class="flex-column" style="justify-content: space-between;">
+                <p style="text-align:justify">
+                    The South Beach area of Grays Harbor County, Washington,
+                    is a dynamic coastal environment that has been shaped by the forces of nature and
+                    the actions of humans. The area has been home to the Quinault Indian Nation for
+                    thousands of years. The Quinault people have adapted to the changing
+                    landscape and have developed a deep understanding of the natural processes that shape
+                    the area.
+                </p>
+                <p style="text-align:justify">
+                    White settlers arrived in this area in the 1800s. Even though they
+                    have experienced significant changes in coastal environment since then as well, their presence
+                    on this land is still transient and there is much to learn from the Quinault people about the history of the area and how to adapt.
+                </p>
+                <p style="text-align:justify">
+                    This Geo-narrative narrates the evolution of South Beach coastal environment. As we lay out
+                    scenarios of shifting shores in this storytelling, we hope to inspire you to think about how both you and your community as a whole can adapt and thrive in the face of an uncertain and challenging future.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="introduction">
+      <article>
+        <h1>Introduction</h1>
+        <h2>Climate Change and Geological Hazards</h2>
+        <p>
+            Washington's coast is increasingly threatened by climate change and geological hazards.
+            "Climate change", "geological hazards", "sea level rise", "global warming", "earthquake",
+            "tsunami" are jargons that are often used by researchers in
+            environmental science and geology.
+            You may have heard about these terms a million times from the Internet, from news media,
+            from academic people...
+        </p>
+        <p>
+            But, these scientific terms are sometimes overwhelming. You may wonder, what are their
+            definitions? Why do I need to hear about these terms? This storytelling will translate them into plain
+            words. And more importantly, reveal their impacts on South Beach communities.
+        </p>
+
+        <section class="flex-row" style="margin-left: 15px; margin-right: 15px;">
+            <section style="width: 50%;">
+                <h3>Climate Change<span class="material-symbols-outlined">
+                    weather_hail
+                    </span></h3>
+                <p>
+                    <strong>Global warming</strong> refers specifically to the long-term increase in Earth's average surface temperature, primarily due to human activities such as burning fossil fuels, deforestation, and industrial processes.
+                </p>
+                <p>
+                    <strong>Climate change</strong>, on the other hand, encompasses a broader range of changes in Earth's climate system, including not only rising temperatures but also shifts in precipitation patterns, extreme weather events, <strong>sea level rise</strong>, and so on.
+                </p>
+                <p>
+                    Mounting evidence has suggested that the sea level is rising globally, and the sea level rise is accelerating due to the worsening climate change and global warming. Impacts of sea level rise includes erosion of beaches, inundation of deltas, salinity of water. <span class="underline"><strong>The South Beach coastal communities are at the frontline</strong></span>.
+                </p>
+                <p style="text-decoration: line-through">place holder for an axis suggesting events of king tide inundation, expect more events in recent years</p>
+            </section>
+            <section style="width: 50%;">
+                <h3>Geological Hazards<span class="material-symbols-outlined">
+                    earthquake
+                    </span></h3>
+                <p style="padding-bottom: 10px;">
+                    South Beach communities sit on the Cascadia Subduction Zone, which is a ticking bomb of <strong>earthquakes</strong> and <strong>tsunamis</strong>.
+                </p>
+                <figure>
+                    <img src="img/csz.png" alt="Cascadia Subduction Zone" class="ctr-img">
+                    <figcaption>
+                        Cascadia Subduction Zone.
+                        <a href="https://pnsn.org/outreach/earthquakesources/csz"> Credit: PNSN</a>
+                    </figcaption>
+                </figure>
+                <p style="padding-top: 10px;">
+                    The last subduction zone earthquake happened in 1700. More than 300 years of peace does not indicate safety. Geological evidence shows that the subduction zone earthquake has a recurrence rate of ~500 years. It has been silently amassing energy for the next earthquake. <strong>It will come again!</strong> Ground shaking and tsunami waves may wreck havoc on the shore.
+                </p>
+
+            </section>
+        </section>
+        <div style="text-align: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="3em" fill="currentColor" class="bi bi-chevron-down fs-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+          </svg>
+        </div>
+        <section style="width: 70%; margin-left: auto; margin-right: auto; border: 3px dashed #999797; padding: 20px;">
+            <h3 style="text-align: center; margin-top: 10px;">The combined effects of climate change and geological hazards</h3>
+            <p>
+                Natural phenomena are not isolated. Climate change and geological hazards are not
+                independent of each other. They are interconnected and have combined effects on the environment.
+                <ul>
+                    <li>
+                        The inter-seismic uplift of the tectonic plate will offset the sea level rise in South Beach.
+                        <p>
+                            An earthquake is an acute geological disaster. But you cannot say during periods of calm, the tectonic plates are still. Actually, they are in constant motion, both vertically and horizontally, at a slow pace that easily goes unnoticed. We call this phenomenon <strong>inter-seismic tectonic movement</strong>.
+                        </p>
+                        <p>
+                            The tectonic plate in our South Beach area is uplifting during calm periods, we call this <strong>Inter-seismic uplift</strong>. In other words, the sea level rise referenced to our place is anticipated to be less than the global average.
+                        </p>
+                    </li>
+                    <li>
+                        However, this may bring a false sense of security:
+                        <p>It is anticipated that the South Beach area will experience an immediate subsidence of approximately 4.0 to 5.2 feet during a seismic event, and the land subsidence will have the effect of raising the local sea level. It will also rise the runup height of tsunami waves. </p>
+                    </li>
+                </ul>
+
+            </p>
+        </section>
+      </article>
+      <article style="margin-top: 10px;">
+        <h2>Takeaways from this section</h2>
+        <ol style="margin-bottom: 0; padding-bottom: 30px;">
+            <li>Global warming causes climate change and associated sea level rise;</li>
+            <li>Climate change and sea level rise will have a fundamental impact on South Beach;</li>
+            <li>South Beach is risky to earthquake and tsunami hazards;</li>
+            <li>Climate change and geological hazards are interrelated and have combined effects;</li>
+            <li>Climate change and earthquake will fundamentally reshape the coastal environment in South Beach.</li>
+        </ol>
+      </article>
+    </section>
+
+    <section id="myth">
+        <h1>Local Evidence of the 1700 Tsunami</h1>
+        <p></p>
+        <article id="geo-evidence">
+            <h2>Geological Records</h2>
+        </article>
+
+        <article id="indigeous">
+            <h2>Indigenous Stories of the 1700 tsunami</h2>
+        </article>
+
+    </section>
+
+    <section id="history-shoreline">
+      <article style="margin-top: 15px; margin-bottom: 15px;">
+        <h1>Coastal Change is NOT new</h1>
+        <h2>A Historically Dynamic Coastline</h2>
+        <blockquote>
+          Climate change and geological hazards are posing new challenges to South Beach communities.
+          Scientists believe that climate change and geological hazards will fundamentally reshape their living space. <br> <br> However, changes to the living space is not new to this land. South Beach's coastline has been famously dynamic throughout the history.
+        </blockquote>
+        <p>
+            Climate change and geological hazards are posing new challenges to South Beach communities. Climate change is evolving at an unprecedented speed, and many of the South Beach communities have no shared experience of tsunamis, the latest of which happened in 1700, according to geological evidences and indigeous tales.
+        </p>
+        <p>We believe that climate change and geological hazards will fundamentally reshape the living space. <span class="capital uppercase"><strong>We need adaptation planning</strong> </span>and adaptation planning to future environmental changes is going to be tough. Because firstly, climate change is at an unprecedented speed, and secondly many communities have no experience of tsunamis. There is no readily available solution to rely on.</p>
+        <h2>Adaptation is in our blood</h2>
+        <p>But don't panic! Though we may seem a little bit foreign to climate change and tsunamis, we are familiar with one thing: <span class="capital uppercase"><strong>adaptation. </strong></span> The coastline in South Beach has been historically dynamic. We are living on the fastest changing coastline in North America. Our community has been learning to adapt to coastline changes quite well. See below the time-lapsed satellite images of South Beach coastline from 1984 to 2016.</p>
+        <figure>
+            <!-- <img src="img/dynamic-shoreline.gif" alt="Dynamic Shoreline" class="ctr-img"> -->
+            <figcaption>
+                The dynamic shoreline of South Beach, Washington. Composite of annual Google Maps satellite views taken from 1984 to 2016. Credit: Robert Hutchison Architecture and Cory Mattheis.
+                <a href="https://archleague.org/article/south-beach-washington-intro/" target="_blank">
+                    Available from American Roundtable
+                </a>
+            </figcaption>
+        </figure>
+      </article>
+        <div class="down-arrow-cover" style="position: relative;">
+            <div class="down-arrow-cover-text">
+                Scroll down to interact with the map to see how the shoreline has changed over time
+            </div>
+            <div class="down-arrow-cover-arrow  animate__animated animate__flash animate__infinite animate__slow">
+                <i class="bi bi-chevron-double-down animate__animated animate__flash animate__infinite animate__slow" style="font-size: 3em; color:white;text-shadow: 2px 2px 4px rgb(51, 51, 51); position: static;left: auto;transform: none ;bottom: auto;" ></i>
+            </div>
+        </div>
+    </section>
+
+    <section id="geonarrative-container">
+      <div id="map"></div>
+      <div id="story"></div>
+    </section>
+
+    <section id="local stories">
+        <h2>PlaceHolder for Local Stories</h2>
+        <ul>
+            <li>stories of impacts from sea level rise</li>
+            <li>overlay hazard impacts on pinpointed stories</li>
+        </ul>
+    </section>
+
+    <section id="impact-container">
+        <div id="map-impact"></div>
+    </section>
+
+
+    <script src="./config.js"></script>
+
+
+    <script>
+      window.onload = function() {
+        document.getElementById("loader").style.display = "none";
+      };
+
+      //hide the navbar when scrolling down, show when scrolling up
+      let lastScrollTop = 0;
+      const navbar = document.querySelector('nav');
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop) {
+            navbar.classList.add('hide-nav');
+        } else {
+            navbar.classList.remove('hide-nav');
+            if (scrollTop > 150) {
+                navbar.classList.add("white-nav");
+            } else {
+                navbar.classList.remove("white-nav");
+            }
+        }
+        lastScrollTop = scrollTop;
+      });
+    </script>
+
+    <script>
+      var layerTypes = {
+        'fill': ['fill-opacity'],
+        'line': ['line-opacity'],
+        'circle': ['circle-opacity', 'circle-stroke-opacity'],
+        'symbol': ['icon-opacity', 'text-opacity'],
+        'raster': ['raster-opacity'],
+        'fill-extrusion': ['fill-extrusion-opacity'],
+        'heatmap': ['heatmap-opacity']
+      }
+
+      var alignments = {
+        'left': 'lefty',
+        'center': 'centered',
+        'right': 'righty',
+        'full': 'fully'
+      }
+
+    //enumerate the years from 1700 to 2015
+    let all_years_hist_shore = [];
+    for (let i=1700; i<2016; i++) {
+
+        all_years_hist_shore.push(i);
+
+    };
+
+    function getLayerPaintType(layer) {
+        var layerType = map.getLayer(layer).type;
+        return layerTypes[layerType];
+    }
+
+    function setLayerOpacity(layer) {
+        var paintProps = getLayerPaintType(layer.layer);
+        paintProps.forEach(function(prop) {
+            var options = {};
+            if (layer.duration) {
+                var transitionProp = prop + "-transition";
+                options = { "duration": layer.duration };
+                map.setPaintProperty(layer.layer, transitionProp, options);
+            }
+            map.setPaintProperty(layer.layer, prop, layer.opacity, options);
+        });
+    }
+
+    var story = document.getElementById('story');
+    var features = document.createElement('div');
+    features.setAttribute('id', 'features');
+
+    var header = document.createElement('div');
+
+    if (config.title) {
+        var titleText = document.createElement('h1');
+        titleText.innerText = config.title;
+        header.appendChild(titleText);
+    }
+
+    if (config.subtitle) {
+        var subtitleText = document.createElement('h2');
+        subtitleText.innerText = config.subtitle;
+        header.appendChild(subtitleText);
+    }
+
+    if (config.byline) {
+        var bylineText = document.createElement('p');
+        bylineText.innerText = config.byline;
+        header.appendChild(bylineText);
+    }
+
+    if (header.innerText.length > 0) {
+        header.classList.add(config.theme);
+        header.setAttribute('id', 'header');
+        story.appendChild(header);
+    }
+
+    //get the length of the chapters
+    let chapters_length = config.chapters.length;
+
+    // global variables. give values in the chapters loop, use them in the map.on('load') function
+    let xScale;
+    let yScale;
+    let svg;
+    let slrPairs = [];
+    let uniqueSlrPairs = [];
+
+    config.chapters.forEach((record, idx) => {
+        var container = document.createElement('div');
+        var chapter = document.createElement('div');
+
+        if (record.title) {
+            var title = document.createElement('h3');
+            title.innerText = record.title;
+            chapter.appendChild(title);
+        }
+
+        if (record.chapterIntro) {
+            for (let i=0; i<record.chapterIntro.length; i++) {
+
+                let intro = document.createElement('p');
+                intro.innerText = record.chapterIntro[i];
+                chapter.appendChild(intro);
+            }
+        }
+
+        if (idx==0) {
+            let animatePanel = document.createElement('div');
+            animatePanel.setAttribute('id', 'animatePanel');
+            var btn = document.createElement('button');
+            btn.setAttribute('id', 'clickable');
+            var playpause = document.createElement('i');
+            playpause.setAttribute('class','bi');
+            playpause.classList.add('bi-pause-circle');  //icon default to pause because scrollama set animation default to play
+            playpause.setAttribute('id', 'playpause-hist');
+            playpause.setAttribute('onclick', 'pauseHistShore()');
+            btn.appendChild(playpause);
+            animatePanel.appendChild(btn);
+
+            var label = document.createElement('label');
+            label.setAttribute('for', 'customRange'+record.id);
+            label.setAttribute('class', 'form-label');
+            label.classList.add('lobster')
+            label.style.marginLeft = '10px';
+            label.setAttribute('id', 'customRangeLabel'+record.id);
+            label.innerText = "1700";
+
+            var range = document.createElement('input');
+            range.setAttribute('type', 'range');
+            range.setAttribute('class', 'form-range');
+            range.setAttribute('min', '1700');
+            range.setAttribute('max', '2015');
+            range.setAttribute('value', '1700')    //set the default value to 1700
+            range.setAttribute('id', 'customRange'+record.id);
+
+            animatePanel.appendChild(label);
+            animatePanel.appendChild(range);
+            chapter.appendChild(animatePanel);
+        }
+
+        // set toggle switches for the surveyed years
+        if (record.record_yrs) {
+            let title = document.createElement('h5');
+            title.innerText = 'Surveyed years:';
+            title.style.paddingTop = '25px';
+            chapter.appendChild(title);
+            let paragraph =document.createElement('p');
+            paragraph.innerText = 'Below are years when the shorelines were surveyed, toggle to show them on the map:';
+            chapter.appendChild(paragraph);
+            const row = document.createElement('div');
+            row.className = 'row';
+            row.setAttribute('id', 'row-switch');
+            row.style.paddingTop = '5px';
+
+            // Create two columns and append to row
+            const col1 = document.createElement('div');
+            col1.className = 'col';
+            col1.setAttribute('id', 'col-left');
+            const col2 = document.createElement('div');
+            col2.className = 'col';
+            col2.setAttribute('id', 'col-right');
+            // row.appendChild(col1);
+            // row.appendChild(col2);
+            record.record_yrs.forEach((yr,idx) => {
+
+                var swich = document.createElement('div');
+                swich.setAttribute('class', 'form-check form-switch');
+                swich.style.paddingTop = '5px';
+                swich.style.paddingBottom = '5px';
+                var input = document.createElement('input');
+                input.setAttribute('class', 'form-check-input');
+                input.setAttribute('type', 'checkbox');
+                input.setAttribute('id', 'flexSwitchCheckDefault'+yr);
+                swich.appendChild(input);
+                var label = document.createElement('label');
+                label.setAttribute('class', 'form-check-label');
+                label.setAttribute('for', 'flexSwitchCheckDefault'+yr);
+                label.innerText = yr.toString();
+                swich.appendChild(label);
+
+                if (idx <= record.record_yrs.length/2) {
+                    //col_l = document.getElementById('col-left');
+                    col1.appendChild(swich);
+                } else {
+                    //col_r = document.getElementById('col-right');
+                    col2.appendChild(swich);
+                }
+
+            });
+
+            row.appendChild(col1);
+            row.appendChild(col2);
+            chapter.appendChild(row);
+
+        }
+
+        // add a dropdown selector for the sea level rise
+        if (record.dropDown) {
+            let select = document.createElement('select');
+            let label = document.createElement('label');
+            select.id = 'line-selector';
+            label.setAttribute('for', 'line-selector');
+            label.textContent = 'Select a Greenhouse Gas Scenario:';
+
+            // values in the options should match line id in the svg
+            let options = ['all', 'RCP 4.5 line', 'RCP 8.5 line'];
+            let optionNames = ['Both Low and High Emission Scenarios','Low Emission Scenario (RCP 4.5)','High Emission Scenario (RCP 8.5)']
+
+            for (let i = 0; i < options.length; i++) {
+                let option = document.createElement('option');
+                option.value = options[i];
+                option.text = optionNames[i];
+                select.appendChild(option);
+            }
+            chapter.appendChild(label);
+            chapter.appendChild(select);
+        }
+
+        if (record.scenarioViewer) {
+            let scenarioViewer = document.createElement('div');
+            scenarioViewer.innerHTML = '<p>By year <span class="lobster" id="year"></span>, scientists expect there is a <span class="lobster" id="more-certain-prob"></span> chance the sea level to rise by at least <span class="lobster" style="color: #2171b5" id="low-bound"></span> feet, but less than <span class="lobster" style="color: #6baed6" id="up-bound"></span> feet.<p>'
+            chapter.appendChild(scenarioViewer);
+        }
+
+        // if lines exist for sea level rise section
+        if (record.lines) {
+
+            for(let i=0; i<record.lines[0].values.length; i++) {
+                slrPairs.push([record.lines[0].values[i].lower, record.lines[0].values[i].upper]);
+                slrPairs.push([record.lines[0].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[0].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
+
+                slrPairs.push([record.lines[1].values[i].lower, record.lines[1].values[i].upper]);
+                slrPairs.push([record.lines[1].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[1].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
+
+                slrPairs.push([record.lines[1].values[i].lower, record.lines[0].values[i].upper]);
+                slrPairs.push([record.lines[1].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[0].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
+            }
+            // round values in slrPairs to 1 decimal places, and if the value is smaller than 0, make it 0
+            slrPairs = slrPairs.map(pair => {
+                return pair.map(value => {
+                    return value < 0 ? 0 : Math.round(value * 10) / 10;
+                });
+            });
+
+            // remove duplicates from slrPairs
+
+            uniqueSlrPairs = [
+            ...new Map(slrPairs.map(item => [JSON.stringify(item), item])).values()
+            ];
+
+
+            // Set the dimensions and margins of the graph
+            const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+            width = 360 - margin.left - margin.right, // Total width of the SVG
+            height = 300 - margin.top - margin.bottom; // Total height of the SVG
+
+            let d3_slr = document.createElement('div');
+            // set the id of this div
+            d3_slr.setAttribute('id', 'd3_slr');
+
+            // set the xscale
+            xScale = d3.scaleLinear()
+                .domain([2020, 2150])    // the range of the projection years
+                .range([0, width - margin.right]);
+
+            // set the yscale
+            yScale = d3.scaleLinear()
+                .domain([-2, 10])  // the range of the sea level rise in feet
+                .range([height, 0]);
+
+            // line generator
+            const lineGenerator = d3.line()
+                .x(d => xScale(d.year)) // Access the 'year' property
+                .y(d => yScale(d.ft));  // Access the 'ft' property
+
+            //confidence interval area generator
+            const areaGenerator = d3.area()
+                .x(d => xScale(d.year))
+                .y0(d => yScale(d.lower))
+                .y1(d => yScale(d.upper));
+
+            const areaGeneratorVerticalRcpHigh = d3.area()
+                .x(d => xScale(d.year))
+                .y0(function (d,i) {return yScale(d.lower + record.lines[0].values[i].lower)})
+                .y1(function (d,i) {return yScale(d.upper + record.lines[0].values[i].upper)});
+
+            const areaGeneratorVerticalRcpLow = d3.area()
+                .x(d => xScale(d.year))
+                .y0(function (d,i) {return yScale(d.lower + record.lines[1].values[i].lower)})
+                .y1(function (d,i) {return yScale(d.upper + record.lines[1].values[i].upper)});
+
+            const areaGeneratorVerticalRcpAll = d3.area()
+                .x(d => xScale(d.year))
+                .y0(function (d,i) {return yScale(d.lower + record.lines[1].values[i].lower)})
+                .y1(function (d,i) {return yScale(d.upper + record.lines[0].values[i].upper)});
+
+            // append svg to the div
+            svg = d3.select(d3_slr).append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .attr('id', 'd3_slr_svg')
+                .append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            // Create the x-axis using the xScale
+            const xAxis = d3.axisBottom(xScale)
+                .ticks(5); // Adjust the number of ticks as needed
+
+            // Append the x-axis to the SVG
+            svg.append('g')
+                .attr('class', 'x-axis')
+                .attr('transform', `translate(0,${height})`) // Move the x-axis to the bottom
+                .call(xAxis);
+
+            // Create the y-axis using the yScale
+            const yAxis = d3.axisLeft(yScale)
+                .ticks(10);
+
+            // Append the y-axis to the SVG
+            svg.append('g')
+                .attr('class', 'y-axis')
+                .attr('transform', `translate(${-5},0)`) // Move the y-axis 5 pixels to the left
+                .call(yAxis);
+
+            // Add x-axis label
+            svg.append('text')
+                .attr('class', 'x-axis-label')
+                .attr('text-anchor', 'middle')
+                .attr('x', width / 2)
+                .attr('y', height + margin.bottom)
+                .text('Year');
+
+            // Add y-axis label
+            svg.append('text')
+                .attr('class', 'y-axis-label')
+                .attr('text-anchor', 'middle')
+                .attr('transform', `rotate(-90)`)
+                .attr('x', -height / 2)
+                .attr('y', -margin.left + 20)
+                .text('Sea Level Rise (ft)');
+
+            // Bind data to the SVG and create one 'path' per data series for central estimate
+            svg.selectAll('.line')
+            .data(record.lines) // Bind the data to the lines
+            .enter() // Enter the data
+            .append('path') // Append a path element for each data series
+                .attr('class', 'line')
+                .attr('id', d => d.name + " line")
+                .attr('d', d => lineGenerator(d.values)) // Generate the line
+                .attr('stroke', d => d.color) // Use the color from the data
+                .attr('fill', 'none')
+                .attr('stroke-width', 2);
+
+
+            // Bind data to the SVG and create one 'path' per data series for the confidence interval
+            svg.selectAll('.confidence-interval')
+            .data(record.lines) // Bind the data to the lines
+            .enter() // Enter the data
+            .append('path') // Append a path element for each data series
+                .attr('class', 'confidence-interval')
+                .attr('id', d => d.name + " confidence interval")
+                .attr('d', d => areaGenerator(d.values)) // Generate the line
+                .attr('stroke', d => d.color) // Use the color from the data
+                .attr('fill', d => d.color)
+                .attr('fill-opacity', 0.2)
+                .attr('stroke-dasharray', '5,5');
+
+            svg.selectAll('.vertical-rcp-high')
+            .data(record.verticalMoveUncertainty)
+            .enter()
+            .append('path')
+                .attr('class', 'vertical-rcp-high')
+                .attr('id', 'vertical-rcp-high')
+                .attr('d', d => areaGeneratorVerticalRcpHigh(d.values))
+                .attr('stroke', 'red')
+                .attr('fill', 'red')
+                .attr('fill-opacity', 0.2)
+                .attr('stroke-dasharray', '5,5')
+                .style('display', 'none');
+
+            svg.selectAll('.vertical-rcp-low')
+            .data(record.verticalMoveUncertainty)
+            .enter()
+            .append('path')
+                .attr('class', 'vertical-rcp-low')
+                .attr('id', 'vertical-rcp-low')
+                .attr('d', d => areaGeneratorVerticalRcpLow(d.values))
+                .attr('stroke', 'blue')
+                .attr('fill', 'blue')
+                .attr('fill-opacity', 0.2)
+                .attr('stroke-dasharray', '5,5')
+                .style('display', 'none');
+
+            svg.selectAll('.vertical-rcp-all')
+            .data(record.verticalMoveUncertainty)
+            .enter()
+            .append('path')
+                .attr('class', 'vertical-rcp-all')
+                .attr('id', 'vertical-rcp-all')
+                .attr('d', d => areaGeneratorVerticalRcpAll(d.values))
+                .attr('stroke', 'blue')
+                .attr('fill', 'blue')
+                .attr('fill-opacity', 0.2)
+                .attr('stroke-dasharray', '5,5')
+                .style('display', 'none');
+
+            chapter.appendChild(d3_slr);
+
+        }
+
+        if (record.verticalMove) {
+            let switchVertical = document.createElement('div');
+            let switchVerticalId = "switchVertical";
+            switchVertical.setAttribute('class', 'form-check form-switch');
+            switchVertical.style.paddingTop = '5px';
+            switchVertical.style.paddingBottom = '5px';
+            let input = document.createElement('input');
+            input.setAttribute('class', 'form-check-input');
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('id', switchVerticalId);
+            switchVertical.appendChild(input);
+            let label = document.createElement('label');
+            label.setAttribute('class', 'form-check-label');
+            label.setAttribute('for', switchVerticalId);
+            label.innerText = "Add Vertical Movement to the scenarios";
+            switchVertical.appendChild(label);
+
+            chapter.appendChild(switchVertical);
+        }
+
+        if (record.kingTide) {
+            let switchTide = document.createElement('div');
+            let switchTideId = "switchKingTide";
+            switchTide.setAttribute('class', 'form-check form-switch');
+            switchTide.style.paddingTop = '5px';
+            switchTide.style.paddingBottom = '5px';
+            let input = document.createElement('input');
+            input.setAttribute('class', 'form-check-input');
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('id', switchTideId);
+            switchTide.appendChild(input);
+            let label = document.createElement('label');
+            label.setAttribute('class', 'form-check-label');
+            label.setAttribute('for', switchTideId);
+            label.innerText = "Add King Tide Events to the scenarios";
+            switchTide.appendChild(label);
+
+            chapter.appendChild(switchTide);
+        }
+
+        if (record.earthquake) {
+            let switchEq = document.createElement('div');
+            let switchEqId = "switchEq";
+            switchEq.setAttribute('class', 'form-check form-switch');
+            switchEq.style.paddingTop = '5px';
+            switchEq.style.paddingBottom = '5px';
+            let input = document.createElement('input');
+            input.setAttribute('class', 'form-check-input');
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('id', switchEqId);
+            switchEq.appendChild(input);
+            let label = document.createElement('label');
+            label.setAttribute('class', 'form-check-label');
+            label.setAttribute('for', switchEqId);
+            label.innerText = "Add Tsunami Events to the scenarios";
+            switchEq.appendChild(label);
+
+            chapter.appendChild(switchEq);
+        }
+
+        if (record.image) {
+            var image = new Image();
+            image.src = record.image;
+            chapter.appendChild(image);
+        }
+
+        if (record.description) {
+            var story = document.createElement('p');
+            story.innerHTML = record.description;
+            chapter.appendChild(story);
+        }
+
+        if(idx < chapters_length-1) {
+            let next = document.createElement('div');
+            next.classList.add('down-arrow-cover', 'animate__animated', 'animate__flash', 'animate__infinite', 'animate__slow');
+            next.style.position = 'relative';
+
+
+            let next_text = document.createElement('div');
+            next_text.classList.add('down-arrow-cover-text');
+            next_text.innerText = 'Keep scrolling to read more';
+
+            let next_arrow = document.createElement('div');
+            next_arrow.classList.add('down-arrow-cover-arrow');
+
+            let next_icon = document.createElement('i');
+            next_icon.classList.add('bi', 'bi-chevron-double-down', 'animate__animated', 'animate__flash', 'animate__infinite', 'animate__slow');
+            next_icon.style.fontSize = '3em';
+            next_icon.style.color = 'white';
+            next_icon.style.textShadow = '2px 2px 4px rgb(51, 51, 51)';
+            next_icon.style.position = 'static';
+            next_icon.style.left = 'auto';
+            next_icon.style.transform = 'none';
+            next_icon.style.bottom = 'auto';
+
+            next_arrow.appendChild(next_icon);
+
+            next.appendChild(next_text);
+            next.appendChild(next_arrow);
+
+            chapter.appendChild(next);
+        }
+
+        container.setAttribute('id', record.id);
+        container.classList.add('step');
+        if (idx === 0) {
+            container.classList.add('active');
+        }
+
+        chapter.classList.add(config.theme);
+        container.appendChild(chapter);
+        container.classList.add(alignments[record.alignment] || 'centered');
+        if (record.hidden) {
+            container.classList.add('hidden');
+        }
+        features.appendChild(container);
+    });
+
+    story.appendChild(features);
+
+    var footer = document.createElement('div');
+
+    if (config.footer) {
+        var footerText = document.createElement('p');
+        footerText.innerHTML = config.footer;
+        footer.appendChild(footerText);
+    }
+
+    if (footer.innerText.length > 0) {
+        footer.classList.add(config.theme);
+        footer.setAttribute('id', 'footer');
+        story.appendChild(footer);
+    }
+
+    mapboxgl.accessToken = config.accessToken;
+
+    const transformRequest = (url) => {
+        const hasQuery = url.indexOf("?") !== -1;
+        const suffix = hasQuery ? "&pluginName=scrollytellingV2" : "?pluginName=scrollytellingV2";
+
+        return {
+          url: url + suffix
+        }
+    }
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: config.style,
+        center: config.chapters[0].location.center,
+        zoom: config.chapters[0].location.zoom,
+        bearing: config.chapters[0].location.bearing,
+        pitch: config.chapters[0].location.pitch,
+        interactive: true,
+        minzoom: 10.5,
+        maxzoom: 18,
+        transformRequest: transformRequest
+    });
+
+    var mapImpact = new mapboxgl.Map({
+        container: 'map-impact',
+        style: config.style,
+        center: config.chapters[0].location.center,
+        zoom: config.chapters[0].location.zoom,
+        bearing: config.chapters[0].location.bearing,
+        pitch: config.chapters[0].location.pitch,
+        interactive: true,
+        transformRequest: transformRequest
+    });
+
+    if (config.showMarkers) {
+        var marker = new mapboxgl.Marker({ color: config.markerColor });
+        marker.setLngLat(config.chapters[0].location.center).addTo(map);
+    }
+
+    // instantiate the scrollama
+    var scroller = scrollama();
+
+    const moreCertainColor = '#2171b5';
+    const lessCertainColor = '#6baed6';
+
+    map.on("load", function() {
+
+        console.log(uniqueSlrPairs);
+        uniqueSlrPairs.forEach((pair, idx) => {
+            let dnLimit = pair[0].toFixed(1);
+            if (dnLimit <= 0) {
+                dnLimit = '0.0';
+            }
+            let upLimit = pair[1].toFixed(1);
+            console.log(dnLimit, upLimit)
+            map.addSource('geojson-source-'+dnLimit+'-'+upLimit, {
+                type: 'geojson',
+                data: 'assets/slr_results/vector/uncertainty/slr_'+dnLimit+'_'+upLimit+'ft.geojson'
+            });
+
+            map.addLayer({
+                'id': 'slr-layer-' + pair[0] + '-' + pair[1],
+                'type': 'circle', // You can use a different layer type if needed
+                'source': 'geojson-source-'+dnLimit+'-'+upLimit,
+                'paint': {
+                    'circle-color': [
+                        'match',
+                        ['get', 'layer'], // Use the "layer" property for styling
+                        'layer_1', lessCertainColor,  // Specify colors based on property values
+                        'layer_2', moreCertainColor,
+
+                        /* Add more property-value and color pairs as needed */
+                        'gray'  // Default color if no match is found
+                    ],
+
+                    'circle-radius': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        10.5, 2,      // at zoom level 10, radius is 2
+                        18, 20      // at zoom level 18, radius is 20
+                    ],
+
+                    'circle-opacity': 0  // set to 0 to make it invisible TEMPORARILY
+                }
+            });
+        });
+
+        // set all svg paths invisible
+        function allSvgInvisible() {
+            document.querySelectorAll('.line').forEach(function(line) {
+                line.style.display = 'none';
+            });
+
+            document.querySelectorAll('.confidence-interval').forEach(function(range) {
+                range.style.display = 'none';
+            });
+            document.querySelectorAll('.circle-slr').forEach(function(circle) {
+                circle.style.display = 'none';
+            });
+            document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
+                range.style.display = 'none';
+            });
+            document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
+                range.style.display = 'none';
+            });
+            document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
+                range.style.display = 'none';
+            });
+        };
+
+        // toggle the dropdown menu line-selector of the d3.js
+        document.getElementById("line-selector").addEventListener('change', function() {
+            let selectedOption = this.value;
+            let whetherToIncludeVertical = document.getElementById('switchVertical').checked;
+
+            console.log(selectedOption);
+
+            if (whetherToIncludeVertical) {
+                if (selectedOption === 'all') {
+                    allSvgInvisible();
+                    document.querySelectorAll('.line').forEach(function(line) {
+                        line.style.display = 'block';
+                    });
+
+                    document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                } else if (selectedOption === 'RCP 4.5 line') {
+                    allSvgInvisible();
+                    document.getElementById(selectedOption).style.display ='block';
+                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                    document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                } else if (selectedOption === 'RCP 8.5 line') {
+                    allSvgInvisible();
+                    document.getElementById(selectedOption).style.display ='block';
+                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                    document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                }
+            } else {
+                if (selectedOption === 'all') {
+                    allSvgInvisible();
+                    document.querySelectorAll('.line').forEach(function(line) {
+                        line.style.display = 'block';
+                    });
+
+                    document.querySelectorAll('.confidence-interval').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                } else {
+                    allSvgInvisible();
+                    document.getElementById(selectedOption).style.display ='block';
+                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                }
+            }
+
+        });
+
+        document.getElementById('switchVertical').addEventListener('change', function() {
+            let selectedOption = document.getElementById('line-selector').value;
+            let whetherToIncludeVertical = this.checked;
+            console.log(whetherToIncludeVertical);
+            if (whetherToIncludeVertical) {
+                if (selectedOption === 'all') {
+                    allSvgInvisible();
+                    document.querySelectorAll('.line').forEach(function(line) {
+                        line.style.display = 'block';
+                    });
+
+                    document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                } else if (selectedOption === 'RCP 4.5 line') {
+                    allSvgInvisible();
+                    document.getElementById(selectedOption).style.display ='block';
+                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                    document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                } else if (selectedOption === 'RCP 8.5 line') {
+                    allSvgInvisible();
+                    document.getElementById(selectedOption).style.display ='block';
+                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                    document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                }
+            } else {
+                if (selectedOption === 'all') {
+                    allSvgInvisible();
+                    document.querySelectorAll('.line').forEach(function(line) {
+                        line.style.display = 'block';
+                    });
+
+                    document.querySelectorAll('.confidence-interval').forEach(function(range) {
+                        range.style.display = 'block';
+                    });
+                } else {
+                    allSvgInvisible();
+                    document.getElementById(selectedOption).style.display ='block';
+                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                }
+            }
+        });
+
+        // set slrLayerToShow and slrLayerToClose as a map.load wide variable
+        let slrLayerToShow;
+        let slrLayerToClose;
+
+        // define a function: if the value is smaller than 0, set it to 0, otherwise, keep the original value
+        // example: setToZeroIfNegative(-0.1) return 0
+        function setToZeroIfNegative(value) {
+            if (value < 0) {
+                return 0;
+            } else {
+                return value;
+            }
+        };
+
+        svg.on('mousemove', function(event) {
+
+            // set the opacity of the slrLayerToClose to 0 to make it invisible
+            map.setPaintProperty(slrLayerToClose, 'circle-opacity', 0);
+
+            svg.selectAll('.circle-slr').remove();
+            let [mx, my] = d3.pointer(event);
+
+            let year = Math.round(xScale.invert(mx));
+            year = Math.round(year / 10) * 10;
+
+
+            // get the config.chapters whose id is 'sea-level-rise'
+            let slr_chapter = config.chapters.filter(chapter => chapter.id === 'sea-level-rise')[0];
+
+            let slr_lines = slr_chapter.lines;
+
+            let verticalUncertainty = slr_chapter.verticalMoveUncertainty[0].values;
+
+            // example output: {name: 'RCP 8.5', values:..., color:...}
+            let line_high_values = slr_lines.filter(line => line.name === 'RCP 8.5')[0].values;
+
+            console.log(line_high_values);
+            let line_low_values = slr_lines.filter(line => line.name === 'RCP 4.5')[0].values;
+
+            let high_color = slr_lines.filter(line => line.name === 'RCP 8.5')[0].color;
+            let low_color = slr_lines.filter(line => line.name === 'RCP 4.5')[0].color;
+            console.log(high_color)
+
+            // get the value of the year in the high rcp scenario that is selected by the mouseover
+            // example output: { year: 2020, ft: 0.1, lower: -0.1, upper:0.2 }
+            let line_high_values_of_year = line_high_values.filter(line => line.year === year)[0];
+
+            // get the value of the year in the low rcp scenario that is selected by the mouseover
+            // example output: { year: 2020, ft: 0.1, lower: -0.1, upper:0.2 }
+            let line_low_values_of_year = line_low_values.filter(line => line.year === year)[0];
+
+            // get the uncertainty range of the vertical movement of the year that is fired by the mouseover
+            // example output: {year: 2020, lower: -0.1, upper: 0.2}
+            let verticalUncertainty_of_year = verticalUncertainty.filter(line => line.year === year)[0];
+
+            // get the value of the drop down
+            let selectedOption = document.getElementById('line-selector').value;
+
+            // get the value of the switchVertical
+            let whetherToIncludeVertical = document.getElementById('switchVertical').checked;
+
+            // if the vertical land move is not switched on
+            if (!whetherToIncludeVertical) {
+                if (selectedOption === 'all') {
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(line_high_values_of_year.upper))
+                        .attr('r', 5)
+                        .attr('fill', lessCertainColor);
+
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(line_low_values_of_year.lower))
+                        .attr('r', 5)
+                        .attr('fill', moreCertainColor);
+
+                    document.getElementById('year').innerText = year;
+                    document.getElementById('low-bound').innerText = line_low_values_of_year.lower;
+                    document.getElementById('up-bound').innerText = line_high_values_of_year.upper;
+
+                    let lowerBoundForLayer = setToZeroIfNegative(line_low_values_of_year.lower);
+
+                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
+                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                } else if (selectedOption === 'RCP 8.5 line') {
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(line_high_values_of_year.upper))
+                        .attr('r', 5)
+                        .attr('fill', lessCertainColor);
+
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(line_high_values_of_year.lower))
+                        .attr('r', 5)
+                        .attr('fill', moreCertainColor);
+
+                    document.getElementById('year').innerText = year;
+                    document.getElementById('low-bound').innerText = line_high_values_of_year.lower;
+                    document.getElementById('up-bound').innerText = line_high_values_of_year.upper;
+
+                    let lowerBoundForLayer = setToZeroIfNegative(line_high_values_of_year.lower);
+
+                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
+                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                } else if (selectedOption === 'RCP 4.5 line') {
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(line_low_values_of_year.upper))
+                        .attr('r', 5)
+                        .attr('fill', lessCertainColor);
+
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(line_low_values_of_year.lower))
+                        .attr('r', 5)
+                        .attr('fill', moreCertainColor);
+
+                    document.getElementById('year').innerText = year;
+                    document.getElementById('low-bound').innerText = line_low_values_of_year.lower;
+                    document.getElementById('up-bound').innerText = line_low_values_of_year.upper;
+
+                    let lowerBoundForLayer = setToZeroIfNegative(line_low_values_of_year.lower);
+
+                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
+                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+
+                }
+            } else {
+                if (selectedOption === "all") {
+                    let yHigh = parseFloat((line_high_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
+                    let yLow = parseFloat((line_low_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(yHigh))
+                        .attr('r', 5)
+                        .attr('fill', lessCertainColor);
+
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(yLow))
+                        .attr('r', 5)
+                        .attr('fill', moreCertainColor);
+
+                    document.getElementById('year').innerText = year;
+                    document.getElementById('low-bound').innerText = yLow;
+                    document.getElementById('up-bound').innerText = yHigh;
+
+                    yLow = setToZeroIfNegative(yLow);
+
+                    slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
+                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                } else if (selectedOption == 'RCP 8.5 line') {
+                    let yHigh = parseFloat((line_high_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
+                    let yLow = parseFloat((line_high_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(yHigh))
+                        .attr('r', 5)
+                        .attr('fill', lessCertainColor);
+
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(yLow))
+                        .attr('r', 5)
+                        .attr('fill', moreCertainColor);
+
+                        document.getElementById('year').innerText = year;
+                        document.getElementById('low-bound').innerText = yLow;
+                        document.getElementById('up-bound').innerText = yHigh;
+
+                        yLow = setToZeroIfNegative(yLow);
+
+                        slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
+                        map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                } else if (selectedOption == 'RCP 4.5 line') {
+                    let yHigh = parseFloat((line_low_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
+                    let yLow = parseFloat((line_low_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(yHigh))
+                        .attr('r', 5)
+                        .attr('fill', lessCertainColor);
+
+                    svg.append('circle')
+                        .attr('class', 'circle-slr')
+                        .attr('cx', xScale(year))
+                        .attr('cy', yScale(yLow))
+                        .attr('r', 5)
+                        .attr('fill', moreCertainColor);
+                        document.getElementById('year').innerText = year;
+                        document.getElementById('low-bound').innerText = yLow;
+                        document.getElementById('up-bound').innerText = yHigh;
+
+                        yLow = setToZeroIfNegative(yLow);
+
+                        slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
+                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                }
+            }
+
+            slrLayerToClose = slrLayerToShow;
+
+        })
+
+        if (config.use3dTerrain) {
+            map.addSource('mapbox-dem', {
+                'type': 'raster-dem',
+                'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                'tileSize': 512,
+                'maxzoom': 14
+            });
+            // add the DEM source as a terrain layer with exaggerated height
+            map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+
+            // add a sky layer that will show when the map is highly pitched
+            map.addLayer({
+                'id': 'sky',
+                'type': 'sky',
+                'paint': {
+                    'sky-type': 'atmosphere',
+                    'sky-atmosphere-sun': [0.0, 0.0],
+                    'sky-atmosphere-sun-intensity': 15
+                }
+            });
+        };
+
+        let surveyed_year = [1700, 1860, 1911, 1926, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
+
+        //offset distance from the main boundary
+        let offsetDistOfPoly = [-22.5, -18, -13.5, -9, -4.5, 13.6, 9, 4.5];
+
+        let colorPoly =["#238b45","#74c476","#bae4b3","#edf8e9","#eff3ff","#2171b5","#6baed6","#bdd7e7"];
+
+        map.addSource('shoreline_1860', {
+            "type": "geojson",
+            "data": "assets/ECY_estimated_shorelines/Oct1/1860.geojson"
+        });
+
+        map.addSource('shoreline_1911', {
+            "type": "geojson",
+            "data": "assets/ECY_estimated_shorelines/Oct1/1911.geojson"
+        });
+
+        // add sources and layers of the shorelines from 1700 to 2015
+        // set them to invisible by default
+        for (let i=1700; i<2015; i++) {
+            // add the source for the main boundary
+            // map.addSource("shoreline"+i,{
+            //     "type": "geojson",
+            //     "data": "assets/ECY_estimated_shorelines/Oct1/"+i+".geojson"
+            // });
+
+            offsetDistOfPoly.forEach((d, idx) =>{
+                map.addSource(`polygon_${i}_${d}`, {
+                    "type": "geojson",
+                    "data": `assets/ECY_estimated_shorelines_poly/May3_2024/${d}m/${i}.geojson`
+                });
+                map.addLayer({
+                    "id": `polygon_${i}_${d}`,
+                    "type": "fill",
+                    "source": `polygon_${i}_${d}`,
+                    "layout": {
+                        'visibility': 'visible'
+                    },
+                    "paint": {
+                        "fill-color": colorPoly[idx],
+                        "fill-opacity": 0
+                    }
+                });
+
+            });
+
+        };
+
+        // set the switches
+        // the switches toggle the visibility of the SURVEYED shorelines
+        surveyed_year.forEach((yr) => {
+            document.getElementById('flexSwitchCheckDefault'+yr).addEventListener('change', function(e) {
+                if (e.target.checked) {
+                    offsetDistOfPoly.forEach((d, idx) =>{
+                        map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
+                    });
+                    //map.setPaintProperty('main-line'+yr, 'fill-opacity', 1);
+                } else {
+                    offsetDistOfPoly.forEach((d, idx) =>{
+                        map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 0);
+                    });
+                    //map.setPaintProperty('main-line'+yr, 'fill-opacity', 0);
+                }
+            });
+
+        });
+
+
+        let previous = all_years_hist_shore.length - 1;
+        let current = 0;
+        let requestId;
+        let timerId = null;
+
+
+        function playHistShore() {
+            timerId = setInterval(updateShoreline, 100);
+        };
+
+        function updateShoreline() {
+            if (current == 0) {
+                previous = all_years_hist_shore.length - 1;
+            };
+
+            // set the current year to visible
+            offsetDistOfPoly.forEach(d => {
+                map.setPaintProperty(`polygon_${all_years_hist_shore[current]}_${d}`, 'fill-opacity', 1);
+            });
+
+
+            //map.setPaintProperty("main-line" + all_years_hist_shore[current], 'line-opacity', 1);
+
+            // set the previous year to invisible
+            offsetDistOfPoly.forEach(d => {
+                map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
+            });
+
+            //map.setPaintProperty("main-line" + all_years_hist_shore[previous], 'line-opacity', 0);
+
+            //if the current year is not a surveyed year, then show the blurred layers
+            // if (!surveyed_year.includes(all_years_hist_shore[current])) {
+
+            //     map.setPaintProperty("blur-line" + all_years_hist_shore[current], 'line-opacity', 0.6);
+            //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[current], 'line-opacity', 0.5);
+            //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[current], 'line-opacity', 0.25);
+            // };
+
+            // if the previous year is not a surveyed year, then hide the blurred layers
+            // if (!surveyed_year.includes(all_years_hist_shore[previous])) {
+
+            //     map.setPaintProperty("blur-line" + all_years_hist_shore[previous], 'line-opacity', 0);
+            //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[previous], 'line-opacity', 0);
+            //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[previous], 'line-opacity', 0);
+            // };
+
+            // update the year label and range slider
+            document.getElementById("customRangeLabelshore-change").textContent = all_years_hist_shore[current].toString();
+            document.getElementById("customRangeshore-change").value = all_years_hist_shore[current].toString();
+
+            // set the play/pause button to pause
+            document.getElementById('playpause-hist').classList.remove('bi-play-circle');
+            document.getElementById('playpause-hist').classList.add('bi-pause-circle');
+
+            // set the previous year to the current year
+            previous = current;
+            current = current + 1;
+            if (current == all_years_hist_shore.length) {
+                current = 0;
+            };
+        };
+
+        function pauseHistShore () {
+            clearInterval(timerId);
+            timerId = null;
+
+            document.getElementById('playpause-hist').classList.remove('bi-pause-circle');
+            document.getElementById('playpause-hist').classList.add('bi-play-circle');
+        };
+
+         // function to set all layers in the historical part to invisible
+        function setAllHistLayersInvisible() {
+            for (let i=1700; i<2015; i++) {
+                offsetDistOfPoly.forEach((d, idx) => {
+                    map.setPaintProperty(`polygon_${i}_${d}`, 'fill-opacity', 0);
+                })
+            }
+        };
+
+        // Get the range slider element by its ID
+        const rangeSlider = document.getElementById('customRangeshore-change');
+
+        // Listen for the 'input' event
+        rangeSlider.addEventListener('input', function (event) {
+
+            pauseHistShore();
+            // Get the current value
+            const SLIDERYEAR = event.target.value;
+
+            document.getElementById("customRangeLabelshore-change").textContent = SLIDERYEAR;
+
+            // Hide all layers
+            //setAllHistLayersInvisible();
+
+            // set the current year to invisible
+            //current is a map.load() wide variable
+            offsetDistOfPoly.forEach(d => {
+                map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
+            });
+
+            //map.setPaintProperty("main-line" + all_years_hist_shore[previous], 'line-opacity', 0);
+
+            //if the current year is not a surveyed year, then close the blurred layers as well
+            // if (!surveyed_year.includes(all_years_hist_shore[previous])) {
+
+            //     map.setPaintProperty("blur-line" + all_years_hist_shore[previous], 'line-opacity', 0);
+            //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[previous], 'line-opacity', 0);
+            //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[previous], 'line-opacity', 0);
+            // };
+
+            //show layers that are toggled on by the switch
+            // toggled on layers should be kept visible
+            // surveyed_year.forEach((yr) => {
+            //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
+            //         map.setPaintProperty('main-line'+yr, 'line-opacity', 1);
+            //     }
+            // });
+            surveyed_year.forEach((yr) => {
+                if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
+                    offsetDistOfPoly.forEach(d => {
+                        map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
+                    });
+                }
+            });
+
+            // Show the layer for the year on the slider
+            //map.setPaintProperty("main-line"+SLIDERYEAR, 'line-opacity', 1);
+            offsetDistOfPoly.forEach(d => {
+                map.setPaintProperty(`polygon_${SLIDERYEAR}_${d}`, 'fill-opacity', 1);
+            });
+
+            // if the slider year is not a surveyed year, then show the blurred layers as well
+            // if (!surveyed_year.includes(parseInt(SLIDERYEAR))) {
+            //     map.setPaintProperty("blur-line"+SLIDERYEAR, 'line-opacity', 0.6);
+            //     map.setPaintProperty("blur-line-2"+SLIDERYEAR, 'line-opacity', 0.5);
+            //     map.setPaintProperty("blur-line-3"+SLIDERYEAR, 'line-opacity', 0.25)
+            // };
+
+            previous = all_years_hist_shore.indexOf(parseInt(SLIDERYEAR));
+            if (previous != all_years_hist_shore.lehgth) {
+                current = previous + 1;  // current will be used by the playHistShore function
+            } else {
+                current = 0;
+            };
+
+
+        });
+
+        // set the function to play animation of historical shorelines
+
+
+
+        //document.addEventListener('DOMContentLoaded', () => {
+        playPauseButton = document.getElementById('clickable');
+        playPauseIcon = playPauseButton.querySelector('i');
+
+        playPauseButton.addEventListener('click', () => {
+
+            if (playPauseIcon.classList.contains('bi-play-circle')) {
+                playPauseIcon.classList.remove('bi-play-circle');
+                playPauseIcon.classList.add('bi-pause-circle');
+                playHistShore();
+            } else {
+                playPauseIcon.classList.remove('bi-pause-circle');
+                playPauseIcon.classList.add('bi-play-circle');
+                pauseHistShore();
+            }
+        });
+
+
+
+        //});
+
+
+
+        // setup the instance, pass callback functions
+        scroller
+        .setup({
+
+            step: '.step',
+            offset: 0.5,
+            progress: true,
+            //debug: true
+        })
+        .onStepEnter(response => {
+            var chapter = config.chapters.find(chap => chap.id === response.element.id);
+
+            if (response.element.id=="shore-change") {
+                console.log("hello");
+                current=0;
+                playHistShore();
+            };
+
+            response.element.classList.add('active');
+
+
+            map[chapter.mapAnimation || 'flyTo'](chapter.location);
+
+            if (config.showMarkers) {
+                marker.setLngLat(chapter.location.center);
+            }
+            // if (chapter.onChapterEnter.length > 0) {
+            //     chapter.onChapterEnter.forEach(setLayerOpacity);
+            // }
+            if (chapter.callback) {
+                window[chapter.callback]();
+            }
+            if (chapter.rotateAnimation) {
+                map.once('moveend', function() {
+                    const rotateNumber = map.getBearing();
+                    map.rotateTo(rotateNumber + 90, {
+                        duration: 24000, easing: function (t) {
+                            return t;
+                        }
+                    });
+                });
+            }
+            //if (chapter.id=="shore-change") {
+
+
+            //}
+        })
+        .onStepExit(response => {
+            var chapter = config.chapters.find(chap => chap.id === response.element.id);
+            response.element.classList.remove('active');
+            // if (chapter.onChapterExit.length > 0) {
+            //     chapter.onChapterExit.forEach(setLayerOpacity);
+            // }
+
+            if (chapter.id == "shore-change") {
+                pauseHistShore();
+                setAllHistLayersInvisible();
+
+            }
+        });
+    });
+
+    // setup resize event
+    window.addEventListener('resize', scroller.resize);
+
+
+
+    </script>
+
+    <script>
+        function scrollToMapbox() {
+        // This will smoothly scroll the page to the Mapbox container
+        document.getElementById('geonarrative-container').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        function scrollToIntroduction() {
+        document.getElementById('introduction').scrollIntoView({ behavior: 'smooth' });
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </body>
+</html>
