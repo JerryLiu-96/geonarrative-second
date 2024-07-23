@@ -405,6 +405,22 @@
     let svg;
     let slrPairs = [];
     let uniqueSlrPairs = [];
+    let rcpallVertical = [];
+    let rcpHighVertical = [];
+    let rcpLowVertical = [];
+    let rcpallNonVertical = [];
+    let rcpHighNonVertical = [];
+    let rcpLowNonVertical = [];
+
+    let uniquercpallVertical = [];
+    let uniquercpHighVertical = [];
+    let uniquercpLowVertical = [];
+    let uniquercpallNonVertical = [];
+    let uniquercpHighNonVertical = [];
+    let uniquercpLowNonVertical = [];
+
+    let activeSourcesForSlr = [];
+    let activeLayersForSlr = [];
 
     config.chapters.forEach((record, idx) => {
         var container = document.createElement('div');
@@ -548,13 +564,22 @@
 
             for(let i=0; i<record.lines[0].values.length; i++) {
                 slrPairs.push([record.lines[0].values[i].lower, record.lines[0].values[i].upper]);
+                rcpHighNonVertical.push([record.lines[0].values[i].lower, record.lines[0].values[i].upper]);
+
                 slrPairs.push([record.lines[0].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[0].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
+                rcpHighVertical.push([record.lines[0].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[0].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
 
                 slrPairs.push([record.lines[1].values[i].lower, record.lines[1].values[i].upper]);
+                rcpLowNonVertical.push([record.lines[1].values[i].lower, record.lines[1].values[i].upper]);
+
                 slrPairs.push([record.lines[1].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[1].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
+                rcpLowVertical.push([record.lines[1].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[1].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
 
                 slrPairs.push([record.lines[1].values[i].lower, record.lines[0].values[i].upper]);
+                rcpallNonVertical.push([record.lines[1].values[i].lower, record.lines[0].values[i].upper]);
+
                 slrPairs.push([record.lines[1].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[0].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
+                rcpallVertical.push([record.lines[1].values[i].lower + record.verticalMoveUncertainty[0].values[i].lower, record.lines[0].values[i].upper + record.verticalMoveUncertainty[0].values[i].upper]);
             }
             // round values in slrPairs to 1 decimal places, and if the value is smaller than 0, make it 0
             slrPairs = slrPairs.map(pair => {
@@ -563,12 +588,70 @@
                 });
             });
 
-            // remove duplicates from slrPairs
+            rcpHighNonVertical = rcpHighNonVertical.map(pair => {
+                return pair.map(value => {
+                    return value < 0 ? 0 : Math.round(value * 10) / 10;
+                });
+            });
 
+            rcpHighVertical = rcpHighVertical.map(pair => {
+                return pair.map(value => {
+                    return value < 0 ? 0 : Math.round(value * 10) / 10;
+                });
+            });
+
+            rcpLowNonVertical = rcpLowNonVertical.map(pair => {
+                return pair.map(value => {
+                    return value < 0 ? 0 : Math.round(value * 10) / 10;
+                });
+            });
+
+            rcpLowVertical = rcpLowVertical.map(pair => {
+                return pair.map(value => {
+                    return value < 0 ? 0 : Math.round(value * 10) / 10;
+                });
+            });
+
+            rcpallNonVertical = rcpallNonVertical.map(pair => {
+                return pair.map(value => {
+                    return value < 0 ? 0 : Math.round(value * 10) / 10;
+                });
+            });
+
+            rcpallVertical = rcpallVertical.map(pair => {
+                return pair.map(value => {
+                    return value < 0 ? 0 : Math.round(value * 10) / 10;
+                });
+            });
+
+            // remove duplicates from slrPairs
             uniqueSlrPairs = [
             ...new Map(slrPairs.map(item => [JSON.stringify(item), item])).values()
             ];
 
+            uniquercpHighNonVertical =[
+            ...new Map(rcpHighNonVertical.map(item => [JSON.stringify(item), item])).values()
+            ];
+
+            uniquercpHighVertical =[
+            ...new Map(rcpHighVertical.map(item => [JSON.stringify(item), item])).values()
+            ];
+
+            uniquercpLowNonVertical =[
+            ...new Map(rcpLowNonVertical.map(item => [JSON.stringify(item), item])).values()
+            ];
+
+            uniquercpLowVertical =[
+            ...new Map(rcpLowVertical.map(item => [JSON.stringify(item), item])).values()
+            ];
+
+            uniquercpallNonVertical =[
+            ...new Map(rcpallNonVertical.map(item => [JSON.stringify(item), item])).values()
+            ];
+
+            uniquercpallVertical =[
+            ...new Map(rcpallVertical.map(item => [JSON.stringify(item), item])).values()
+            ];
 
             // Set the dimensions and margins of the graph
             const margin = { top: 10, right: 30, bottom: 30, left: 60 },
@@ -911,47 +994,6 @@
 
     map.on("load", function() {
 
-        console.log(uniqueSlrPairs);
-        uniqueSlrPairs.forEach((pair, idx) => {
-            let dnLimit = pair[0].toFixed(1);
-            if (dnLimit <= 0) {
-                dnLimit = '0.0';
-            }
-            let upLimit = pair[1].toFixed(1);
-            console.log(dnLimit, upLimit)
-            map.addSource('geojson-source-'+dnLimit+'-'+upLimit, {
-                type: 'geojson',
-                data: 'assets/slr_results/vector/uncertainty/slr_'+dnLimit+'_'+upLimit+'ft.geojson'
-            });
-
-            map.addLayer({
-                'id': 'slr-layer-' + pair[0] + '-' + pair[1],
-                'type': 'circle', // You can use a different layer type if needed
-                'source': 'geojson-source-'+dnLimit+'-'+upLimit,
-                'paint': {
-                    'circle-color': [
-                        'match',
-                        ['get', 'layer'], // Use the "layer" property for styling
-                        'layer_1', lessCertainColor,  // Specify colors based on property values
-                        'layer_2', moreCertainColor,
-
-                        /* Add more property-value and color pairs as needed */
-                        'gray'  // Default color if no match is found
-                    ],
-
-                    'circle-radius': [
-                        'interpolate',
-                        ['linear'],
-                        ['zoom'],
-                        10.5, 2,      // at zoom level 10, radius is 2
-                        18, 20      // at zoom level 18, radius is 20
-                    ],
-
-                    'circle-opacity': 0  // set to 0 to make it invisible TEMPORARILY
-                }
-            });
-        });
-
         // set all svg paths invisible
         function allSvgInvisible() {
             document.querySelectorAll('.line').forEach(function(line) {
@@ -975,13 +1017,90 @@
             });
         };
 
+        function addSourceAndLayer(uniquePairs) {
+            uniquePairs.forEach((pair, idx) => {
+                let dnLimit = pair[0].toFixed(1);
+                if (dnLimit <= 0) {
+                    dnLimit = '0.0';
+                }
+                let upLimit = pair[1].toFixed(1);
+                map.addSource('geojson-source-'+dnLimit+'-'+upLimit, {
+                    type: 'geojson',
+                    data: 'assets/slr_results/vector/uncertainty/slr_'+dnLimit+'_'+upLimit+'ft.geojson'
+                });
+
+                map.addLayer({
+                    'id': 'slr-layer-' + pair[0] + '-' + pair[1],
+                    'type': 'circle', // You can use a different layer type if needed
+                    'source': 'geojson-source-'+dnLimit+'-'+upLimit,
+                    'paint': {
+                        'circle-color': [
+                            'match',
+                            ['get', 'layer'], // Use the "layer" property for styling
+                            'layer_1', lessCertainColor,  // Specify colors based on property values
+                            'layer_2', moreCertainColor,
+
+                            /* Add more property-value and color pairs as needed */
+                            'gray'  // Default color if no match is found
+                        ],
+
+                        'circle-radius': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            10.5, 2,      // at zoom level 10, radius is 2
+                            18, 20      // at zoom level 18, radius is 20
+                        ],
+
+                        'circle-opacity': 0  // set to 0 to make it invisible TEMPORARILY
+                    }
+                });
+
+                activeSourcesForSlr.push('geojson-source-'+dnLimit+'-'+upLimit);
+                activeLayersForSlr.push('slr-layer-' + pair[0] + '-' + pair[1]);
+            })
+        }
+
+        function removeSourceAndLayer() {
+
+            activeLayersForSlr.forEach((layer, idx) => {
+                map.removeLayer(layer);
+            });
+
+            activeSourcesForSlr.forEach((source, idx) => {
+                map.removeSource(source);
+            });
+
+            activeLayersForSlr = [];
+            activeSourcesForSlr = [];
+        }
+
+        // import the default sources and layers in the slr section
+        let verticalOrNot = document.getElementById('switchVertical').checked;
+        let rcpScenario = document.getElementById('line-selector').value;
+        if (verticalOrNot) {
+            if (rcpScenario === 'all') {
+                addSourceAndLayer(uniquercpallVertical);
+            } else if (rcpScenario === 'RCP 4.5 line') {
+                addSourceAndLayer(uniquercpLowVertical);
+            } else {
+                addSourceAndLayer(uniquercpHighVertical);
+            }
+        } else {
+            if (rcpScenario === 'all') {
+                addSourceAndLayer(uniquercpallNonVertical);
+            } else if (rcpScenario === 'RCP 4.5 line') {
+                addSourceAndLayer(uniquercpLowNonVertical);
+            } else {
+                addSourceAndLayer(uniquercpHighNonVertical);
+            }
+        }
+
         // toggle the dropdown menu line-selector of the d3.js
         document.getElementById("line-selector").addEventListener('change', function() {
             let selectedOption = this.value;
             let whetherToIncludeVertical = document.getElementById('switchVertical').checked;
 
-            console.log(selectedOption);
-
             if (whetherToIncludeVertical) {
                 if (selectedOption === 'all') {
                     allSvgInvisible();
@@ -992,6 +1111,11 @@
                     document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+
+                    addSourceAndLayer(uniquercpallVertical);
+
                 } else if (selectedOption === 'RCP 4.5 line') {
                     allSvgInvisible();
                     document.getElementById(selectedOption).style.display ='block';
@@ -999,6 +1123,11 @@
                     document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+
+                    addSourceAndLayer(uniquercpLowVertical);
+
                 } else if (selectedOption === 'RCP 8.5 line') {
                     allSvgInvisible();
                     document.getElementById(selectedOption).style.display ='block';
@@ -1006,6 +1135,10 @@
                     document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+
+                    addSourceAndLayer(uniquercpHighVertical);
                 }
             } else {
                 if (selectedOption === 'all') {
@@ -1017,19 +1150,30 @@
                     document.querySelectorAll('.confidence-interval').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+
+                    addSourceAndLayer(uniquercpallNonVertical);
+
                 } else {
                     allSvgInvisible();
                     document.getElementById(selectedOption).style.display ='block';
                     document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+
+                    removeSourceAndLayer();
+                    if (selectedOption === 'RCP 4.5 line') {
+                        addSourceAndLayer(uniquercpLowNonVertical);
+                    } else {
+                        addSourceAndLayer(uniquercpHighNonVertical);
+                    };
                 }
             }
-
         });
 
         document.getElementById('switchVertical').addEventListener('change', function() {
             let selectedOption = document.getElementById('line-selector').value;
             let whetherToIncludeVertical = this.checked;
-            console.log(whetherToIncludeVertical);
+
             if (whetherToIncludeVertical) {
                 if (selectedOption === 'all') {
                     allSvgInvisible();
@@ -1040,6 +1184,10 @@
                     document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+                    addSourceAndLayer(uniquercpallVertical);
+
                 } else if (selectedOption === 'RCP 4.5 line') {
                     allSvgInvisible();
                     document.getElementById(selectedOption).style.display ='block';
@@ -1047,6 +1195,10 @@
                     document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+                    addSourceAndLayer(uniquercpLowVertical);
+
                 } else if (selectedOption === 'RCP 8.5 line') {
                     allSvgInvisible();
                     document.getElementById(selectedOption).style.display ='block';
@@ -1054,6 +1206,9 @@
                     document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+                    addSourceAndLayer(uniquercpHighVertical);
                 }
             } else {
                 if (selectedOption === 'all') {
@@ -1065,10 +1220,20 @@
                     document.querySelectorAll('.confidence-interval').forEach(function(range) {
                         range.style.display = 'block';
                     });
+
+                    removeSourceAndLayer();
+                    addSourceAndLayer(uniquercpallNonVertical);
                 } else {
                     allSvgInvisible();
                     document.getElementById(selectedOption).style.display ='block';
                     document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+
+                    removeSourceAndLayer();
+                    if (selectedOption === 'RCP 4.5 line') {
+                        addSourceAndLayer(uniquercpLowNonVertical);
+                    } else {
+                        addSourceAndLayer(uniquercpHighNonVertical);
+                    };
                 }
             }
         });
