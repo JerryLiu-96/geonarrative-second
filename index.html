@@ -1254,6 +1254,8 @@
 
         svg.on('mousemove', function(event) {
 
+            console.log(uniqueSlrPairs);
+
             // set the opacity of the slrLayerToClose to 0 to make it invisible
             map.setPaintProperty(slrLayerToClose, 'circle-opacity', 0);
 
@@ -1368,7 +1370,7 @@
 
                     let lowerBoundForLayer = setToZeroIfNegative(line_low_values_of_year.lower);
 
-                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
+                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_low_values_of_year.upper;
                     map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
 
                 }
