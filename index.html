@@ -889,7 +889,6 @@
             next.classList.add('down-arrow-cover', 'animate__animated', 'animate__flash', 'animate__infinite', 'animate__slow');
             next.style.position = 'relative';
 
-
             let next_text = document.createElement('div');
             next_text.classList.add('down-arrow-cover-text');
             next_text.innerText = 'Keep scrolling to read more';
@@ -1734,13 +1733,30 @@
             var chapter = config.chapters.find(chap => chap.id === response.element.id);
 
             if (response.element.id=="shore-change") {
-                console.log("hello");
+
                 current=0;
                 playHistShore();
             };
 
-            response.element.classList.add('active');
+            if (response.element.id=="sea-level-rise") {
+                let slrScenarioSelect = document.getElementById("line-selector");
+                slrScenarioSelect.selectedIndex = 0;
+                let slrVerticalSwitch = document.getElementById("switchVertical");
+                slrVerticalSwitch.checked = false;
 
+                allSvgInvisible();
+                document.querySelectorAll('.line').forEach(function(line) {
+                    line.style.display = 'block';
+                });
+
+                document.querySelectorAll('.confidence-interval').forEach(function(range) {
+                    range.style.display = 'block';
+                });
+
+                addSourceAndLayer(uniquercpallNonVertical);
+            };
+
+            response.element.classList.add('active');
 
             map[chapter.mapAnimation || 'flyTo'](chapter.location);
 
@@ -1779,6 +1795,10 @@
                 pauseHistShore();
                 setAllHistLayersInvisible();
 
+            }
+
+            if (chapter.id == "sea-level-rise") {
+                removeSourceAndLayer();
             }
         });
     });
