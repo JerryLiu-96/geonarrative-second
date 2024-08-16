@@ -1477,81 +1477,56 @@
             });
         };
 
+        // surveyed_year stores the years that the shorelines are surveyed in history
         let surveyed_year = [1700, 1860, 1911, 1926, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
 
-        //offset distance from the main boundary
-        let offsetDistOfPoly = [-22.5, -18, -13.5, -9, -4.5, 13.6, 9, 4.5];
+        let enclosed_sources = surveyed_year.map(year => 'enclosed_' + year);
 
-        let colorPoly =["#238b45","#74c476","#bae4b3","#edf8e9","#eff3ff","#2171b5","#6baed6","#bdd7e7"];
+        let enclosed_layers = surveyed_year.map(year => 'enclosed_layer_' + year);
 
-        map.addSource('shoreline_1860', {
-            "type": "geojson",
-            "data": "assets/ECY_estimated_shorelines/Oct1/1860.geojson"
-        });
-
-        map.addSource('shoreline_1911', {
-            "type": "geojson",
-            "data": "assets/ECY_estimated_shorelines/Oct1/1911.geojson"
-        });
-
-        // add sources and layers of the shorelines from 1700 to 2015
-        // set them to invisible by default
-        for (let i=1700; i<2015; i++) {
-            // add the source for the main boundary
-            // map.addSource("shoreline"+i,{
-            //     "type": "geojson",
-            //     "data": "assets/ECY_estimated_shorelines/Oct1/"+i+".geojson"
-            // });
-
-            offsetDistOfPoly.forEach((d, idx) =>{
-                map.addSource(`polygon_${i}_${d}`, {
-                    "type": "geojson",
-                    "data": `assets/ECY_estimated_shorelines_poly/May3_2024/${d}m/${i}.geojson`
-                });
-                map.addLayer({
-                    "id": `polygon_${i}_${d}`,
-                    "type": "fill",
-                    "source": `polygon_${i}_${d}`,
-                    "layout": {
-                        'visibility': 'visible'
-                    },
-                    "paint": {
-                        "fill-color": colorPoly[idx],
-                        "fill-opacity": 0
-                    }
-                });
-
+        // add sources and layers of years that are surveyed
+        // surveyed_year layers are not removed when not in its chapter
+        surveyed_year.forEach((yr) => {
+            map.addSource(`surveyed_${yr}`, {
+                type: 'geojson',
+                data: 'assets/historical_results/surveyed_shoreline/' + yr + '.geojson'
             });
 
-        };
+            map.addLayer({
+                'id':`surveyed_layer_${yr}`,
+                'type': 'line',
+                'source': `surveyed_${yr}`,
+                'paint': {
+                    'line-color': '#3182bd',
+                    'line-width': 2,
+                    'line-opacity': 0
+                }
+            });
+        });
 
-        // set the switches
+        // set the switches which toggle the visibility of the SURVEYED shorelines
         // the switches toggle the visibility of the SURVEYED shorelines
         surveyed_year.forEach((yr) => {
             document.getElementById('flexSwitchCheckDefault'+yr).addEventListener('change', function(e) {
                 if (e.target.checked) {
-                    offsetDistOfPoly.forEach((d, idx) =>{
-                        map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
-                    });
-                    //map.setPaintProperty('main-line'+yr, 'fill-opacity', 1);
+                    map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 1);
                 } else {
-                    offsetDistOfPoly.forEach((d, idx) =>{
-                        map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 0);
-                    });
+                    map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 0);
                     //map.setPaintProperty('main-line'+yr, 'fill-opacity', 0);
                 }
             });
-
         });
-
 
         let previous = all_years_hist_shore.length - 1;
         let current = 0;
-        let requestId;
+
         let timerId = null;
 
-
         function playHistShore() {
+            // set the play/pause button to pause
+            document.getElementById('playpause-hist').classList.remove('bi-play-circle');
+            document.getElementById('playpause-hist').classList.add('bi-pause-circle');
+
             timerId = setInterval(updateShoreline, 100);
         };
 
@@ -1560,44 +1535,36 @@
                 previous = all_years_hist_shore.length - 1;
             };
 
-            // set the current year to visible
-            offsetDistOfPoly.forEach(d => {
-                map.setPaintProperty(`polygon_${all_years_hist_shore[current]}_${d}`, 'fill-opacity', 1);
-            });
+            // add sources and layer of the current year
+            addHistShoreline(all_years_hist_shore[current]);
 
-
-            //map.setPaintProperty("main-line" + all_years_hist_shore[current], 'line-opacity', 1);
-
-            // set the previous year to invisible
-            offsetDistOfPoly.forEach(d => {
-                map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
-            });
-
-            //map.setPaintProperty("main-line" + all_years_hist_shore[previous], 'line-opacity', 0);
-
-            //if the current year is not a surveyed year, then show the blurred layers
-            // if (!surveyed_year.includes(all_years_hist_shore[current])) {
-
-            //     map.setPaintProperty("blur-line" + all_years_hist_shore[current], 'line-opacity', 0.6);
-            //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[current], 'line-opacity', 0.5);
-            //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[current], 'line-opacity', 0.25);
-            // };
-
-            // if the previous year is not a surveyed year, then hide the blurred layers
-            // if (!surveyed_year.includes(all_years_hist_shore[previous])) {
-
-            //     map.setPaintProperty("blur-line" + all_years_hist_shore[previous], 'line-opacity', 0);
-            //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[previous], 'line-opacity', 0);
-            //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[previous], 'line-opacity', 0);
-            // };
+            // remove the sources and layers of the previous year
+            removeHistShoreline(all_years_hist_shore[previous]);
 
             // update the year label and range slider
             document.getElementById("customRangeLabelshore-change").textContent = all_years_hist_shore[current].toString();
             document.getElementById("customRangeshore-change").value = all_years_hist_shore[current].toString();
 
-            // set the play/pause button to pause
-            document.getElementById('playpause-hist').classList.remove('bi-play-circle');
-            document.getElementById('playpause-hist').classList.add('bi-pause-circle');
+            // show the shaded area that is depicted by the area between two surveyed years
+            if (surveyed_year.includes(all_years_hist_shore[current])) {
+
+                removeAllEnclosedArea();
+
+                map.addSource('enclosed_' + all_years_hist_shore[current], {
+                    type: 'geojson',
+                    // Use a URL for the value for the `data` property.
+                    data: 'assets/historical_results/shade_area/enclosed_'+ all_years_hist_shore[current] +'.geojson'
+                });
+                map.addLayer({
+                    'id': 'enclosed_layer_' + all_years_hist_shore[current],
+                    'type': 'fill',
+                    'source': 'enclosed_' + all_years_hist_shore[current],
+                    'paint': {
+                        'fill-color': '#9ecae1',
+                        'fill-opacity': 0.5
+                    }
+                });
+            }
 
             // set the previous year to the current year
             previous = current;
@@ -1607,7 +1574,23 @@
             };
         };
 
-        function pauseHistShore () {
+        // Remove multi-polygons between two shorelines
+        function removeAllEnclosedArea() {
+            enclosed_layers.forEach((layer) => {
+                if (map.getLayer(layer)) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            enclosed_sources.forEach((source) => {
+                if (map.getSource(source)) {
+                    map.removeSource(source);
+                }
+            });
+        }
+
+        // pause the animation
+        function pauseHistShore() {
             clearInterval(timerId);
             timerId = null;
 
@@ -1615,35 +1598,106 @@
             document.getElementById('playpause-hist').classList.add('bi-play-circle');
         };
 
-         // function to set all layers in the historical part to invisible
-        function setAllHistLayersInvisible() {
-            for (let i=1700; i<2015; i++) {
-                offsetDistOfPoly.forEach((d, idx) => {
-                    map.setPaintProperty(`polygon_${i}_${d}`, 'fill-opacity', 0);
-                })
+        // add source and layer of historical shorelines of the given year
+        // set VISIBLE
+        function addHistShoreline(year) {
+            map.addSource('coastline_' + year, {
+                type: 'geojson',
+                // Use a URL for the value for the `data` property.
+                data: 'assets/historical_results/estimated_shoreline/' + year + '.geojson'
+            });
+
+            map.addLayer({
+                'id':"coastline_layer_" + year,
+                'type': 'line',
+                'source': "coastline_" + year,
+                'paint': {
+                    'line-color': '#3182bd',
+                    'line-width': 2
+                },  //color almond
+            })
+        };
+
+        // remove layer and source of the shoreline of the given year
+        function removeHistShoreline(year) {
+            let layerName = "coastline_layer_" + year;
+            let sourceName = "coastline_" + year;
+            if (map.getLayer(layerName)) {
+                map.removeLayer("coastline_layer_" + year);
             }
+
+            if (map.getSource(sourceName)) {
+                map.removeSource("coastline_" + year);
+            }
+        };
+
+        // function to set all layers in the historical part to invisible
+        // including enclosed area, animation layer, and surveyed layer
+        function setAllHistLayersInvisible() {
+            removeAllEnclosedArea();
+            removeHistShoreline(all_years_hist_shore[previous]);
+            surveyed_year.forEach(yr => {
+                map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 0);
+            });
         };
 
         // Get the range slider element by its ID
         const rangeSlider = document.getElementById('customRangeshore-change');
 
-        // Listen for the 'input' event
+        // Listen for the 'input' event to the slider
         rangeSlider.addEventListener('input', function (event) {
 
+            // Pause the animation
             pauseHistShore();
+
             // Get the current value
             const SLIDERYEAR = event.target.value;
 
+            // update the label which shows the year
             document.getElementById("customRangeLabelshore-change").textContent = SLIDERYEAR;
 
             // Hide all layers
             //setAllHistLayersInvisible();
 
-            // set the current year to invisible
-            //current is a map.load() wide variable
-            offsetDistOfPoly.forEach(d => {
-                map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
-            });
+            // set the previous year to invisible
+            // previous is a map.load() wide variable, which tracks the layer and source that need to be removed
+            removeHistShoreline(all_years_hist_shore[previous]);
+
+            console.log(`The year that should be removed is ${all_years_hist_shore[previous]}`);
+
+
+            console.log(parseInt(SLIDERYEAR));
+
+            // show the corresponding enclosed area, remove all enclosed first, then add the enclosed I want
+            removeAllEnclosedArea();
+
+            if(!surveyed_year.includes(parseInt(SLIDERYEAR))) {
+                for (let i = 0; i < surveyed_year.length - 1; i++) {
+                    if (parseInt(SLIDERYEAR) >= surveyed_year[i] && parseInt(SLIDERYEAR) <= surveyed_year[i + 1]) {
+                        map.addSource('enclosed_' + surveyed_year[i], {
+                            type: 'geojson',
+                            data:'assets/historical_results/shade_area/enclosed_'+ surveyed_year[i] +'.geojson'
+                        });
+
+                        map.addLayer({
+                            'id': 'enclosed_layer_' + surveyed_year[i],
+                            'type': 'fill',
+                            'source': 'enclosed_' + surveyed_year[i],
+                            'paint': {
+                                'fill-color': '#9ecae1',
+                                'fill-opacity': 0.5
+                            }
+                        });
+                        break;
+                    }
+                }
+            };
+
+            addHistShoreline(SLIDERYEAR);
+
+            // offsetDistOfPoly.forEach(d => {
+            //     map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
+            // });
 
             //map.setPaintProperty("main-line" + all_years_hist_shore[previous], 'line-opacity', 0);
 
@@ -1662,19 +1716,21 @@
             //         map.setPaintProperty('main-line'+yr, 'line-opacity', 1);
             //     }
             // });
-            surveyed_year.forEach((yr) => {
-                if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
-                    offsetDistOfPoly.forEach(d => {
-                        map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
-                    });
-                }
-            });
+
+            // if the surveyed year is toggled on,keep it on.
+            // surveyed_year.forEach((yr) => {
+            //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
+            //         offsetDistOfPoly.forEach(d => {
+            //             map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
+            //         });
+            //     }
+            // });
 
             // Show the layer for the year on the slider
             //map.setPaintProperty("main-line"+SLIDERYEAR, 'line-opacity', 1);
-            offsetDistOfPoly.forEach(d => {
-                map.setPaintProperty(`polygon_${SLIDERYEAR}_${d}`, 'fill-opacity', 1);
-            });
+            // offsetDistOfPoly.forEach(d => {
+            //     map.setPaintProperty(`polygon_${SLIDERYEAR}_${d}`, 'fill-opacity', 1);
+            // });
 
             // if the slider year is not a surveyed year, then show the blurred layers as well
             // if (!surveyed_year.includes(parseInt(SLIDERYEAR))) {
@@ -1685,22 +1741,19 @@
 
             previous = all_years_hist_shore.indexOf(parseInt(SLIDERYEAR));
             if (previous != all_years_hist_shore.lehgth) {
-                current = previous + 1;  // current will be used by the playHistShore function
+                current = previous + 1;  // current will be used by the playHistShore function, which is the animation
             } else {
                 current = 0;
             };
-
-
         });
 
         // set the function to play animation of historical shorelines
 
-
-
-        //document.addEventListener('DOMContentLoaded', () => {
         playPauseButton = document.getElementById('clickable');
         playPauseIcon = playPauseButton.querySelector('i');
 
+        // if the button is a play button, then start the animation and change it to a pause button
+        // if the button is a pause button, then pause the animation and change it to a play button
         playPauseButton.addEventListener('click', () => {
 
             if (playPauseIcon.classList.contains('bi-play-circle')) {
@@ -1713,12 +1766,6 @@
                 pauseHistShore();
             }
         });
-
-
-
-        //});
-
-
 
         // setup the instance, pass callback functions
         scroller
