@@ -422,6 +422,10 @@
     let activeSourcesForSlr = [];
     let activeLayersForSlr = [];
 
+    // global variables for historical shorelines
+    let  activeSourcesForHistShore = [];
+    let  activeLayersForHistShore = [];
+
     config.chapters.forEach((record, idx) => {
         var container = document.createElement('div');
         var chapter = document.createElement('div');
@@ -1485,7 +1489,7 @@
         let enclosed_layers = surveyed_year.map(year => 'enclosed_layer_' + year);
 
         // add sources and layers of years that are surveyed
-        // surveyed_year layers are not removed when not in its chapter
+        // surveyed_year layers are NOT removed when not in its chapter
         surveyed_year.forEach((yr) => {
             map.addSource(`surveyed_${yr}`, {
                 type: 'geojson',
@@ -1523,6 +1527,7 @@
         let timerId = null;
 
         function playHistShore() {
+
             // set the play/pause button to pause
             document.getElementById('playpause-hist').classList.remove('bi-play-circle');
             document.getElementById('playpause-hist').classList.add('bi-pause-circle');
@@ -1536,29 +1541,87 @@
             };
 
             // add sources and layer of the current year
-            addHistShoreline(all_years_hist_shore[current]);
+            // addHistShoreline(all_years_hist_shore[current]);
 
             // remove the sources and layers of the previous year
-            removeHistShoreline(all_years_hist_shore[previous]);
+            // removeHistShoreline(all_years_hist_shore[previous]);
 
             // update the year label and range slider
             document.getElementById("customRangeLabelshore-change").textContent = all_years_hist_shore[current].toString();
             document.getElementById("customRangeshore-change").value = all_years_hist_shore[current].toString();
 
+            // if the layer and source of the current year NOT exist
+            // then first remove all existing layers and sources of the historical shorelines, because they are not needed in the batch
+            // then add the source and layer of the batch that current year belongs to
+            if (!map.getLayer("coastline_layer_" + all_years_hist_shore[current])) {
+
+                // mission 1: remove all existing layers and sources of the historical shorelines
+                activeLayersForHistShore.forEach((layer) => {
+                    if (map.getLayer(layer)) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                activeSourcesForHistShore.forEach((source) => {
+                    if (map.getSource(source)) {
+                        map.removeSource(source);
+                    }
+                });
+
+                activeLayersForHistShore = [];
+                activeSourcesForHistShore = [];
+
+                // mission 2: add the batch source and layer
+                for (let i = 0; i < surveyed_year.length - 1; i++) {
+                    if (all_years_hist_shore[current] >= surveyed_year[i] && all_years_hist_shore[current] < surveyed_year[i + 1]) {
+                        for (let j = surveyed_year[i]; j < surveyed_year[i + 1]; j++) {
+
+                            map.addSource('coastline_' + j, {
+                                type: 'geojson',
+                                data: 'assets/historical_results/estimated_shoreline/' + j + '.geojson'
+                            });
+
+                            map.addLayer({
+                                'id': "coastline_layer_" + j,
+                                'type': 'line',
+                                'source': "coastline_" + j,
+                                'paint': {
+                                    'line-color': '#3182bd',
+                                    'line-width': 2,
+                                    'line-opacity': 0
+                                }
+                            });
+
+                            // append the layer and source id to the map-wide variable activeLayersForHistShore and activeSourcesForHistShore
+                            activeLayersForHistShore.push("coastline_layer_" + j);
+                            activeSourcesForHistShore.push("coastline_" + j);
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            // set paint property of the layer of the current year to opacity 1
+            map.setPaintProperty("coastline_layer_" + all_years_hist_shore[current], 'line-opacity', 1);
+
+            // set paint property of previous layer to opacity 0
+            map.setPaintProperty("coastline_layer_" + all_years_hist_shore[previous], 'line-opacity', 0);
+
             // show the shaded area that is depicted by the area between two surveyed years
-            if (surveyed_year.includes(all_years_hist_shore[current])) {
+            if (surveyed_year.includes(all_years_hist_shore[previous])) {
 
                 removeAllEnclosedArea();
 
-                map.addSource('enclosed_' + all_years_hist_shore[current], {
+                map.addSource('enclosed_' + all_years_hist_shore[previous], {
                     type: 'geojson',
                     // Use a URL for the value for the `data` property.
-                    data: 'assets/historical_results/shade_area/enclosed_'+ all_years_hist_shore[current] +'.geojson'
+                    data: 'assets/historical_results/shade_area/enclosed_'+ all_years_hist_shore[previous] +'.geojson'
                 });
                 map.addLayer({
-                    'id': 'enclosed_layer_' + all_years_hist_shore[current],
+                    'id': 'enclosed_layer_' + all_years_hist_shore[previous],
                     'type': 'fill',
-                    'source': 'enclosed_' + all_years_hist_shore[current],
+                    'source': 'enclosed_' + all_years_hist_shore[previous],
                     'paint': {
                         'fill-color': '#9ecae1',
                         'fill-opacity': 0.5
@@ -1566,7 +1629,7 @@
                 });
             }
 
-            // set the previous year to the current year
+            // set the previous and current index for the next iteration
             previous = current;
             current = current + 1;
             if (current == all_years_hist_shore.length) {
@@ -1608,7 +1671,7 @@
             });
 
             map.addLayer({
-                'id':"coastline_layer_" + year,
+                'id': "coastline_layer_" + year,
                 'type': 'line',
                 'source': "coastline_" + year,
                 'paint': {
@@ -1661,16 +1724,74 @@
 
             // set the previous year to invisible
             // previous is a map.load() wide variable, which tracks the layer and source that need to be removed
-            removeHistShoreline(all_years_hist_shore[previous]);
+            // removeHistShoreline(all_years_hist_shore[previous]);
 
-            console.log(`The year that should be removed is ${all_years_hist_shore[previous]}`);
+            // console.log(`The year that should be removed is ${all_years_hist_shore[previous]}`);
 
+            // console.log(parseInt(SLIDERYEAR));
 
-            console.log(parseInt(SLIDERYEAR));
+            // set the previous year to opacity 0
+            map.setPaintProperty("coastline_layer_" + all_years_hist_shore[previous], 'line-opacity', 0);
+
+            // if layer and source of the slideryear exist
+            // then set the layer to visible
+            if (map.getLayer("coastline_layer_" + SLIDERYEAR)) {
+
+                map.setPaintProperty("coastline_layer_" + SLIDERYEAR, 'line-opacity', 1);
+            } else {
+
+                // first remove all loaded layers and sources of the historical shorelines
+                activeLayersForHistShore.forEach((layer) => {
+                    if (map.getLayer(layer)) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                activeSourcesForHistShore.forEach((source) => {
+                    if (map.getSource(source)) {
+                        map.removeSource(source);
+                    }
+                });
+
+                activeLayersForHistShore = [];
+                activeSourcesForHistShore = [];
+
+                // second, add the source and layer of the batch that slideryear belongs to
+                for (let i = 0; i < surveyed_year.length - 1; i++) {
+                    if (parseInt(SLIDERYEAR) >= surveyed_year[i] && parseInt(SLIDERYEAR) < surveyed_year[i + 1]) {
+                        for (let j = surveyed_year[i]; j < surveyed_year[i + 1]; j++) {
+
+                            map.addSource('coastline_' + j, {
+                                type: 'geojson',
+                                data: 'assets/historical_results/estimated_shoreline/' + j + '.geojson'
+                            });
+
+                            map.addLayer({
+                                'id': "coastline_layer_" + j,
+                                'type': 'line',
+                                'source': "coastline_" + j,
+                                'paint': {
+                                    'line-color': '#3182bd',
+                                    'line-width': 2,
+                                    'line-opacity': 0
+                                }
+                            });
+
+                            activeLayersForHistShore.push("coastline_layer_" + j);
+                            activeSourcesForHistShore.push("coastline_" + j);
+                        }
+
+                        break;
+                    }
+                }
+            };
+
+            map.setPaintProperty("coastline_layer_" + SLIDERYEAR, 'line-opacity', 1);
 
             // show the corresponding enclosed area, remove all enclosed first, then add the enclosed I want
             removeAllEnclosedArea();
 
+            // if the current year NOT a surveyed year, then show the enclosed area
             if(!surveyed_year.includes(parseInt(SLIDERYEAR))) {
                 for (let i = 0; i < surveyed_year.length - 1; i++) {
                     if (parseInt(SLIDERYEAR) >= surveyed_year[i] && parseInt(SLIDERYEAR) <= surveyed_year[i + 1]) {
@@ -1693,7 +1814,7 @@
                 }
             };
 
-            addHistShoreline(SLIDERYEAR);
+            //addHistShoreline(SLIDERYEAR);
 
             // offsetDistOfPoly.forEach(d => {
             //     map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
@@ -1739,8 +1860,9 @@
             //     map.setPaintProperty("blur-line-3"+SLIDERYEAR, 'line-opacity', 0.25)
             // };
 
+            // set previous and current index for the next iteration
             previous = all_years_hist_shore.indexOf(parseInt(SLIDERYEAR));
-            if (previous != all_years_hist_shore.lehgth) {
+            if (previous != all_years_hist_shore.length -1) {
                 current = previous + 1;  // current will be used by the playHistShore function, which is the animation
             } else {
                 current = 0;
