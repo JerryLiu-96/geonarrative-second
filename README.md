@@ -16,7 +16,6 @@ To simulate sea level rise scenarios, we accessed raster DEM data from [NOAA's S
 
 This section describes the methods we used to create the shoreline animation and the sea level rise visualization.
 
-***
 ### Historical Shoreline Animation
 
 The shoreline is not surveyed regularly in the early years. Nevertheless, the shoreline may evlove rapidly between surveys. For instance, it changed significantly between 1860 and 1911, likely due to the construction of the jetty in 1902. If the animation only includes surveyed shorelines, it will appear uncontinuously to viewers. To smooth the animation, we interpolate the shorelines during the un-surveyed years, so that the shoreline in each year becomes a frame in the animation.
@@ -37,7 +36,6 @@ The interpolation method assumes the shoreline evolves linearly between two surv
 
 To communicate the uncertainties qualitatively, in other words, to let viewers aware of the existence of uncertaintes, we colored the enclosed areas between two surveyed years. So the animation will have a visual effect of shoreline moving within the colored enclosed areas.
 
-***
 ### Sea Level Rise Visualization
 
 Put simply, we first converted the raster DEM from NAVD88 to MHHW because we visualize inundation under MHHW, then we added the sea level rise scenarios to the MHHW level to get the sea level rise scenarios relative to MHHW. We then interpreted the amount of sea level rise and visualized the range of sea level rise.
@@ -56,6 +54,7 @@ We assume the absolute sea level rise and land vertical movement are independent
 
 To visualize the range of sea level rise, we colored the inundated areas in two colors. The deeper blue indicates the inundated area when the sea level rises by the lower-bound amount, and the lighter blue indicates the inundated area when the sea level rises by the upper-bound amount.
 
+***
 ## Deliverables
 
 This is a scroll-down geonarrative. The geonarrative follows a martini-glass structure: It first starts with a author-driven introduction and then "opens up" with interactive maps. The introduction section introduces hazard situations in the South Beach region. Then map viewers scroll down to interactive maps.
