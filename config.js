@@ -9,6 +9,21 @@ var config = {
     footer: '',
     chapters: [
         {
+            id: 'mark-place',
+            alignment: 'left',
+            title: 'Mark Your Place',
+            chapterIntro: ["Welcome to the interactive map of the South Beach Coast.",
+                "Our activities on this land instill meaning to the place. However, when we talk about places, it can be vague. Our emotional bonds to the place is embodied by locations where we have lived, worked, and played. These locations make our emotions to the place tangible and vivid.",
+                "We invite you to pinpoint your place on the map. It can be your house, your work place, your school, where you grew up, or where you enjoy your leisure time. You can zoom in and zoom out with your fingertips and pinpoint your place by clicking on the map. "
+            ],
+            location: {
+                center: [-124.0572, 46.8159],
+                zoom: 10.5,
+                pitch: 0.00,
+                bearing: 0.00
+            },
+        },
+        {
             id: 'shore-change',
             alignment: 'left',
             title: 'Visualizing Holocene Shorelines since 1700',
@@ -87,105 +102,105 @@ var config = {
             // ],
             // onChapterExit: []
         },
-        {
-            id: 'tsunami',
-            alignment: 'left',
-            title: 'A Possible Tsunami Scenario',
-            image: '',
-            description: 'Indego has been operating in Philadelphia since 20XX. The system initally was focused on Center City, but has expanded service to neighboring areas to support equitable mobility options to the city\'s residents.',
-            location: {
-                center: [-124.0572, 46.8159],
-                zoom: 11,
-                pitch: 0.00,
-                bearing: 0.00
-            },
-            onChapterEnter: [
-                {
-                    layer: 'indego-stations',
-                    opacity: 0.8
-                }
-            ],
-            onChapterExit: [
-                {
-                    layer: 'indego-stations',
-                    opacity: 0
-                }
-            ]
-        },
-        {
-            id: 'belmont',
-            alignment: 'left',
-            title: 'Belmont Plateau Trails',
-            image: '',
-            description: 'A short ride along the Schuylkill River Trail from the Art Museum, Belmont is a twisty, log-ridden rollercoaster of a trail network. It is easy to get turned around, the underbrush is at times impenetrable, and short steep sections come out of nowhere. In other words, it\'s really fun',
-            location: {
-                center: [-75.20325, 39.99574],
-                zoom: 14.99,
-                pitch: 44.00,
-                bearing: -40.00
-            },
-            onChapterEnter: [
-                {
-                    layer: 'belmont',
-                    opacity: 1
-                }
-            ],
-            onChapterExit: [
-                {
-                    layer: 'belmont',
-                    opacity: 0
-                }
-            ]
-        },
-        {
-            id: 'wiss',
-            alignment: 'left',
-            title: 'Wissahickon Park Trails',
-            image: '',
-            description: 'This steep, rocky gorge can be surprisingly technical. Follow the orange and yellow trails to repeatedly climb and descend through the schist hillsides (careful of the cliffs), or stick to the gravel Forbidden Drive for a relaxing ride along the creek. You\'ll forget you\'re in a city.',
-            location: {
-                center: [-75.21223, 40.05028],
-                zoom: 13.08,
-                pitch: 47.50,
-                bearing: 32.80
-            },
-            onChapterEnter: [
-                {
-                    layer: 'wissahickon',
-                    opacity: 1
-                }
-            ],
-            onChapterExit: [
-                {
-                    layer: 'wissahickon',
-                    opacity: 0
-                }
-            ]
-        },
-        {
-            id: 'pennypack',
-            alignment: 'left',
-            title: 'Pennypack Park Trails',
-            image: '',
-            description: 'Pennypack is a great introduction trail system. Not too steep and not too technical, the beautiful wooded park also provides a great escape from urban life. The south side trails are originally bridle trails, so be nice to equestrians and dismount when you approach them.',
-            location: {
-                center: [-75.05685, 40.06839],
-                zoom: 13.73,
-                pitch: 43.50,
-                bearing: 96.80
-            },
-            onChapterEnter: [
-                {
-                    layer: 'pennypack',
-                    opacity: 1
-                }
-            ],
-            onChapterExit: [
-                {
-                    layer: 'pennypack',
-                    opacity: 0
-                }
-            ]
-        }
+        // {
+        //     id: 'tsunami',
+        //     alignment: 'left',
+        //     title: 'A Possible Tsunami Scenario',
+        //     image: '',
+        //     description: 'Indego has been operating in Philadelphia since 20XX. The system initally was focused on Center City, but has expanded service to neighboring areas to support equitable mobility options to the city\'s residents.',
+        //     location: {
+        //         center: [-124.0572, 46.8159],
+        //         zoom: 11,
+        //         pitch: 0.00,
+        //         bearing: 0.00
+        //     },
+        //     onChapterEnter: [
+        //         {
+        //             layer: 'indego-stations',
+        //             opacity: 0.8
+        //         }
+        //     ],
+        //     onChapterExit: [
+        //         {
+        //             layer: 'indego-stations',
+        //             opacity: 0
+        //         }
+        //     ]
+        // },
+        // {
+        //     id: 'belmont',
+        //     alignment: 'left',
+        //     title: 'Belmont Plateau Trails',
+        //     image: '',
+        //     description: 'A short ride along the Schuylkill River Trail from the Art Museum, Belmont is a twisty, log-ridden rollercoaster of a trail network. It is easy to get turned around, the underbrush is at times impenetrable, and short steep sections come out of nowhere. In other words, it\'s really fun',
+        //     location: {
+        //         center: [-75.20325, 39.99574],
+        //         zoom: 14.99,
+        //         pitch: 44.00,
+        //         bearing: -40.00
+        //     },
+        //     onChapterEnter: [
+        //         {
+        //             layer: 'belmont',
+        //             opacity: 1
+        //         }
+        //     ],
+        //     onChapterExit: [
+        //         {
+        //             layer: 'belmont',
+        //             opacity: 0
+        //         }
+        //     ]
+        // },
+        // {
+        //     id: 'wiss',
+        //     alignment: 'left',
+        //     title: 'Wissahickon Park Trails',
+        //     image: '',
+        //     description: 'This steep, rocky gorge can be surprisingly technical. Follow the orange and yellow trails to repeatedly climb and descend through the schist hillsides (careful of the cliffs), or stick to the gravel Forbidden Drive for a relaxing ride along the creek. You\'ll forget you\'re in a city.',
+        //     location: {
+        //         center: [-75.21223, 40.05028],
+        //         zoom: 13.08,
+        //         pitch: 47.50,
+        //         bearing: 32.80
+        //     },
+        //     onChapterEnter: [
+        //         {
+        //             layer: 'wissahickon',
+        //             opacity: 1
+        //         }
+        //     ],
+        //     onChapterExit: [
+        //         {
+        //             layer: 'wissahickon',
+        //             opacity: 0
+        //         }
+        //     ]
+        // },
+        // {
+        //     id: 'pennypack',
+        //     alignment: 'left',
+        //     title: 'Pennypack Park Trails',
+        //     image: '',
+        //     description: 'Pennypack is a great introduction trail system. Not too steep and not too technical, the beautiful wooded park also provides a great escape from urban life. The south side trails are originally bridle trails, so be nice to equestrians and dismount when you approach them.',
+        //     location: {
+        //         center: [-75.05685, 40.06839],
+        //         zoom: 13.73,
+        //         pitch: 43.50,
+        //         bearing: 96.80
+        //     },
+        //     onChapterEnter: [
+        //         {
+        //             layer: 'pennypack',
+        //             opacity: 1
+        //         }
+        //     ],
+        //     onChapterExit: [
+        //         {
+        //             layer: 'pennypack',
+        //             opacity: 0
+        //         }
+        //     ]
+        // }
     ]
 };

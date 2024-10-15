@@ -445,7 +445,7 @@
             }
         }
 
-        if (idx==0) {
+        if (record.id === 'shore-change') {
             let animatePanel = document.createElement('div');
             animatePanel.setAttribute('id', 'animatePanel');
             var btn = document.createElement('button');
@@ -997,7 +997,46 @@
 
     map.on("load", function() {
 
-        // set all svg paths invisible
+        // --Section 1: let users add points to the map
+        map.addSource('user-points', {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': []
+            }
+        });
+
+        map.addLayer({
+            'id': 'point-layer',
+            'type': 'circle',
+            'source': 'user-points',
+            'paint': {
+                'circle-radius': 5,
+                'circle-color': '#007cbf'
+            }
+        });
+
+        map.on('click', function(e) {
+            var coordinates = e.lngLat;
+
+            var currentData = map.getSource('user-points')._data;
+
+            var newPoint = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [coordinates.lng, coordinates.lat]
+                }
+            };
+
+            currentData.features.push(newPoint);
+
+            map.getSource('user-points').setData(currentData);
+        });
+
+        // --End of Section 1
+
+        // set all svg paths invisible, this is for SLR section
         function allSvgInvisible() {
             document.querySelectorAll('.line').forEach(function(line) {
                 line.style.display = 'none';
@@ -1971,6 +2010,7 @@
             }
         });
     });
+
 
     // setup resize event
     window.addEventListener('resize', scroller.resize);
