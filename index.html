@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="css/geonarrative.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <link href='https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.13.1/mapbox-gl.js'></script>
+    <script src="https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mapbox-map-image-export@2.4.1/index.min.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
     <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -477,6 +481,11 @@
             animatePanel.appendChild(label);
             animatePanel.appendChild(range);
             chapter.appendChild(animatePanel);
+
+            let screenshotBtn = document.createElement('button');
+            screenshotBtn.setAttribute('id', 'screenshotBtn');
+            screenshotBtn.innerText = 'Snapshot this year';
+            chapter.appendChild(screenshotBtn);
         }
 
         // set toggle switches for the surveyed years
@@ -970,8 +979,18 @@
         interactive: true,
         minzoom: 10.5,
         maxzoom: 18,
-        transformRequest: transformRequest
+        transformRequest: transformRequest,
+        preserveDrawingBuffer: true
     });
+
+    map.addControl(new MapboxExportControl({
+      PageSize: Size.A3,
+      PageOrientation: PageOrientation.Portrait,
+      Format: Format.PNG,
+      DPI: DPI[96],
+      Crosshair: true,
+      PrintableArea: true,
+    }), 'top-right');
 
     var mapImpact = new mapboxgl.Map({
         container: 'map-impact',
@@ -1035,6 +1054,57 @@
         });
 
         // --End of Section 1
+
+        document.getElementById('screenshotBtn').addEventListener('click', () => {
+    const originalPixelRatio = window.devicePixelRatio;
+    const highResolutionPixelRatio = 1;
+    console.log(originalPixelRatio);
+
+    // Save the original map dimensions
+    const originalWidth = map.getContainer().clientWidth;
+    const originalHeight = map.getContainer().clientHeight;
+
+    // Set map container to match 2550 x 3300 aspect ratio
+    const targetWidth = 3500; // any width that keeps a 1:1.294 ratio
+    const targetHeight = Math.round(targetWidth * 1.294);
+
+    map.getContainer().style.width = `${targetWidth}px`;
+    map.getContainer().style.height = `${targetHeight}px`;
+    map.resize();
+
+    // Increase pixel ratio
+    Object.defineProperty(window, 'devicePixelRatio', {
+        get: function() { return highResolutionPixelRatio; }
+    });
+
+    map.once('render', () => {
+        const canvas = map.getCanvas();
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = 3500;
+        exportCanvas.height = 3500*1.294;
+
+        const context = exportCanvas.getContext('2d');
+        context.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
+
+        // Download image
+        const link = document.createElement('a');
+        link.href = exportCanvas.toDataURL('image/png');
+        link.download = 'map-export-300dpi.png';
+        link.click();
+
+        // Restore original settings
+        Object.defineProperty(window, 'devicePixelRatio', {
+            get: function() { return originalPixelRatio; }
+        });
+
+        map.getContainer().style.width = `${originalWidth}px`;
+        map.getContainer().style.height = `${originalHeight}px`;
+        map.resize();
+    });
+
+    map.triggerRepaint();
+});
+
 
         // set all svg paths invisible, this is for SLR section
         function allSvgInvisible() {
