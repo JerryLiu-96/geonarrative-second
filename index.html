@@ -344,9 +344,9 @@
         'full': 'fully'
       }
 
-    //enumerate the years from 1700 to 2015
+    //enumerate the years from 1860 to 2015
     let all_years_hist_shore = [];
-    for (let i=1700; i<2016; i++) {
+    for (let i=1860; i<2016; i++) {
 
         all_years_hist_shore.push(i);
 
@@ -468,14 +468,14 @@
             label.classList.add('lobster')
             label.style.marginLeft = '10px';
             label.setAttribute('id', 'customRangeLabel'+record.id);
-            label.innerText = "1700";
+            label.innerText = "1860";
 
             var range = document.createElement('input');
             range.setAttribute('type', 'range');
             range.setAttribute('class', 'form-range');
-            range.setAttribute('min', '1700');
+            range.setAttribute('min', '1860');
             range.setAttribute('max', '2015');
-            range.setAttribute('value', '1700')    //set the default value to 1700
+            range.setAttribute('value', '1860')    //set the default value to 1860
             range.setAttribute('id', 'customRange'+record.id);
 
             animatePanel.appendChild(label);
@@ -1591,7 +1591,7 @@
         };
 
         // surveyed_year stores the years that the shorelines are surveyed in history
-        let surveyed_year = [1700, 1860, 1911, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
+        let surveyed_year = [1860, 1911, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
 
         let enclosed_sources = surveyed_year.map(year => 'enclosed_' + year);
 
