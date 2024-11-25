@@ -281,7 +281,51 @@
     </section>
 
     <section id="geonarrative-container">
-      <div id="map"></div>
+      <div id="map">
+        <div id="mapstyle-control">
+            <h5 id="mapstyle-title">Select Map Style</h5> <!-- Add a title -->
+            <label for="light-v11">
+                <input id="light-v11" type="radio" name="rtoggle" value="light" checked="checked">
+                <span>light</span>
+                <img src="img/light-v11.png" alt="Light Style" width="120" height="60">
+            </label>
+            <label for="satellite-streets-v12">
+                <input id="satellite-streets-v12" type="radio" name="rtoggle" value="satellite">
+                <span>satellite streets</span>
+                <img src="img/satellite-streets-v12.png" alt="Satellite Streets Style" width="120" height="60">
+            </label>
+            <label for="dark-v11">
+                <input id="dark-v11" type="radio" name="rtoggle" value="dark">
+                <span>dark</span>
+                <img src="img/dark-v11.png" alt="Dark Style" width="120" height="60">
+            </label>
+            <label for="streets-v12">
+                <input id="streets-v12" type="radio" name="rtoggle" value="streets">
+                <span>streets</span>
+                <img src="img/streets-v12.png" alt="Streets Style" width="120" height="60">
+            </label>
+            <label for="outdoors-v12">
+                <input id="outdoors-v12" type="radio" name="rtoggle" value="outdoors">
+                <span>outdoors</span>
+                <img src="img/outdoors-v12.png" alt="Outdoors Style" width="120" height="60">
+            </label>
+            <label for="satellite-v9">
+                <input id="satellite-v9" type="radio" name="rtoggle" value="satellite">
+                <span>satellite</span>
+                <img src="img/satellite-v9.png" alt="Satellite Style" width="120" height="60">
+            </label>
+            <label for="navigation-day-v1">
+                <input id="navigation-day-v1" type="radio" name="rtoggle" value="navigation-day">
+                <span>navigation-day</span>
+                <img src="img/navigation-day-v1.png" alt="Navigation Day Style" width="120" height="60">
+            </label>
+            <label for="navigation-night-v1">
+                <input id="navigation-night-v1" type="radio" name="rtoggle" value="navigation-night">
+                <span>navigation-night</span>
+                <img src="img/navigation-night-v1.png" alt="Navigation Night Style" width="120" height="60">
+            </label>
+        </div>
+      </div>
       <div id="story"></div>
     </section>
 
@@ -969,7 +1013,7 @@
         }
     }
 
-    var map = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
         container: 'map',
         style: config.style,
         center: config.chapters[0].location.center,
@@ -983,14 +1027,24 @@
         preserveDrawingBuffer: true
     });
 
-    map.addControl(new MapboxExportControl({
-      PageSize: Size.A3,
-      PageOrientation: PageOrientation.Portrait,
-      Format: Format.PNG,
-      DPI: DPI[96],
-      Crosshair: true,
-      PrintableArea: true,
-    }), 'top-right');
+    const styleList = document.getElementById('mapstyle-control');
+    const inputs = styleList.getElementsByTagName('input');
+
+    for (const input of inputs) {
+        input.onclick = (layer) => {
+            const layerId = layer.target.id;
+            map.setStyle('mapbox://styles/mapbox/' + layerId);
+        }
+    }
+
+    // map.addControl(new MapboxExportControl({
+    //   PageSize: Size.A3,
+    //   PageOrientation: PageOrientation.Portrait,
+    //   Format: Format.PNG,
+    //   DPI: DPI[96],
+    //   Crosshair: true,
+    //   PrintableArea: true,
+    // }), 'top-right');
 
     var mapImpact = new mapboxgl.Map({
         container: 'map-impact',
@@ -1591,7 +1645,7 @@
         };
 
         // surveyed_year stores the years that the shorelines are surveyed in history
-        let surveyed_year = [1860, 1911, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
+        let surveyed_year = [1700, 1860, 1911, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
 
         let enclosed_sources = surveyed_year.map(year => 'enclosed_' + year);
 
