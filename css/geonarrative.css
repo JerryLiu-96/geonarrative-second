@@ -254,6 +254,10 @@ div.form-check {
   transform: translateY(-40vh);
 }
 
+.tooltip-inner {
+  text-align: left;
+}
+
 body {
   margin:0;
   padding:0;

@@ -526,10 +526,10 @@
             animatePanel.appendChild(range);
             chapter.appendChild(animatePanel);
 
-            let screenshotBtn = document.createElement('button');
-            screenshotBtn.setAttribute('id', 'screenshotBtn');
-            screenshotBtn.innerText = 'Snapshot this year';
-            chapter.appendChild(screenshotBtn);
+            // let screenshotBtn = document.createElement('button');
+            // screenshotBtn.setAttribute('id', 'screenshotBtn');
+            // screenshotBtn.innerText = 'Snapshot this year';
+            // chapter.appendChild(screenshotBtn);
         }
 
         // set toggle switches for the surveyed years
@@ -570,7 +570,20 @@
                 label.setAttribute('class', 'form-check-label');
                 label.setAttribute('for', 'flexSwitchCheckDefault'+yr);
                 label.innerText = yr.toString();
+                label.style.fontSize = '1.5em'; // Set the font size to 3em
                 swich.appendChild(label);
+                if (yr == 1700) {
+                    let infoIcon = document.createElement('i');
+                    infoIcon.classList.add('bi');
+                    infoIcon.classList.add('bi-info-circle');
+                    //infoIcon.style.color = 'blue';
+                    // set left margin to 5px
+                    infoIcon.style.marginLeft = '5px';
+                    infoIcon.style.fontSize = '1.2em';
+                    infoIcon.setAttribute('data-bs-toggle', 'tooltip'); // Enable tooltip
+                    infoIcon.setAttribute('title', 'The shoreline positions in 1700 were reconstructed using geological evidence from the tsunami of that period. However, geologists surveyed only the ocean-facing shores, leaving the shoreline positions in Willapa Bay and the Westport Peninsula unknown. As a result, this animated visualization excludes years prior to 1860, when shorelines were first systematically surveyed.'); // Set the tooltip text
+                    swich.appendChild(infoIcon);
+                }
 
                 if (idx <= record.record_yrs.length/2) {
                     //col_l = document.getElementById('col-left');
@@ -1065,10 +1078,18 @@
     // instantiate the scrollama
     var scroller = scrollama();
 
+
+
     const moreCertainColor = '#2171b5';
     const lessCertainColor = '#6baed6';
 
     map.on("load", function() {
+
+        // Initialize the tooltip (this is necessary to activate the tooltip functionality)
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
 
         // --Section 1: let users add points to the map
         map.addSource('user-points', {
@@ -1109,56 +1130,55 @@
 
         // --End of Section 1
 
-        document.getElementById('screenshotBtn').addEventListener('click', () => {
-    const originalPixelRatio = window.devicePixelRatio;
-    const highResolutionPixelRatio = 1;
-    console.log(originalPixelRatio);
+        // document.getElementById('screenshotBtn').addEventListener('click', () => {
+        //     const originalPixelRatio = window.devicePixelRatio;
+        //     const highResolutionPixelRatio = 1;
+        //     console.log(originalPixelRatio);
 
-    // Save the original map dimensions
-    const originalWidth = map.getContainer().clientWidth;
-    const originalHeight = map.getContainer().clientHeight;
+        //     // Save the original map dimensions
+        //     const originalWidth = map.getContainer().clientWidth;
+        //     const originalHeight = map.getContainer().clientHeight;
 
-    // Set map container to match 2550 x 3300 aspect ratio
-    const targetWidth = 3500; // any width that keeps a 1:1.294 ratio
-    const targetHeight = Math.round(targetWidth * 1.294);
+        //     // Set map container to match 2550 x 3300 aspect ratio
+        //     const targetWidth = 3500; // any width that keeps a 1:1.294 ratio
+        //     const targetHeight = Math.round(targetWidth * 1.294);
 
-    map.getContainer().style.width = `${targetWidth}px`;
-    map.getContainer().style.height = `${targetHeight}px`;
-    map.resize();
+        //     map.getContainer().style.width = `${targetWidth}px`;
+        //     map.getContainer().style.height = `${targetHeight}px`;
+        //     map.resize();
 
-    // Increase pixel ratio
-    Object.defineProperty(window, 'devicePixelRatio', {
-        get: function() { return highResolutionPixelRatio; }
-    });
+        //     // Increase pixel ratio
+        //     Object.defineProperty(window, 'devicePixelRatio', {
+        //         get: function() { return highResolutionPixelRatio; }
+        //     });
 
-    map.once('render', () => {
-        const canvas = map.getCanvas();
-        const exportCanvas = document.createElement('canvas');
-        exportCanvas.width = 3500;
-        exportCanvas.height = 3500*1.294;
+        //     map.once('render', () => {
+        //         const canvas = map.getCanvas();
+        //         const exportCanvas = document.createElement('canvas');
+        //         exportCanvas.width = 3500;
+        //         exportCanvas.height = 3500*1.294;
 
-        const context = exportCanvas.getContext('2d');
-        context.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
+        //         const context = exportCanvas.getContext('2d');
+        //         context.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
 
-        // Download image
-        const link = document.createElement('a');
-        link.href = exportCanvas.toDataURL('image/png');
-        link.download = 'map-export-300dpi.png';
-        link.click();
+        //         // Download image
+        //         const link = document.createElement('a');
+        //         link.href = exportCanvas.toDataURL('image/png');
+        //         link.download = 'map-export-300dpi.png';
+        //         link.click();
 
-        // Restore original settings
-        Object.defineProperty(window, 'devicePixelRatio', {
-            get: function() { return originalPixelRatio; }
-        });
+        //         // Restore original settings
+        //         Object.defineProperty(window, 'devicePixelRatio', {
+        //             get: function() { return originalPixelRatio; }
+        //         });
 
-        map.getContainer().style.width = `${originalWidth}px`;
-        map.getContainer().style.height = `${originalHeight}px`;
-        map.resize();
-    });
+        //         map.getContainer().style.width = `${originalWidth}px`;
+        //         map.getContainer().style.height = `${originalHeight}px`;
+        //         map.resize();
+        //     });
 
-    map.triggerRepaint();
-});
-
+        //     map.triggerRepaint();
+        // });
 
         // set all svg paths invisible, this is for SLR section
         function allSvgInvisible() {
@@ -1183,6 +1203,7 @@
             });
         };
 
+        // add source and layer for the SEA LEVEL RISE section
         function addSourceAndLayer(uniquePairs) {
             uniquePairs.forEach((pair, idx) => {
                 let dnLimit = pair[0].toFixed(1);
@@ -1227,6 +1248,7 @@
             })
         }
 
+        // remove source and layer for the SEA LEVEL RISE section
         function removeSourceAndLayer() {
 
             activeLayersForSlr.forEach((layer, idx) => {
@@ -2111,10 +2133,6 @@
                     });
                 });
             }
-            //if (chapter.id=="shore-change") {
-
-
-            //}
         })
         .onStepExit(response => {
             var chapter = config.chapters.find(chap => chap.id === response.element.id);
@@ -2126,21 +2144,46 @@
             if (chapter.id == "shore-change") {
                 pauseHistShore();
                 setAllHistLayersInvisible();
-
             }
 
             if (chapter.id == "sea-level-rise") {
                 removeSourceAndLayer();
             }
         });
+
+        // re-add source and layers to the map when the style is loaded,
+        // because the original source and layers are removed when the style is re-loaded
+        map.on('styledata', function() {
+        // surveyed_year stores the years that the shorelines are surveyed in history
+
+        surveyed_year.forEach((yr) => {
+            if (!map.getSource(`surveyed_${yr}`)) {
+                    map.addSource(`surveyed_${yr}`, {
+                    type: 'geojson',
+                    data: 'assets/historical_results/surveyed_shoreline/' + yr + '.geojson'
+                });
+
+                map.addLayer({
+                    'id':`surveyed_layer_${yr}`,
+                    'type': 'line',
+                    'source': `surveyed_${yr}`,
+                    'paint': {
+                        'line-color': '#3182bd',
+                        'line-width': 2,
+                        'line-opacity': 0
+                    }
+                });
+            }
+
+        });
     });
+    });
+
+
 
 
     // setup resize event
     window.addEventListener('resize', scroller.resize);
-
-
-
     </script>
 
     <script>
