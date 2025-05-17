@@ -493,6 +493,30 @@
             }
         }
 
+        if (record.id === 'mark-place') {
+            // Container for all dynamically added story entries
+            let storyEntriesContainer = document.createElement('div');
+            storyEntriesContainer.id = 'storyEntriesContainer';
+            chapter.appendChild(storyEntriesContainer);
+
+            // create 'Add story' button
+            let addStoryButton = document.createElement('button');
+            addStoryButton.id = 'addStoryButton';
+            addStoryButton.innerText = 'Add story';
+            addStoryButton.style.backgroundColor = 'lightblue';
+            addStoryButton.style.color = 'white';
+            addStoryButton.style.padding = '10px 15px';
+            addStoryButton.style.border = 'none';
+            addStoryButton.style.borderRadius = '5px';
+            addStoryButton.style.cursor = 'pointer';
+            addStoryButton.style.marginTop = '15px';
+            chapter.appendChild(addStoryButton);
+
+            addStoryButton.addEventListener('click', function() {
+                addAStoryEntry();
+            })
+        }
+
         if (record.id === 'shore-change') {
             let animatePanel = document.createElement('div');
             animatePanel.setAttribute('id', 'animatePanel');
@@ -1000,6 +1024,99 @@
     });
 
     story.appendChild(features);
+
+    let storyInstanceCounter = 0;
+
+    function addAStoryEntry() {
+        storyInstanceCounter++;
+        let entryContainer = document.createElement('div');
+        entryContainer.id = 'story-entry-' + storyInstanceCounter;
+        entryContainer.classList.add('story-entry-container');
+
+        // Create "Click on the map..." text
+        const locateText = document.createElement('p');
+        locateText.id = 'locate-text-' + storyInstanceCounter;
+        locateText.innerText = 'Click on the map to locate your story';
+        locateText.classList.add('animate__animated','animate__flash','animate__infinite','animate__slow');
+        entryContainer.appendChild(locateText);
+
+        // create a story box container
+        const storyBox = document.createElement('section');
+        storyBox.id = 'story-box-' + storyInstanceCounter;
+        storyBox.classList.add('story-box-container');
+
+        // create a text input field
+        const storyTextArea = document.createElement('textarea');
+        storyTextArea.id = 'story-text-' + storyInstanceCounter;
+        storyTextArea.placeholder = 'Write your story here...';
+        storyTextArea.style.width = '100%';
+        storyTextArea.style.minHeight = '100px';
+        storyTextArea.style.marginBottom = '10px';
+        storyBox.appendChild(storyTextArea);
+
+        const controlsDiv = document.createElement('div');
+        controlsDiv.classList.add('story-box-controls');
+
+        const pictureLabel = document.createElement('label');
+        pictureLabel.htmlFor = 'picture-input-' + storyInstanceCounter;
+        pictureLabel.style.cursor = 'pointer';
+        const pictureIcon = document.createElement('i');
+        pictureIcon.classList.add('bi', 'bi-image');
+        pictureIcon.style.fontSize = '1.5em';
+        pictureLabel.appendChild(pictureIcon);
+
+        const pictureInput = document.createElement('input');
+        pictureInput.type = 'file';
+        pictureInput.id = 'picture-input-' + storyInstanceCounter;
+        pictureInput.accept = 'image/*';
+        pictureInput.style.display = 'none';
+
+        pictureInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imagePreview = document.createElement('img');
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.add('img-thumbnail');
+                    imagePreview.style.maxWidth = '80px';
+                    imagePreview.id = 'image-preview-' + storyInstanceCounter;
+                    document.getElementById('image-preview-' + storyInstanceCounter).appendChild(imagePreview); // Remove previous image preview if exists
+
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // image preview
+        const imagePreview = document.createElement('section');
+        imagePreview.id = 'image-preview-' + storyInstanceCounter;
+
+        const locationDisplay = document.createElement('span');
+        locationDisplay.id = 'location-display-' + storyInstanceCounter;
+        locationDisplay.classList.add('pinpoint-location-display');
+
+        const saveButton = document.createElement('button');
+        saveButton.innerText = 'Save It';
+        saveButton.id = 'save-button-' + storyInstanceCounter;
+        saveButton.style.backgroundColor = '#4CAF50';
+        saveButton.style.color = 'white';
+        saveButton.style.padding = '8px 12px';
+        saveButton.style.border = 'none';
+        saveButton.style.borderRadius = '5px';
+        saveButton.style.cursor = 'pointer';
+
+        controlsDiv.appendChild(pictureLabel);
+        controlsDiv.appendChild(pictureInput); // Add the actual input to the DOM
+        controlsDiv.appendChild(imagePreview);
+        controlsDiv.appendChild(locationDisplay);
+        controlsDiv.appendChild(saveButton);
+        storyBox.appendChild(controlsDiv);
+        entryContainer.appendChild(storyBox);
+
+        let storyEntriesContainer = document.getElementById('storyEntriesContainer');
+        storyEntriesContainer.appendChild(entryContainer);
+    }
 
     var footer = document.createElement('div');
 

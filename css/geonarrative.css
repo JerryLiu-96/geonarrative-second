@@ -269,6 +269,37 @@ body {
       color: #0071bc;
   }
 
+  .step .story-box-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding: 5px;
+  }
+
+  #storyEntriesContainer {
+    padding: 1px;
+  }
+
+  .story-box-container {
+    margin-top: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+
+  .pinpoint-location-display {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #333;
+  }
+
+  textarea {
+    outline: none;
+    border: none;
+    background: none;
+  }
   #header {
       margin: auto;
       width: 100%;
@@ -346,9 +377,17 @@ body {
   }
 
   .step div {
-      padding:  15px 50px;
+      padding:  15px 10px;
       line-height: 25px;
       font-size: 13px;
+  }
+
+  .step .story-entry-container {
+    border: 1px solid #eee;
+    padding: 5px;
+    margin-top: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
   }
 
   .step img {
