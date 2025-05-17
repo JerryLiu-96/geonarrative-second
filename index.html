@@ -364,7 +364,7 @@
                 navbar.classList.add("white-nav");
             } else {
                 navbar.classList.remove("white-nav");
-            }
+            } // Ensure this closing brace matches the corresponding opening brace
         }
         lastScrollTop = scrollTop;
       });
@@ -1033,21 +1033,24 @@
         entryContainer.id = 'story-entry-' + storyInstanceCounter;
         entryContainer.classList.add('story-entry-container');
 
+        // get the last value of the entryContainer.id, for example, if the id is story-entry-3, then lastEntryId = 3
+        let entryId = parseInt(entryContainer.id.split('-')[2]);
+
         // Create "Click on the map..." text
         const locateText = document.createElement('p');
-        locateText.id = 'locate-text-' + storyInstanceCounter;
+        locateText.id = 'locate-text-' + entryId;
         locateText.innerText = 'Click on the map to locate your story';
         locateText.classList.add('animate__animated','animate__flash','animate__infinite','animate__slow');
         entryContainer.appendChild(locateText);
 
         // create a story box container
         const storyBox = document.createElement('section');
-        storyBox.id = 'story-box-' + storyInstanceCounter;
+        storyBox.id = 'story-box-' + entryId;
         storyBox.classList.add('story-box-container');
 
         // create a text input field
         const storyTextArea = document.createElement('textarea');
-        storyTextArea.id = 'story-text-' + storyInstanceCounter;
+        storyTextArea.id = 'story-text-' + entryId;
         storyTextArea.placeholder = 'Write your story here...';
         storyTextArea.style.width = '100%';
         storyTextArea.style.minHeight = '100px';
@@ -1058,7 +1061,7 @@
         controlsDiv.classList.add('story-box-controls');
 
         const pictureLabel = document.createElement('label');
-        pictureLabel.htmlFor = 'picture-input-' + storyInstanceCounter;
+        pictureLabel.htmlFor = 'picture-input-' + entryId;
         pictureLabel.style.cursor = 'pointer';
         const pictureIcon = document.createElement('i');
         pictureIcon.classList.add('bi', 'bi-image');
@@ -1067,38 +1070,49 @@
 
         const pictureInput = document.createElement('input');
         pictureInput.type = 'file';
-        pictureInput.id = 'picture-input-' + storyInstanceCounter;
+        pictureInput.id = 'picture-input-' + entryId;
+        pictureInput.multiple = true;
         pictureInput.accept = 'image/*';
         pictureInput.style.display = 'none';
 
-        pictureInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
+        pictureInput.addEventListener('change', function () {
+            const files = Array.from(pictureInput.files);
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imagePreview = document.createElement('img');
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.add('img-thumbnail');
-                    imagePreview.style.maxWidth = '80px';
-                    imagePreview.id = 'image-preview-' + storyInstanceCounter;
-                    document.getElementById('image-preview-' + storyInstanceCounter).appendChild(imagePreview); // Remove previous image preview if exists
+                reader.onload = function (e) {
+                    const wrapper = document.createElement('section');
+                    wrapper.classList.add('position-relative', 'd-inline-block');
+                    wrapper.innerHTML = `
+                        <img src="${e.target.result}" class="img-thumbnail" style="max-width: 60px;">
+                        <i class="bi bi-x-circle-fill position-absolute top-0 end-0 text-danger bg-white rounded-circle"
+                            style="font-size: 1.2rem; cursor: pointer;"></i>
+                    `;
+
+                    // handle remove image
+                    wrapper.querySelector('i').onclick = () => {
+                        wrapper.remove();
+                    };
+                    document.getElementById('image-preview-' + entryId).appendChild(wrapper);
 
                 };
                 reader.readAsDataURL(file);
-            }
+            });
         });
 
         // image preview
-        const imagePreview = document.createElement('section');
-        imagePreview.id = 'image-preview-' + storyInstanceCounter;
+        const imagePreviewBox = document.createElement('section');
+        imagePreviewBox.id = 'image-preview-' + entryId;
+        imagePreviewBox.classList.add('mt-2', 'd-flex', 'flex-wrap', 'gap-2');
 
         const locationDisplay = document.createElement('span');
-        locationDisplay.id = 'location-display-' + storyInstanceCounter;
+        locationDisplay.id = 'location-display-' + entryId;
         locationDisplay.classList.add('pinpoint-location-display');
 
         const saveButton = document.createElement('button');
         saveButton.innerText = 'Save It';
-        saveButton.id = 'save-button-' + storyInstanceCounter;
+        saveButton.id = 'save-button-' + entryId;
         saveButton.style.backgroundColor = '#4CAF50';
         saveButton.style.color = 'white';
         saveButton.style.padding = '8px 12px';
@@ -1108,7 +1122,7 @@
 
         controlsDiv.appendChild(pictureLabel);
         controlsDiv.appendChild(pictureInput); // Add the actual input to the DOM
-        controlsDiv.appendChild(imagePreview);
+        controlsDiv.appendChild(imagePreviewBox);
         controlsDiv.appendChild(locationDisplay);
         controlsDiv.appendChild(saveButton);
         storyBox.appendChild(controlsDiv);
