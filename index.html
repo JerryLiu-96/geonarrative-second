@@ -448,6 +448,12 @@
     let chapters_length = config.chapters.length;
 
     // global variables. give values in the chapters loop, use them in the map.on('load') function
+    let storyBorderColors = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#e67e22', '#1abc9c', '#f1c40f'];
+    let currentStoryBorderColor = null;
+
+    // Global object to store preloaded SVGs
+    const preloadedPNGs = {};
+
     let xScale;
     let yScale;
     let svg;
@@ -473,6 +479,18 @@
     // global variables for historical shorelines
     let  activeSourcesForHistShore = [];
     let  activeLayersForHistShore = [];
+
+    // Function to preload SVGs for all colors
+    function preloadPNGs(colors) {
+        colors.forEach(color => {
+            const iconId = `pin-${color}`;
+            const uri = `img/svgviewer-${encodeURIComponent(color)}.png`; // Assuming the PNG files are named like "pin-#e74c3c.png"
+            preloadedPNGs[color] = uri;
+        });
+    }
+
+    // Call the function with the list of colors
+    preloadPNGs(storyBorderColors);
 
     config.chapters.forEach((record, idx) => {
         var container = document.createElement('div');
@@ -1035,6 +1053,11 @@
 
         // get the last value of the entryContainer.id, for example, if the id is story-entry-3, then lastEntryId = 3
         let entryId = parseInt(entryContainer.id.split('-')[2]);
+        const colorIndex = (entryId - 1) % storyBorderColors.length;
+        entryContainer.style.borderColor = storyBorderColors[colorIndex];
+
+        // update the currentStoryBorderColor
+        currentStoryBorderColor = storyBorderColors[colorIndex];
 
         // Create "Click on the map..." text
         const locateText = document.createElement('p');
@@ -1219,7 +1242,7 @@
         // Initialize the tooltip (this is necessary to activate the tooltip functionality)
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
         // --Section 1: let users add points to the map
@@ -1231,18 +1254,79 @@
             }
         });
 
-        map.addLayer({
-            'id': 'point-layer',
-            'type': 'circle',
-            'source': 'user-points',
-            'paint': {
-                'circle-radius': 5,
-                'circle-color': '#007cbf'
+        // map.loadImage('https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png', function(error, image) {
+        //     if (error) throw error;
+        //     if (!map.hasImage('custom-marker')) {
+        //         map.addImage('custom-marker', image);
+        //     }
+
+            map.addLayer({
+                'id': 'point-layer',
+                'type': 'symbol',
+                'source': 'user-points',
+                'layout': {
+                    'icon-image': ['get', 'icon'],
+                    'icon-size': 0.8,
+                }
+            });
+
+        // Handle map style changes
+        map.on('styledata', function () {
+            // Re-add the 'user-points' source if it doesn't exist
+            if (!map.getSource('user-points')) {
+                map.addSource('user-points', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [] // Keep the existing features if needed
+                    }
+                });
+            }
+
+            // Re-add the 'point-layer' layer if it doesn't exist
+            if (!map.getLayer('point-layer')) {
+                map.addLayer({
+                    'id': 'point-layer',
+                    'type': 'symbol',
+                    'source': 'user-points',
+                    'layout': {
+                        'icon-image': ['get', 'icon'],
+                        'icon-size': 0.8,
+                    }
+                });
             }
         });
 
+
+        // map.addLayer({
+        //     'id': 'point-layer',
+        //     'type': 'circle',
+        //     'source': 'user-points',
+        //     'paint': {
+        //         'circle-radius': 5,
+        //         'circle-color': '#007cbf'
+        //     }
+        // });
+
         map.on('click', function(e) {
             var coordinates = e.lngLat;
+            // check if a story entry is selected
+            if (!currentStoryBorderColor) {
+                alert('Please select a story entry first.');
+                return;
+            }
+
+            const iconId = `pin-${currentStoryBorderColor}`;
+
+            const uri = preloadedPNGs[currentStoryBorderColor];
+
+            // Add the icon image to the map if it doesn't already exist
+            if (!map.hasImage(iconId)) {
+                map.loadImage(uri, function (error, image) {
+                    if (error) throw error;
+                    map.addImage(iconId, image);
+                });
+            }
 
             var currentData = map.getSource('user-points')._data;
 
@@ -1251,6 +1335,9 @@
                 "geometry": {
                     "type": "Point",
                     "coordinates": [coordinates.lng, coordinates.lat]
+                },
+                "properties": {
+                    "icon": iconId
                 }
             };
 
