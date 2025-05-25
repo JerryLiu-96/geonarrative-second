@@ -1143,6 +1143,43 @@
         saveButton.style.borderRadius = '5px';
         saveButton.style.cursor = 'pointer';
 
+        saveButton.addEventListener('click', async function () {
+            const storyText= document.getElementById('story-text-' + entryId).value;
+            const pictureFiles = document.getElementById('picture-input-' + entryId).files;
+            const location = document.getElementById('location-display-' + entryId).innerText;
+
+            // location is a string'Location: longitude, latitude', get the longitude and latitude from the string
+            const locationParts = location.split(': ')[1].split(', ');
+            const longitude = parseFloat(locationParts[0]);
+            const latitude = parseFloat(locationParts[1]);
+
+            // create a form data object to send the data
+            const formData = new FormData();
+            formData.append('words', storyText);
+            formData.append('longitude', longitude);
+            formData.append('latitude', latitude);
+
+            // append images to the form data
+            for (let i = 0; i < pictureFiles.length; i++) {
+                formData.append('images', pictureFiles[i]);
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/save-story', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('Story saved successfully!');
+                } else {
+                    alert('Failed to save story.');
+                }
+            } catch (error) {
+                console.error('Error saving story:', error);
+            }
+        });
+
         controlsDiv.appendChild(pictureLabel);
         controlsDiv.appendChild(pictureInput); // Add the actual input to the DOM
         controlsDiv.appendChild(imagePreviewBox);
@@ -1340,6 +1377,8 @@
                     "icon": iconId
                 }
             };
+
+            document.getElementById('location-display-' + storyInstanceCounter).innerText = `Location: ${coordinates.lng.toFixed(4)}, ${coordinates.lat.toFixed(4)}`;
 
             currentData.features.push(newPoint);
 
