@@ -11,7 +11,7 @@ var config = {
         {
             id: 'mark-place',
             alignment: 'left',
-            title: 'Mark Your Place',
+            title: 'Placing Your Past',
             chapterIntro: ["Welcome to the interactive map of the South Beach Coast!",
                 "Community is not only defined by the land on which we live, it also encompasses societal elements. Physical and societal elements together made the community our place. We prepare our communties for future challenges -- adverse climate, economic downturns, aging populations, etc. However, what we may not realize but is silently happening is that, our collective memories of historical events strongly shape our current risk perception and therefore, our decision-making of adaptation actions.",
                 "As the first step to make the effect of historical events tangible, we invite you to pinpoint your personal and collective experience of historical events on the map. These events can be big floods, coastline retreats, changes in the main industries/economies, major adaptation projects... You can zoom in and zoom out with your fingertips and pinpoint where these events happened by clicking on the map. "

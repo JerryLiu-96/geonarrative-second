@@ -235,6 +235,10 @@ div.form-check {
   padding: 2px !important;
 }
 
+.form-check-input {
+  margin-left: 0px !important;
+}
+
 #animatePanel {
   padding: 10px 10px;
   background-color: #eaf4f7;
@@ -251,7 +255,7 @@ div.form-check {
   top: 0;
   left: 0;
   width: 35vw;
-  transform: translateY(-40vh);
+  transform: translateY(-100vh);
 }
 
 .tooltip-inner {
