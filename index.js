@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite = require('sqlite');
@@ -67,7 +69,7 @@ async function getDBConnection() {
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Serve the frontend files
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static('public'));
 
 const PORT = process.env.PORT || LINSTENPORT;
 app.listen(PORT, () => {

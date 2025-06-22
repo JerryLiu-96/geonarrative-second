@@ -1,7 +1,7 @@
 {
   "name": "geonarrative-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "## Introduction",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +16,6 @@
     "multer": "^2.0.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
-  }
+  },
+  "devDependencies": {}
 }
