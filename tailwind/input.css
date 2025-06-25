@@ -1,3 +1,6 @@
 @import "tailwindcss";
-
+@source inline("{focus:,}ring-{red,blue,green,purple,orange,teal,yellow}-300");
+@source inline("{peer-focus:,}text-{red,blue,green,purple,orange,teal,yellow}-500");
+@source inline("{focus-within:,}ring-{red,blue,green,purple,orange,teal,yellow}-500");
+@source inline("from-{red,blue,green,purple,orange,teal,yellow}-100 to-{red,blue,green,purple,orange,teal,yellow}-500 {hover:,}bg-{red,blue,green,purple,orange,teal,yellow}-500");
 @config "./tailwind.config.js";

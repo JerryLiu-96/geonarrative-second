@@ -380,15 +380,45 @@ body {
       opacity: 0.9;
   }
 
-  .step div {
-      padding:  15px 10px;
-      line-height: 25px;
-      font-size: 13px;
+  .btn-save-story {
+    padding: 15px 25px;
+    border: unset;
+    border-radius: 15px;
+    z-index: 1;
+    position: relative;
+    font-weight: 1000;
+    /* font-size: 17px; */
+    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    transition: all 450ms;
+    overflow: hidden;
+  }
+
+  .btn-save-story::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    border-radius: 15px;
+    z-index: -1;
+    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    transition: all 250ms
+  }
+
+  .btn-save-story:hover {
+    color: #e8e8e8;
+  }
+
+  .btn-save-story:hover::before {
+    width: 100%;
   }
 
   .step .story-entry-container {
     border: 1px solid #eee;
-    padding: 5px;
+
     margin-top: 15px;
     border-radius: 5px;
     background-color: #f9f9f9;

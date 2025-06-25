@@ -1,0 +1,7 @@
+.resize-none {
+  resize: none !important;
+}
+
+.border-transparent {
+  border-color: transparent !important;
+}
