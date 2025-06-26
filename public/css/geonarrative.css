@@ -416,6 +416,111 @@ body {
     width: 100%;
   }
 
+  /* All styles now use the .animated-btn class selector */
+.animated-btn {
+  font-weight: bold;
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  /* Note: The width will need to adjust for longer text */
+  width: 120px;
+  height: 42.66px;
+  border: none;
+  background-color: #00a572;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Added position:relative and overflow:hidden for the animation to work */
+  position: relative;
+  overflow: hidden;
+  margin-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+.animated-btn .span-mother {
+  display: flex;
+  overflow: hidden;
+}
+
+.animated-btn:hover .span-mother {
+  position: absolute;
+}
+
+.animated-btn:hover .span-mother span {
+  transform: translateY(1.3em);
+}
+
+.animated-btn .span-mother2 {
+  display: flex;
+  position: absolute;
+  overflow: hidden;
+}
+
+.animated-btn .span-mother2 span {
+  transform: translateY(-1.3em);
+}
+
+.animated-btn:hover .span-mother2 span {
+  transform: translateY(0);
+}
+
+/* Staggered transition delays for all 8 characters */
+.animated-btn .span-mother span:nth-child(1),
+.animated-btn .span-mother2 span:nth-child(1) {
+  transition: 0.2s;
+}
+
+.animated-btn .span-mother span:nth-child(2),
+.animated-btn .span-mother2 span:nth-child(2) {
+  transition: 0.3s;
+}
+
+.animated-btn .span-mother span:nth-child(3),
+.animated-btn .span-mother2 span:nth-child(3) {
+  transition: 0.4s;
+}
+
+.animated-btn .span-mother span:nth-child(4),
+.animated-btn .span-mother2 span:nth-child(4) {
+  transition: 0.5s;
+}
+
+.animated-btn .span-mother span:nth-child(5),
+.animated-btn .span-mother2 span:nth-child(5) {
+  transition: 0.6s;
+}
+
+.animated-btn .span-mother span:nth-child(6),
+.animated-btn .span-mother2 span:nth-child(6) {
+  transition: 0.7s;
+}
+
+/* Added rules for the 7th and 8th characters */
+.animated-btn .span-mother span:nth-child(7),
+.animated-btn .span-mother2 span:nth-child(7) {
+  transition: 0.8s;
+}
+
+.animated-btn .span-mother span:nth-child(8),
+.animated-btn .span-mother2 span:nth-child(8) {
+  transition: 0.9s;
+}
+
+.animated-btn .span-mother span:nth-child(9),
+.animated-btn .span-mother2 span:nth-child(9) {
+  transition: 1.0s;
+}
+
+.animated-btn .span-mother span:nth-child(10),
+.animated-btn .span-mother2 span:nth-child(10) {
+  transition: 1.1s;
+}
+
+.animated-btn .span-mother span:nth-child(11),
+.animated-btn .span-mother2 span:nth-child(11) {
+  transition: 1.2s;
+}
+
   .step .story-entry-container {
     border: 1px solid #eee;
 
