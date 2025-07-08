@@ -146,6 +146,8 @@ This command creates a `package.json` file in the `tailwind` directory, which is
   npm run dev
   ```
   `npm run dev` will find the `package.json` in its directory and run the `dev`, which is `tailwindcss -i ./input.css -o ../public/css/output.css --watch`. This equates to running `npx tailwindcss -i ./input.css -o ../public/css/output.css --watch` in the terminal. The `-i` option specifies the input file, and the `-o` option specifies the output file. The `--watch` option tells Tailwind CSS to watch for changes in the input file and regenerate the output file automatically.
+    - You should run this `dev` each time you work on the project.
+    - Before deploying the project to Heroku, you may run `build` script to generate the production version of the Tailwind CSS styles. This will minify the `output.css` file and remove any unused styles.
 - In the `public` directory, create a new directory called `css`. This directory will contain the generated Tailwind CSS styles in `output.css`.
 - Start using Tailwind CSS in your HTML files. In the `public/index.html` file, include the generated `output.css` file in the `<head>` section:
   ```html
