@@ -58,7 +58,11 @@ app.post('/api/save-story', upload.array('images', 10), async (req, res) => {
 
     let imagePaths = files.map(file => file.path);
 
-    let query = `INSERT INTO stories (words, images, lng, lat) VALUES ($1, $2, $3, $4) RETURNING id`;
+    let query = `
+      INSERT INTO stories (words, images, location)
+      VALUES ($1, $2, ST_SetSRID(ST_MakePoint($3, $4), 4326)::geography)
+      RETURNING id
+    `;
     let values = [words, JSON.stringify(imagePaths), longitude, latitude];
     let result = await client.query(query, values);
 

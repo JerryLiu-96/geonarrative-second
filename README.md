@@ -1,10 +1,19 @@
 # Creating Your Participatory Geonarrative: A Tutorial Based on South Beach, Washington
 
 Ziyang Liu | Urban Design and Planning | University of Washington
-
+## Highlights
+This tutorial walks you through steps to create a geospatial application for participatory mapping, and is a fit for you if you are interested in:
+- Geospatial visualization and participatory mapping
+- **Full-stack** Geospatial web application development
+- Using **Mapbox GL JS** for web mapping
+- Using **Tailwind CSS** for styling
+- Using **Node.js** for back-end development
+- Using **PostgreSQL** and **PostGIS** for database management
+- Deploying web applications to **Heroku**
+- Building a participatory geonarrative to share place-based knowledge
 ## Introduction
 
-This participatory geonarrative is a full-stack web application that allows participants to share their place-based knowledge with multiple media formats related to the South Beach area. Though no need to be an expert, to follow this tutorial, you should have:
+This participatory geonarrative is a full-stack web application that allows participants to share their place-based knowledge with multiple media formats related to the South Beach area. Though no need to be an expert, to follow this tutorial, you should have (or be willing to learn) the following skills and knowledge:
 - A basic knowledge of front-end technologies: HTML, CSS, JavaScript
   - This tutorial uses [Tailwind CSS](https://tailwindcss.com/) for styling. Tailwind CSS scans your HTML files and generates the CSS styles you need, so you don't have to write CSS styles yourself.
 - A basic knowledge of back-end technologies: Node.js and the PostgreSQL database
@@ -253,7 +262,11 @@ The web server is a Node.js application that handles requests from the web clien
 
       let imagePaths = files.map(file => file.path);
 
-      let query = `INSERT INTO stories (words, images, lng, lat) VALUES ($1, $2, $3, $4) RETURNING id`;
+      let query = `
+        INSERT INTO stories (words, images, location)
+        VALUES ($1, $2, ST_SetSRID(ST_MakePoint($3, $4), 4326)::geography)
+        RETURNING id
+      `;
       let values = [words, JSON.stringify(imagePaths), longitude, latitude];
       let result = await client.query(query, values);
 
