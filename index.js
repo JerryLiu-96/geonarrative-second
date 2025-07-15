@@ -48,6 +48,11 @@ if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
 
+// api endpoint to get Mapbox token
+app.get('/api/mapbox-token', (req, res) => {
+  res.json({ token: process.env.MAPBOX_ACCESS_TOKEN });
+});
+
 // api endpoint to save a story
 app.post('/api/save-story', upload.array('images', 10), async (req, res) => {
   const client = await pool.connect();

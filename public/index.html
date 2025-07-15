@@ -1305,122 +1305,82 @@
         story.appendChild(footer);
     }
 
-    mapboxgl.accessToken = config.accessToken;
+    fetch('api/mapbox-token')
+        .then(response => response.json())
+        .then(data => {
+            mapboxgl.accessToken = data.token;
+            const transformRequest = (url) => {
+                    const hasQuery = url.indexOf("?") !== -1;
+                    const suffix = hasQuery ? "&pluginName=scrollytellingV2" : "?pluginName=scrollytellingV2";
 
-    const transformRequest = (url) => {
-        const hasQuery = url.indexOf("?") !== -1;
-        const suffix = hasQuery ? "&pluginName=scrollytellingV2" : "?pluginName=scrollytellingV2";
-
-        return {
-          url: url + suffix
-        }
-    }
-
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: config.style,
-        center: config.chapters[0].location.center,
-        zoom: config.chapters[0].location.zoom,
-        bearing: config.chapters[0].location.bearing,
-        pitch: config.chapters[0].location.pitch,
-        interactive: true,
-        minzoom: 10.5,
-        maxzoom: 18,
-        transformRequest: transformRequest,
-        preserveDrawingBuffer: true
-    });
-
-    const styleList = document.getElementById('mapstyle-control');
-    const inputs = styleList.getElementsByTagName('input');
-
-    for (const input of inputs) {
-        input.onclick = (layer) => {
-            const layerId = layer.target.id;
-            map.setStyle('mapbox://styles/mapbox/' + layerId);
-        }
-    }
-
-    // map.addControl(new MapboxExportControl({
-    //   PageSize: Size.A3,
-    //   PageOrientation: PageOrientation.Portrait,
-    //   Format: Format.PNG,
-    //   DPI: DPI[96],
-    //   Crosshair: true,
-    //   PrintableArea: true,
-    // }), 'top-right');
-
-    var mapImpact = new mapboxgl.Map({
-        container: 'map-impact',
-        style: config.style,
-        center: config.chapters[0].location.center,
-        zoom: config.chapters[0].location.zoom,
-        bearing: config.chapters[0].location.bearing,
-        pitch: config.chapters[0].location.pitch,
-        interactive: true,
-        transformRequest: transformRequest
-    });
-
-    if (config.showMarkers) {
-        var marker = new mapboxgl.Marker({ color: config.markerColor });
-        marker.setLngLat(config.chapters[0].location.center).addTo(map);
-    }
-
-    // instantiate the scrollama
-    var scroller = scrollama();
-
-
-
-    const moreCertainColor = '#2171b5';
-    const lessCertainColor = '#6baed6';
-
-    map.on("load", function() {
-
-        // Initialize the tooltip (this is necessary to activate the tooltip functionality)
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-
-        // --Section 1: let users add points to the map
-        map.addSource('user-points', {
-            'type': 'geojson',
-            'data': {
-                'type': 'FeatureCollection',
-                'features': []
-            }
-        });
-
-        // map.loadImage('https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png', function(error, image) {
-        //     if (error) throw error;
-        //     if (!map.hasImage('custom-marker')) {
-        //         map.addImage('custom-marker', image);
-        //     }
-
-            map.addLayer({
-                'id': 'point-layer',
-                'type': 'symbol',
-                'source': 'user-points',
-                'layout': {
-                    'icon-image': ['get', 'icon'],
-                    'icon-size': 0.8,
+                    return {
+                    url: url + suffix
+                    }
                 }
+
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: config.style,
+                center: config.chapters[0].location.center,
+                zoom: config.chapters[0].location.zoom,
+                bearing: config.chapters[0].location.bearing,
+                pitch: config.chapters[0].location.pitch,
+                interactive: true,
+                minzoom: 10.5,
+                maxzoom: 18,
+                transformRequest: transformRequest,
+                preserveDrawingBuffer: true
             });
 
-        // Handle map style changes
-        map.on('styledata', function () {
-            // Re-add the 'user-points' source if it doesn't exist
-            if (!map.getSource('user-points')) {
+            const styleList = document.getElementById('mapstyle-control');
+            const inputs = styleList.getElementsByTagName('input');
+
+            for (const input of inputs) {
+                input.onclick = (layer) => {
+                    const layerId = layer.target.id;
+                    map.setStyle('mapbox://styles/mapbox/' + layerId);
+                }
+            };
+
+            var mapImpact = new mapboxgl.Map({
+                container: 'map-impact',
+                style: config.style,
+                center: config.chapters[0].location.center,
+                zoom: config.chapters[0].location.zoom,
+                bearing: config.chapters[0].location.bearing,
+                pitch: config.chapters[0].location.pitch,
+                interactive: true,
+                transformRequest: transformRequest
+            });
+
+            if (config.showMarkers) {
+                var marker = new mapboxgl.Marker({ color: config.markerColor });
+                marker.setLngLat(config.chapters[0].location.center).addTo(map);
+            }
+
+            // instantiate the scrollama
+            var scroller = scrollama();
+
+            const moreCertainColor = '#2171b5';
+            const lessCertainColor = '#6baed6';
+
+            map.on("load", function() {
+
+                // Initialize the tooltip (this is necessary to activate the tooltip functionality)
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+
+                // --Section 1: let users add points to the map
                 map.addSource('user-points', {
                     'type': 'geojson',
                     'data': {
                         'type': 'FeatureCollection',
-                        'features': [] // Keep the existing features if needed
+                        'features': []
                     }
                 });
-            }
 
-            // Re-add the 'point-layer' layer if it doesn't exist
-            if (!map.getLayer('point-layer')) {
                 map.addLayer({
                     'id': 'point-layer',
                     'type': 'symbol',
@@ -1430,1116 +1390,1075 @@
                         'icon-size': 0.8,
                     }
                 });
-            }
-        });
 
+                // Handle map style changes
+                map.on('styledata', function () {
+                    // Re-add the 'user-points' source if it doesn't exist
+                    if (!map.getSource('user-points')) {
+                        map.addSource('user-points', {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'FeatureCollection',
+                                'features': [] // Keep the existing features if needed
+                            }
+                        });
+                    }
 
-        // map.addLayer({
-        //     'id': 'point-layer',
-        //     'type': 'circle',
-        //     'source': 'user-points',
-        //     'paint': {
-        //         'circle-radius': 5,
-        //         'circle-color': '#007cbf'
-        //     }
-        // });
-
-        map.on('click', function(e) {
-            var coordinates = e.lngLat;
-            // check if a story entry is selected
-            if (!currentStoryBorderColor) {
-                alert('Please select a story entry first.');
-                return;
-            }
-
-            const iconId = `pin-${currentStoryBorderColor}`;
-
-            const uri = preloadedPNGs[currentStoryBorderColor];
-
-            // Add the icon image to the map if it doesn't already exist
-            if (!map.hasImage(iconId)) {
-                map.loadImage(uri, function (error, image) {
-                    if (error) throw error;
-                    map.addImage(iconId, image);
-                });
-            }
-
-            var currentData = map.getSource('user-points')._data;
-
-            var newPoint = {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [coordinates.lng, coordinates.lat]
-                },
-                "properties": {
-                    "icon": iconId
-                }
-            };
-
-            document.getElementById('location-display-' + storyInstanceCounter).innerText = `Location: ${coordinates.lng.toFixed(4)}, ${coordinates.lat.toFixed(4)}`;
-
-            currentData.features.push(newPoint);
-
-            map.getSource('user-points').setData(currentData);
-        });
-
-        // --End of Section 1
-
-        // document.getElementById('screenshotBtn').addEventListener('click', () => {
-        //     const originalPixelRatio = window.devicePixelRatio;
-        //     const highResolutionPixelRatio = 1;
-        //     console.log(originalPixelRatio);
-
-        //     // Save the original map dimensions
-        //     const originalWidth = map.getContainer().clientWidth;
-        //     const originalHeight = map.getContainer().clientHeight;
-
-        //     // Set map container to match 2550 x 3300 aspect ratio
-        //     const targetWidth = 3500; // any width that keeps a 1:1.294 ratio
-        //     const targetHeight = Math.round(targetWidth * 1.294);
-
-        //     map.getContainer().style.width = `${targetWidth}px`;
-        //     map.getContainer().style.height = `${targetHeight}px`;
-        //     map.resize();
-
-        //     // Increase pixel ratio
-        //     Object.defineProperty(window, 'devicePixelRatio', {
-        //         get: function() { return highResolutionPixelRatio; }
-        //     });
-
-        //     map.once('render', () => {
-        //         const canvas = map.getCanvas();
-        //         const exportCanvas = document.createElement('canvas');
-        //         exportCanvas.width = 3500;
-        //         exportCanvas.height = 3500*1.294;
-
-        //         const context = exportCanvas.getContext('2d');
-        //         context.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
-
-        //         // Download image
-        //         const link = document.createElement('a');
-        //         link.href = exportCanvas.toDataURL('image/png');
-        //         link.download = 'map-export-300dpi.png';
-        //         link.click();
-
-        //         // Restore original settings
-        //         Object.defineProperty(window, 'devicePixelRatio', {
-        //             get: function() { return originalPixelRatio; }
-        //         });
-
-        //         map.getContainer().style.width = `${originalWidth}px`;
-        //         map.getContainer().style.height = `${originalHeight}px`;
-        //         map.resize();
-        //     });
-
-        //     map.triggerRepaint();
-        // });
-
-        // set all svg paths invisible, this is for SLR section
-        function allSvgInvisible() {
-            document.querySelectorAll('.line').forEach(function(line) {
-                line.style.display = 'none';
-            });
-
-            document.querySelectorAll('.confidence-interval').forEach(function(range) {
-                range.style.display = 'none';
-            });
-            document.querySelectorAll('.circle-slr').forEach(function(circle) {
-                circle.style.display = 'none';
-            });
-            document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
-                range.style.display = 'none';
-            });
-            document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
-                range.style.display = 'none';
-            });
-            document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
-                range.style.display = 'none';
-            });
-        };
-
-        // add source and layer for the SEA LEVEL RISE section
-        function addSourceAndLayer(uniquePairs) {
-            uniquePairs.forEach((pair, idx) => {
-                let dnLimit = pair[0].toFixed(1);
-                if (dnLimit <= 0) {
-                    dnLimit = '0.0';
-                }
-                let upLimit = pair[1].toFixed(1);
-                map.addSource('geojson-source-'+dnLimit+'-'+upLimit, {
-                    type: 'geojson',
-                    data: 'assets/slr_results/vector/uncertainty/slr_'+dnLimit+'_'+upLimit+'ft.geojson'
-                });
-
-                map.addLayer({
-                    'id': 'slr-layer-' + pair[0] + '-' + pair[1],
-                    'type': 'circle', // You can use a different layer type if needed
-                    'source': 'geojson-source-'+dnLimit+'-'+upLimit,
-                    'paint': {
-                        'circle-color': [
-                            'match',
-                            ['get', 'layer'], // Use the "layer" property for styling
-                            'layer_1', lessCertainColor,  // Specify colors based on property values
-                            'layer_2', moreCertainColor,
-
-                            /* Add more property-value and color pairs as needed */
-                            'gray'  // Default color if no match is found
-                        ],
-
-                        'circle-radius': [
-                            'interpolate',
-                            ['linear'],
-                            ['zoom'],
-                            10.5, 2,      // at zoom level 10, radius is 2
-                            18, 20      // at zoom level 18, radius is 20
-                        ],
-
-                        'circle-opacity': 0  // set to 0 to make it invisible TEMPORARILY
+                    // Re-add the 'point-layer' layer if it doesn't exist
+                    if (!map.getLayer('point-layer')) {
+                        map.addLayer({
+                            'id': 'point-layer',
+                            'type': 'symbol',
+                            'source': 'user-points',
+                            'layout': {
+                                'icon-image': ['get', 'icon'],
+                                'icon-size': 0.8,
+                            }
+                        });
                     }
                 });
 
-                activeSourcesForSlr.push('geojson-source-'+dnLimit+'-'+upLimit);
-                activeLayersForSlr.push('slr-layer-' + pair[0] + '-' + pair[1]);
-            })
-        }
+                map.on('click', function(e) {
+                    var coordinates = e.lngLat;
+                    // check if a story entry is selected
+                    if (!currentStoryBorderColor) {
+                        alert('Please select a story entry first.');
+                        return;
+                    }
 
-        // remove source and layer for the SEA LEVEL RISE section
-        function removeSourceAndLayer() {
+                    const iconId = `pin-${currentStoryBorderColor}`;
 
-            activeLayersForSlr.forEach((layer, idx) => {
-                map.removeLayer(layer);
-            });
+                    const uri = preloadedPNGs[currentStoryBorderColor];
 
-            activeSourcesForSlr.forEach((source, idx) => {
-                map.removeSource(source);
-            });
+                    // Add the icon image to the map if it doesn't already exist
+                    if (!map.hasImage(iconId)) {
+                        map.loadImage(uri, function (error, image) {
+                            if (error) throw error;
+                            map.addImage(iconId, image);
+                        });
+                    }
 
-            activeLayersForSlr = [];
-            activeSourcesForSlr = [];
-        }
+                    var currentData = map.getSource('user-points')._data;
 
-        // import the default sources and layers in the slr section
-        let verticalOrNot = document.getElementById('switchVertical').checked;
-        let rcpScenario = document.getElementById('line-selector').value;
-        if (verticalOrNot) {
-            if (rcpScenario === 'all') {
-                addSourceAndLayer(uniquercpallVertical);
-            } else if (rcpScenario === 'RCP 4.5 line') {
-                addSourceAndLayer(uniquercpLowVertical);
-            } else {
-                addSourceAndLayer(uniquercpHighVertical);
-            }
-        } else {
-            if (rcpScenario === 'all') {
-                addSourceAndLayer(uniquercpallNonVertical);
-            } else if (rcpScenario === 'RCP 4.5 line') {
-                addSourceAndLayer(uniquercpLowNonVertical);
-            } else {
-                addSourceAndLayer(uniquercpHighNonVertical);
-            }
-        }
+                    var newPoint = {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [coordinates.lng, coordinates.lat]
+                        },
+                        "properties": {
+                            "icon": iconId
+                        }
+                    };
 
-        // toggle the dropdown menu line-selector of the d3.js
-        document.getElementById("line-selector").addEventListener('change', function() {
-            let selectedOption = this.value;
-            let whetherToIncludeVertical = document.getElementById('switchVertical').checked;
+                    document.getElementById('location-display-' + storyInstanceCounter).innerText = `Location: ${coordinates.lng.toFixed(4)}, ${coordinates.lat.toFixed(4)}`;
 
-            if (whetherToIncludeVertical) {
-                if (selectedOption === 'all') {
-                    allSvgInvisible();
+                    currentData.features.push(newPoint);
+
+                    map.getSource('user-points').setData(currentData);
+                });
+
+                // set all svg paths invisible, this is for SLR section
+                function allSvgInvisible() {
                     document.querySelectorAll('.line').forEach(function(line) {
-                        line.style.display = 'block';
-                    });
-
-                    document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
-                        range.style.display = 'block';
-                    });
-
-                    removeSourceAndLayer();
-
-                    addSourceAndLayer(uniquercpallVertical);
-
-                } else if (selectedOption === 'RCP 4.5 line') {
-                    allSvgInvisible();
-                    document.getElementById(selectedOption).style.display ='block';
-                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
-                    document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
-                        range.style.display = 'block';
-                    });
-
-                    removeSourceAndLayer();
-
-                    addSourceAndLayer(uniquercpLowVertical);
-
-                } else if (selectedOption === 'RCP 8.5 line') {
-                    allSvgInvisible();
-                    document.getElementById(selectedOption).style.display ='block';
-                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
-                    document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
-                        range.style.display = 'block';
-                    });
-
-                    removeSourceAndLayer();
-
-                    addSourceAndLayer(uniquercpHighVertical);
-                }
-            } else {
-                if (selectedOption === 'all') {
-                    allSvgInvisible();
-                    document.querySelectorAll('.line').forEach(function(line) {
-                        line.style.display = 'block';
+                        line.style.display = 'none';
                     });
 
                     document.querySelectorAll('.confidence-interval').forEach(function(range) {
-                        range.style.display = 'block';
+                        range.style.display = 'none';
                     });
-
-                    removeSourceAndLayer();
-
-                    addSourceAndLayer(uniquercpallNonVertical);
-
-                } else {
-                    allSvgInvisible();
-                    document.getElementById(selectedOption).style.display ='block';
-                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
-
-                    removeSourceAndLayer();
-                    if (selectedOption === 'RCP 4.5 line') {
-                        addSourceAndLayer(uniquercpLowNonVertical);
-                    } else {
-                        addSourceAndLayer(uniquercpHighNonVertical);
-                    };
-                }
-            }
-        });
-
-        document.getElementById('switchVertical').addEventListener('change', function() {
-            let selectedOption = document.getElementById('line-selector').value;
-            let whetherToIncludeVertical = this.checked;
-
-            if (whetherToIncludeVertical) {
-                if (selectedOption === 'all') {
-                    allSvgInvisible();
-                    document.querySelectorAll('.line').forEach(function(line) {
-                        line.style.display = 'block';
+                    document.querySelectorAll('.circle-slr').forEach(function(circle) {
+                        circle.style.display = 'none';
                     });
-
-                    document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
-                        range.style.display = 'block';
-                    });
-
-                    removeSourceAndLayer();
-                    addSourceAndLayer(uniquercpallVertical);
-
-                } else if (selectedOption === 'RCP 4.5 line') {
-                    allSvgInvisible();
-                    document.getElementById(selectedOption).style.display ='block';
-                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
-                    document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
-                        range.style.display = 'block';
-                    });
-
-                    removeSourceAndLayer();
-                    addSourceAndLayer(uniquercpLowVertical);
-
-                } else if (selectedOption === 'RCP 8.5 line') {
-                    allSvgInvisible();
-                    document.getElementById(selectedOption).style.display ='block';
-                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
                     document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
-                        range.style.display = 'block';
+                        range.style.display = 'none';
                     });
-
-                    removeSourceAndLayer();
-                    addSourceAndLayer(uniquercpHighVertical);
-                }
-            } else {
-                if (selectedOption === 'all') {
-                    allSvgInvisible();
-                    document.querySelectorAll('.line').forEach(function(line) {
-                        line.style.display = 'block';
+                    document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
+                        range.style.display = 'none';
                     });
-
-                    document.querySelectorAll('.confidence-interval').forEach(function(range) {
-                        range.style.display = 'block';
+                    document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
+                        range.style.display = 'none';
                     });
-
-                    removeSourceAndLayer();
-                    addSourceAndLayer(uniquercpallNonVertical);
-                } else {
-                    allSvgInvisible();
-                    document.getElementById(selectedOption).style.display ='block';
-                    document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
-
-                    removeSourceAndLayer();
-                    if (selectedOption === 'RCP 4.5 line') {
-                        addSourceAndLayer(uniquercpLowNonVertical);
-                    } else {
-                        addSourceAndLayer(uniquercpHighNonVertical);
-                    };
-                }
-            }
-        });
-
-        // set slrLayerToShow and slrLayerToClose as a map.load wide variable
-        let slrLayerToShow;
-        let slrLayerToClose;
-
-        // define a function: if the value is smaller than 0, set it to 0, otherwise, keep the original value
-        // example: setToZeroIfNegative(-0.1) return 0
-        function setToZeroIfNegative(value) {
-            if (value < 0) {
-                return 0;
-            } else {
-                return value;
-            }
-        };
-
-        svg.on('mousemove', function(event) {
-
-            console.log(uniqueSlrPairs);
-
-            // set the opacity of the slrLayerToClose to 0 to make it invisible
-            map.setPaintProperty(slrLayerToClose, 'circle-opacity', 0);
-
-            svg.selectAll('.circle-slr').remove();
-            let [mx, my] = d3.pointer(event);
-
-            let year = Math.round(xScale.invert(mx));
-            year = Math.round(year / 10) * 10;
-
-
-            // get the config.chapters whose id is 'sea-level-rise'
-            let slr_chapter = config.chapters.filter(chapter => chapter.id === 'sea-level-rise')[0];
-
-            let slr_lines = slr_chapter.lines;
-
-            let verticalUncertainty = slr_chapter.verticalMoveUncertainty[0].values;
-
-            // example output: {name: 'RCP 8.5', values:..., color:...}
-            let line_high_values = slr_lines.filter(line => line.name === 'RCP 8.5')[0].values;
-
-            console.log(line_high_values);
-            let line_low_values = slr_lines.filter(line => line.name === 'RCP 4.5')[0].values;
-
-            let high_color = slr_lines.filter(line => line.name === 'RCP 8.5')[0].color;
-            let low_color = slr_lines.filter(line => line.name === 'RCP 4.5')[0].color;
-            console.log(high_color)
-
-            // get the value of the year in the high rcp scenario that is selected by the mouseover
-            // example output: { year: 2020, ft: 0.1, lower: -0.1, upper:0.2 }
-            let line_high_values_of_year = line_high_values.filter(line => line.year === year)[0];
-
-            // get the value of the year in the low rcp scenario that is selected by the mouseover
-            // example output: { year: 2020, ft: 0.1, lower: -0.1, upper:0.2 }
-            let line_low_values_of_year = line_low_values.filter(line => line.year === year)[0];
-
-            // get the uncertainty range of the vertical movement of the year that is fired by the mouseover
-            // example output: {year: 2020, lower: -0.1, upper: 0.2}
-            let verticalUncertainty_of_year = verticalUncertainty.filter(line => line.year === year)[0];
-
-            // get the value of the drop down
-            let selectedOption = document.getElementById('line-selector').value;
-
-            // get the value of the switchVertical
-            let whetherToIncludeVertical = document.getElementById('switchVertical').checked;
-
-            // if the vertical land move is not switched on
-            if (!whetherToIncludeVertical) {
-                if (selectedOption === 'all') {
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(line_high_values_of_year.upper))
-                        .attr('r', 5)
-                        .attr('fill', lessCertainColor);
-
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(line_low_values_of_year.lower))
-                        .attr('r', 5)
-                        .attr('fill', moreCertainColor);
-
-                    document.getElementById('year').innerText = year;
-                    document.getElementById('low-bound').innerText = line_low_values_of_year.lower;
-                    document.getElementById('up-bound').innerText = line_high_values_of_year.upper;
-
-                    let lowerBoundForLayer = setToZeroIfNegative(line_low_values_of_year.lower);
-
-                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
-                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
-                } else if (selectedOption === 'RCP 8.5 line') {
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(line_high_values_of_year.upper))
-                        .attr('r', 5)
-                        .attr('fill', lessCertainColor);
-
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(line_high_values_of_year.lower))
-                        .attr('r', 5)
-                        .attr('fill', moreCertainColor);
-
-                    document.getElementById('year').innerText = year;
-                    document.getElementById('low-bound').innerText = line_high_values_of_year.lower;
-                    document.getElementById('up-bound').innerText = line_high_values_of_year.upper;
-
-                    let lowerBoundForLayer = setToZeroIfNegative(line_high_values_of_year.lower);
-
-                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
-                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
-                } else if (selectedOption === 'RCP 4.5 line') {
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(line_low_values_of_year.upper))
-                        .attr('r', 5)
-                        .attr('fill', lessCertainColor);
-
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(line_low_values_of_year.lower))
-                        .attr('r', 5)
-                        .attr('fill', moreCertainColor);
-
-                    document.getElementById('year').innerText = year;
-                    document.getElementById('low-bound').innerText = line_low_values_of_year.lower;
-                    document.getElementById('up-bound').innerText = line_low_values_of_year.upper;
-
-                    let lowerBoundForLayer = setToZeroIfNegative(line_low_values_of_year.lower);
-
-                    slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_low_values_of_year.upper;
-                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
-
-                }
-            } else {
-                if (selectedOption === "all") {
-                    let yHigh = parseFloat((line_high_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
-                    let yLow = parseFloat((line_low_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(yHigh))
-                        .attr('r', 5)
-                        .attr('fill', lessCertainColor);
-
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(yLow))
-                        .attr('r', 5)
-                        .attr('fill', moreCertainColor);
-
-                    document.getElementById('year').innerText = year;
-                    document.getElementById('low-bound').innerText = yLow;
-                    document.getElementById('up-bound').innerText = yHigh;
-
-                    yLow = setToZeroIfNegative(yLow);
-
-                    slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
-                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
-                } else if (selectedOption == 'RCP 8.5 line') {
-                    let yHigh = parseFloat((line_high_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
-                    let yLow = parseFloat((line_high_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(yHigh))
-                        .attr('r', 5)
-                        .attr('fill', lessCertainColor);
-
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(yLow))
-                        .attr('r', 5)
-                        .attr('fill', moreCertainColor);
-
-                        document.getElementById('year').innerText = year;
-                        document.getElementById('low-bound').innerText = yLow;
-                        document.getElementById('up-bound').innerText = yHigh;
-
-                        yLow = setToZeroIfNegative(yLow);
-
-                        slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
-                        map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
-                } else if (selectedOption == 'RCP 4.5 line') {
-                    let yHigh = parseFloat((line_low_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
-                    let yLow = parseFloat((line_low_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(yHigh))
-                        .attr('r', 5)
-                        .attr('fill', lessCertainColor);
-
-                    svg.append('circle')
-                        .attr('class', 'circle-slr')
-                        .attr('cx', xScale(year))
-                        .attr('cy', yScale(yLow))
-                        .attr('r', 5)
-                        .attr('fill', moreCertainColor);
-                        document.getElementById('year').innerText = year;
-                        document.getElementById('low-bound').innerText = yLow;
-                        document.getElementById('up-bound').innerText = yHigh;
-
-                        yLow = setToZeroIfNegative(yLow);
-
-                        slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
-                    map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
-                }
-            }
-
-            slrLayerToClose = slrLayerToShow;
-
-        })
-
-        if (config.use3dTerrain) {
-            map.addSource('mapbox-dem', {
-                'type': 'raster-dem',
-                'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
-                'tileSize': 512,
-                'maxzoom': 14
-            });
-            // add the DEM source as a terrain layer with exaggerated height
-            map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
-
-            // add a sky layer that will show when the map is highly pitched
-            map.addLayer({
-                'id': 'sky',
-                'type': 'sky',
-                'paint': {
-                    'sky-type': 'atmosphere',
-                    'sky-atmosphere-sun': [0.0, 0.0],
-                    'sky-atmosphere-sun-intensity': 15
-                }
-            });
-        };
-
-        // surveyed_year stores the years that the shorelines are surveyed in history
-        let surveyed_year = [1700, 1860, 1911, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
-
-        let enclosed_sources = surveyed_year.map(year => 'enclosed_' + year);
-
-        let enclosed_layers = surveyed_year.map(year => 'enclosed_layer_' + year);
-
-        // add sources and layers of years that are surveyed
-        // surveyed_year layers are NOT removed when not in its chapter
-        surveyed_year.forEach((yr) => {
-            map.addSource(`surveyed_${yr}`, {
-                type: 'geojson',
-                data: 'assets/historical_results/surveyed_shoreline/' + yr + '.geojson'
-            });
-
-            map.addLayer({
-                'id':`surveyed_layer_${yr}`,
-                'type': 'line',
-                'source': `surveyed_${yr}`,
-                'paint': {
-                    'line-color': '#3182bd',
-                    'line-width': 2,
-                    'line-opacity': 0
-                }
-            });
-        });
-
-        // set the switches which toggle the visibility of the SURVEYED shorelines
-        // the switches toggle the visibility of the SURVEYED shorelines
-        surveyed_year.forEach((yr) => {
-            document.getElementById('flexSwitchCheckDefault'+yr).addEventListener('change', function(e) {
-                if (e.target.checked) {
-                    map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 1);
-                } else {
-                    map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 0);
-                    //map.setPaintProperty('main-line'+yr, 'fill-opacity', 0);
-                }
-            });
-        });
-
-        let previous = all_years_hist_shore.length - 1;
-        let current = 0;
-
-        let timerId = null;
-
-        function playHistShore() {
-
-            // set the play/pause button to pause
-            document.getElementById('playpause-hist').classList.remove('bi-play-circle');
-            document.getElementById('playpause-hist').classList.add('bi-pause-circle');
-
-            timerId = setInterval(updateShoreline, 200);
-        };
-
-        function updateShoreline() {
-            if (current == 0) {
-                previous = all_years_hist_shore.length - 1;
-            };
-
-            // add sources and layer of the current year
-            // addHistShoreline(all_years_hist_shore[current]);
-
-            // remove the sources and layers of the previous year
-            // removeHistShoreline(all_years_hist_shore[previous]);
-
-            // update the year label and range slider
-            document.getElementById("customRangeLabelshore-change").textContent = all_years_hist_shore[current].toString();
-            document.getElementById("customRangeshore-change").value = all_years_hist_shore[current].toString();
-
-            // if the layer and source of the current year NOT exist
-            // then first remove all existing layers and sources of the historical shorelines, because they are not needed in the batch
-            // then add the source and layer of the batch that current year belongs to
-            if (!map.getLayer("coastline_layer_" + all_years_hist_shore[current])) {
-
-                // mission 1: remove all existing layers and sources of the historical shorelines
-                activeLayersForHistShore.forEach((layer) => {
-                    if (map.getLayer(layer)) {
-                        map.removeLayer(layer);
-                    }
-                });
-
-                activeSourcesForHistShore.forEach((source) => {
-                    if (map.getSource(source)) {
-                        map.removeSource(source);
-                    }
-                });
-
-                activeLayersForHistShore = [];
-                activeSourcesForHistShore = [];
-
-                // mission 2: add the batch source and layer
-                for (let i = 0; i < surveyed_year.length - 1; i++) {
-                    if (all_years_hist_shore[current] >= surveyed_year[i] && all_years_hist_shore[current] < surveyed_year[i + 1]) {
-                        for (let j = surveyed_year[i]; j < surveyed_year[i + 1]; j++) {
-
-                            map.addSource('coastline_' + j, {
-                                type: 'geojson',
-                                data: 'assets/historical_results/estimated_shoreline/' + j + '.geojson'
-                            });
-
-                            map.addLayer({
-                                'id': "coastline_layer_" + j,
-                                'type': 'line',
-                                'source': "coastline_" + j,
-                                'paint': {
-                                    'line-color': '#3182bd',
-                                    'line-width': 2,
-                                    'line-opacity': 0
-                                }
-                            });
-
-                            // append the layer and source id to the map-wide variable activeLayersForHistShore and activeSourcesForHistShore
-                            activeLayersForHistShore.push("coastline_layer_" + j);
-                            activeSourcesForHistShore.push("coastline_" + j);
+                };
+
+                // add source and layer for the SEA LEVEL RISE section
+                function addSourceAndLayer(uniquePairs) {
+                    uniquePairs.forEach((pair, idx) => {
+                        let dnLimit = pair[0].toFixed(1);
+                        if (dnLimit <= 0) {
+                            dnLimit = '0.0';
                         }
-
-                        break;
-                    }
-                }
-            }
-
-            // set paint property of the layer of the current year to opacity 1
-            map.setPaintProperty("coastline_layer_" + all_years_hist_shore[current], 'line-opacity', 1);
-
-            // set paint property of previous layer to opacity 0
-            map.setPaintProperty("coastline_layer_" + all_years_hist_shore[previous], 'line-opacity', 0);
-
-            // show the shaded area that is depicted by the area between two surveyed years
-            if (surveyed_year.includes(all_years_hist_shore[previous])) {
-
-                removeAllEnclosedArea();
-
-                map.addSource('enclosed_' + all_years_hist_shore[previous], {
-                    type: 'geojson',
-                    // Use a URL for the value for the `data` property.
-                    data: 'assets/historical_results/shade_area/enclosed_'+ all_years_hist_shore[previous] +'.geojson'
-                });
-                map.addLayer({
-                    'id': 'enclosed_layer_' + all_years_hist_shore[previous],
-                    'type': 'fill',
-                    'source': 'enclosed_' + all_years_hist_shore[previous],
-                    'paint': {
-                        'fill-color': '#9ecae1',
-                        'fill-opacity': 0.5
-                    }
-                });
-            }
-
-            // set the previous and current index for the next iteration
-            previous = current;
-            current = current + 1;
-            if (current == all_years_hist_shore.length) {
-                current = 0;
-            };
-        };
-
-        // Remove multi-polygons between two shorelines
-        function removeAllEnclosedArea() {
-            enclosed_layers.forEach((layer) => {
-                if (map.getLayer(layer)) {
-                    map.removeLayer(layer);
-                }
-            });
-
-            enclosed_sources.forEach((source) => {
-                if (map.getSource(source)) {
-                    map.removeSource(source);
-                }
-            });
-        }
-
-        // pause the animation
-        function pauseHistShore() {
-            clearInterval(timerId);
-            timerId = null;
-
-            document.getElementById('playpause-hist').classList.remove('bi-pause-circle');
-            document.getElementById('playpause-hist').classList.add('bi-play-circle');
-        };
-
-        // add source and layer of historical shorelines of the given year
-        // set VISIBLE
-        function addHistShoreline(year) {
-            map.addSource('coastline_' + year, {
-                type: 'geojson',
-                // Use a URL for the value for the `data` property.
-                data: 'assets/historical_results/estimated_shoreline/' + year + '.geojson'
-            });
-
-            map.addLayer({
-                'id': "coastline_layer_" + year,
-                'type': 'line',
-                'source': "coastline_" + year,
-                'paint': {
-                    'line-color': '#3182bd',
-                    'line-width': 2
-                },  //color almond
-            })
-        };
-
-        // remove layer and source of the shoreline of the given year
-        function removeHistShoreline(year) {
-            let layerName = "coastline_layer_" + year;
-            let sourceName = "coastline_" + year;
-            if (map.getLayer(layerName)) {
-                map.removeLayer("coastline_layer_" + year);
-            }
-
-            if (map.getSource(sourceName)) {
-                map.removeSource("coastline_" + year);
-            }
-        };
-
-        // function to set all layers in the historical part to invisible
-        // including enclosed area, animation layer, and surveyed layer
-        function setAllHistLayersInvisible() {
-            removeAllEnclosedArea();
-            removeHistShoreline(all_years_hist_shore[previous]);
-            surveyed_year.forEach(yr => {
-                map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 0);
-            });
-        };
-
-        // Get the range slider element by its ID
-        const rangeSlider = document.getElementById('customRangeshore-change');
-
-        // Listen for the 'input' event to the slider
-        rangeSlider.addEventListener('input', function (event) {
-
-            // Pause the animation
-            pauseHistShore();
-
-            // Get the current value
-            const SLIDERYEAR = event.target.value;
-
-            // update the label which shows the year
-            document.getElementById("customRangeLabelshore-change").textContent = SLIDERYEAR;
-
-            // Hide all layers
-            //setAllHistLayersInvisible();
-
-            // set the previous year to invisible
-            // previous is a map.load() wide variable, which tracks the layer and source that need to be removed
-            // removeHistShoreline(all_years_hist_shore[previous]);
-
-            // console.log(`The year that should be removed is ${all_years_hist_shore[previous]}`);
-
-            // console.log(parseInt(SLIDERYEAR));
-
-            // set the previous year to opacity 0
-            map.setPaintProperty("coastline_layer_" + all_years_hist_shore[previous], 'line-opacity', 0);
-
-            // if layer and source of the slideryear exist
-            // then set the layer to visible
-            if (map.getLayer("coastline_layer_" + SLIDERYEAR)) {
-
-                map.setPaintProperty("coastline_layer_" + SLIDERYEAR, 'line-opacity', 1);
-            } else {
-
-                // first remove all loaded layers and sources of the historical shorelines
-                activeLayersForHistShore.forEach((layer) => {
-                    if (map.getLayer(layer)) {
-                        map.removeLayer(layer);
-                    }
-                });
-
-                activeSourcesForHistShore.forEach((source) => {
-                    if (map.getSource(source)) {
-                        map.removeSource(source);
-                    }
-                });
-
-                activeLayersForHistShore = [];
-                activeSourcesForHistShore = [];
-
-                // second, add the source and layer of the batch that slideryear belongs to
-                for (let i = 0; i < surveyed_year.length - 1; i++) {
-                    if (parseInt(SLIDERYEAR) >= surveyed_year[i] && parseInt(SLIDERYEAR) < surveyed_year[i + 1]) {
-                        for (let j = surveyed_year[i]; j < surveyed_year[i + 1]; j++) {
-
-                            map.addSource('coastline_' + j, {
-                                type: 'geojson',
-                                data: 'assets/historical_results/estimated_shoreline/' + j + '.geojson'
-                            });
-
-                            map.addLayer({
-                                'id': "coastline_layer_" + j,
-                                'type': 'line',
-                                'source': "coastline_" + j,
-                                'paint': {
-                                    'line-color': '#3182bd',
-                                    'line-width': 2,
-                                    'line-opacity': 0
-                                }
-                            });
-
-                            activeLayersForHistShore.push("coastline_layer_" + j);
-                            activeSourcesForHistShore.push("coastline_" + j);
-                        }
-
-                        break;
-                    }
-                }
-            };
-
-            map.setPaintProperty("coastline_layer_" + SLIDERYEAR, 'line-opacity', 1);
-
-            // show the corresponding enclosed area, remove all enclosed first, then add the enclosed I want
-            removeAllEnclosedArea();
-
-            // if the current year NOT a surveyed year, then show the enclosed area
-            if(!surveyed_year.includes(parseInt(SLIDERYEAR))) {
-                for (let i = 0; i < surveyed_year.length - 1; i++) {
-                    if (parseInt(SLIDERYEAR) >= surveyed_year[i] && parseInt(SLIDERYEAR) <= surveyed_year[i + 1]) {
-                        map.addSource('enclosed_' + surveyed_year[i], {
+                        let upLimit = pair[1].toFixed(1);
+                        map.addSource('geojson-source-'+dnLimit+'-'+upLimit, {
                             type: 'geojson',
-                            data:'assets/historical_results/shade_area/enclosed_'+ surveyed_year[i] +'.geojson'
+                            data: 'assets/slr_results/vector/uncertainty/slr_'+dnLimit+'_'+upLimit+'ft.geojson'
                         });
 
                         map.addLayer({
-                            'id': 'enclosed_layer_' + surveyed_year[i],
+                            'id': 'slr-layer-' + pair[0] + '-' + pair[1],
+                            'type': 'circle', // You can use a different layer type if needed
+                            'source': 'geojson-source-'+dnLimit+'-'+upLimit,
+                            'paint': {
+                                'circle-color': [
+                                    'match',
+                                    ['get', 'layer'], // Use the "layer" property for styling
+                                    'layer_1', lessCertainColor,  // Specify colors based on property values
+                                    'layer_2', moreCertainColor,
+
+                                    /* Add more property-value and color pairs as needed */
+                                    'gray'  // Default color if no match is found
+                                ],
+
+                                'circle-radius': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['zoom'],
+                                    10.5, 2,      // at zoom level 10, radius is 2
+                                    18, 20      // at zoom level 18, radius is 20
+                                ],
+
+                                'circle-opacity': 0  // set to 0 to make it invisible TEMPORARILY
+                            }
+                        });
+
+                        activeSourcesForSlr.push('geojson-source-'+dnLimit+'-'+upLimit);
+                        activeLayersForSlr.push('slr-layer-' + pair[0] + '-' + pair[1]);
+                    })
+                }
+
+                // remove source and layer for the SEA LEVEL RISE section
+                function removeSourceAndLayer() {
+
+                    activeLayersForSlr.forEach((layer, idx) => {
+                        map.removeLayer(layer);
+                    });
+
+                    activeSourcesForSlr.forEach((source, idx) => {
+                        map.removeSource(source);
+                    });
+
+                    activeLayersForSlr = [];
+                    activeSourcesForSlr = [];
+                }
+
+                // import the default sources and layers in the slr section
+                let verticalOrNot = document.getElementById('switchVertical').checked;
+                let rcpScenario = document.getElementById('line-selector').value;
+                if (verticalOrNot) {
+                    if (rcpScenario === 'all') {
+                        addSourceAndLayer(uniquercpallVertical);
+                    } else if (rcpScenario === 'RCP 4.5 line') {
+                        addSourceAndLayer(uniquercpLowVertical);
+                    } else {
+                        addSourceAndLayer(uniquercpHighVertical);
+                    }
+                } else {
+                    if (rcpScenario === 'all') {
+                        addSourceAndLayer(uniquercpallNonVertical);
+                    } else if (rcpScenario === 'RCP 4.5 line') {
+                        addSourceAndLayer(uniquercpLowNonVertical);
+                    } else {
+                        addSourceAndLayer(uniquercpHighNonVertical);
+                    }
+                }
+
+                // toggle the dropdown menu line-selector of the d3.js
+                document.getElementById("line-selector").addEventListener('change', function() {
+                    let selectedOption = this.value;
+                    let whetherToIncludeVertical = document.getElementById('switchVertical').checked;
+
+                    if (whetherToIncludeVertical) {
+                        if (selectedOption === 'all') {
+                            allSvgInvisible();
+                            document.querySelectorAll('.line').forEach(function(line) {
+                                line.style.display = 'block';
+                            });
+
+                            document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+
+                            addSourceAndLayer(uniquercpallVertical);
+
+                        } else if (selectedOption === 'RCP 4.5 line') {
+                            allSvgInvisible();
+                            document.getElementById(selectedOption).style.display ='block';
+                            document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                            document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+
+                            addSourceAndLayer(uniquercpLowVertical);
+
+                        } else if (selectedOption === 'RCP 8.5 line') {
+                            allSvgInvisible();
+                            document.getElementById(selectedOption).style.display ='block';
+                            document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                            document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+
+                            addSourceAndLayer(uniquercpHighVertical);
+                        }
+                    } else {
+                        if (selectedOption === 'all') {
+                            allSvgInvisible();
+                            document.querySelectorAll('.line').forEach(function(line) {
+                                line.style.display = 'block';
+                            });
+
+                            document.querySelectorAll('.confidence-interval').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+
+                            addSourceAndLayer(uniquercpallNonVertical);
+
+                        } else {
+                            allSvgInvisible();
+                            document.getElementById(selectedOption).style.display ='block';
+                            document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+
+                            removeSourceAndLayer();
+                            if (selectedOption === 'RCP 4.5 line') {
+                                addSourceAndLayer(uniquercpLowNonVertical);
+                            } else {
+                                addSourceAndLayer(uniquercpHighNonVertical);
+                            };
+                        }
+                    }
+                });
+
+                document.getElementById('switchVertical').addEventListener('change', function() {
+                    let selectedOption = document.getElementById('line-selector').value;
+                    let whetherToIncludeVertical = this.checked;
+
+                    if (whetherToIncludeVertical) {
+                        if (selectedOption === 'all') {
+                            allSvgInvisible();
+                            document.querySelectorAll('.line').forEach(function(line) {
+                                line.style.display = 'block';
+                            });
+
+                            document.querySelectorAll('.vertical-rcp-all').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+                            addSourceAndLayer(uniquercpallVertical);
+
+                        } else if (selectedOption === 'RCP 4.5 line') {
+                            allSvgInvisible();
+                            document.getElementById(selectedOption).style.display ='block';
+                            document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                            document.querySelectorAll('.vertical-rcp-low').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+                            addSourceAndLayer(uniquercpLowVertical);
+
+                        } else if (selectedOption === 'RCP 8.5 line') {
+                            allSvgInvisible();
+                            document.getElementById(selectedOption).style.display ='block';
+                            document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+                            document.querySelectorAll('.vertical-rcp-high').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+                            addSourceAndLayer(uniquercpHighVertical);
+                        }
+                    } else {
+                        if (selectedOption === 'all') {
+                            allSvgInvisible();
+                            document.querySelectorAll('.line').forEach(function(line) {
+                                line.style.display = 'block';
+                            });
+
+                            document.querySelectorAll('.confidence-interval').forEach(function(range) {
+                                range.style.display = 'block';
+                            });
+
+                            removeSourceAndLayer();
+                            addSourceAndLayer(uniquercpallNonVertical);
+                        } else {
+                            allSvgInvisible();
+                            document.getElementById(selectedOption).style.display ='block';
+                            document.getElementById(selectedOption.replace('line', 'confidence interval')).style.display = 'block';
+
+                            removeSourceAndLayer();
+                            if (selectedOption === 'RCP 4.5 line') {
+                                addSourceAndLayer(uniquercpLowNonVertical);
+                            } else {
+                                addSourceAndLayer(uniquercpHighNonVertical);
+                            };
+                        }
+                    }
+                });
+
+                // set slrLayerToShow and slrLayerToClose as a map.load wide variable
+                let slrLayerToShow;
+                let slrLayerToClose;
+
+                // define a function: if the value is smaller than 0, set it to 0, otherwise, keep the original value
+                // example: setToZeroIfNegative(-0.1) return 0
+                function setToZeroIfNegative(value) {
+                    if (value < 0) {
+                        return 0;
+                    } else {
+                        return value;
+                    }
+                };
+
+                svg.on('mousemove', function(event) {
+
+                    console.log(uniqueSlrPairs);
+
+                    // set the opacity of the slrLayerToClose to 0 to make it invisible
+                    map.setPaintProperty(slrLayerToClose, 'circle-opacity', 0);
+
+                    svg.selectAll('.circle-slr').remove();
+                    let [mx, my] = d3.pointer(event);
+
+                    let year = Math.round(xScale.invert(mx));
+                    year = Math.round(year / 10) * 10;
+
+
+                    // get the config.chapters whose id is 'sea-level-rise'
+                    let slr_chapter = config.chapters.filter(chapter => chapter.id === 'sea-level-rise')[0];
+
+                    let slr_lines = slr_chapter.lines;
+
+                    let verticalUncertainty = slr_chapter.verticalMoveUncertainty[0].values;
+
+                    // example output: {name: 'RCP 8.5', values:..., color:...}
+                    let line_high_values = slr_lines.filter(line => line.name === 'RCP 8.5')[0].values;
+
+                    console.log(line_high_values);
+                    let line_low_values = slr_lines.filter(line => line.name === 'RCP 4.5')[0].values;
+
+                    let high_color = slr_lines.filter(line => line.name === 'RCP 8.5')[0].color;
+                    let low_color = slr_lines.filter(line => line.name === 'RCP 4.5')[0].color;
+                    console.log(high_color)
+
+                    // get the value of the year in the high rcp scenario that is selected by the mouseover
+                    // example output: { year: 2020, ft: 0.1, lower: -0.1, upper:0.2 }
+                    let line_high_values_of_year = line_high_values.filter(line => line.year === year)[0];
+
+                    // get the value of the year in the low rcp scenario that is selected by the mouseover
+                    // example output: { year: 2020, ft: 0.1, lower: -0.1, upper:0.2 }
+                    let line_low_values_of_year = line_low_values.filter(line => line.year === year)[0];
+
+                    // get the uncertainty range of the vertical movement of the year that is fired by the mouseover
+                    // example output: {year: 2020, lower: -0.1, upper: 0.2}
+                    let verticalUncertainty_of_year = verticalUncertainty.filter(line => line.year === year)[0];
+
+                    // get the value of the drop down
+                    let selectedOption = document.getElementById('line-selector').value;
+
+                    // get the value of the switchVertical
+                    let whetherToIncludeVertical = document.getElementById('switchVertical').checked;
+
+                    // if the vertical land move is not switched on
+                    if (!whetherToIncludeVertical) {
+                        if (selectedOption === 'all') {
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(line_high_values_of_year.upper))
+                                .attr('r', 5)
+                                .attr('fill', lessCertainColor);
+
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(line_low_values_of_year.lower))
+                                .attr('r', 5)
+                                .attr('fill', moreCertainColor);
+
+                            document.getElementById('year').innerText = year;
+                            document.getElementById('low-bound').innerText = line_low_values_of_year.lower;
+                            document.getElementById('up-bound').innerText = line_high_values_of_year.upper;
+
+                            let lowerBoundForLayer = setToZeroIfNegative(line_low_values_of_year.lower);
+
+                            slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
+                            map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                        } else if (selectedOption === 'RCP 8.5 line') {
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(line_high_values_of_year.upper))
+                                .attr('r', 5)
+                                .attr('fill', lessCertainColor);
+
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(line_high_values_of_year.lower))
+                                .attr('r', 5)
+                                .attr('fill', moreCertainColor);
+
+                            document.getElementById('year').innerText = year;
+                            document.getElementById('low-bound').innerText = line_high_values_of_year.lower;
+                            document.getElementById('up-bound').innerText = line_high_values_of_year.upper;
+
+                            let lowerBoundForLayer = setToZeroIfNegative(line_high_values_of_year.lower);
+
+                            slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_high_values_of_year.upper;
+                            map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                        } else if (selectedOption === 'RCP 4.5 line') {
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(line_low_values_of_year.upper))
+                                .attr('r', 5)
+                                .attr('fill', lessCertainColor);
+
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(line_low_values_of_year.lower))
+                                .attr('r', 5)
+                                .attr('fill', moreCertainColor);
+
+                            document.getElementById('year').innerText = year;
+                            document.getElementById('low-bound').innerText = line_low_values_of_year.lower;
+                            document.getElementById('up-bound').innerText = line_low_values_of_year.upper;
+
+                            let lowerBoundForLayer = setToZeroIfNegative(line_low_values_of_year.lower);
+
+                            slrLayerToShow = 'slr-layer-'+lowerBoundForLayer+'-'+line_low_values_of_year.upper;
+                            map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+
+                        }
+                    } else {
+                        if (selectedOption === "all") {
+                            let yHigh = parseFloat((line_high_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
+                            let yLow = parseFloat((line_low_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(yHigh))
+                                .attr('r', 5)
+                                .attr('fill', lessCertainColor);
+
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(yLow))
+                                .attr('r', 5)
+                                .attr('fill', moreCertainColor);
+
+                            document.getElementById('year').innerText = year;
+                            document.getElementById('low-bound').innerText = yLow;
+                            document.getElementById('up-bound').innerText = yHigh;
+
+                            yLow = setToZeroIfNegative(yLow);
+
+                            slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
+                            map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                        } else if (selectedOption == 'RCP 8.5 line') {
+                            let yHigh = parseFloat((line_high_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
+                            let yLow = parseFloat((line_high_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(yHigh))
+                                .attr('r', 5)
+                                .attr('fill', lessCertainColor);
+
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(yLow))
+                                .attr('r', 5)
+                                .attr('fill', moreCertainColor);
+
+                                document.getElementById('year').innerText = year;
+                                document.getElementById('low-bound').innerText = yLow;
+                                document.getElementById('up-bound').innerText = yHigh;
+
+                                yLow = setToZeroIfNegative(yLow);
+
+                                slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
+                                map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                        } else if (selectedOption == 'RCP 4.5 line') {
+                            let yHigh = parseFloat((line_low_values_of_year.upper + verticalUncertainty_of_year.upper).toFixed(1));
+                            let yLow = parseFloat((line_low_values_of_year.lower + verticalUncertainty_of_year.lower).toFixed(1));
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(yHigh))
+                                .attr('r', 5)
+                                .attr('fill', lessCertainColor);
+
+                            svg.append('circle')
+                                .attr('class', 'circle-slr')
+                                .attr('cx', xScale(year))
+                                .attr('cy', yScale(yLow))
+                                .attr('r', 5)
+                                .attr('fill', moreCertainColor);
+                                document.getElementById('year').innerText = year;
+                                document.getElementById('low-bound').innerText = yLow;
+                                document.getElementById('up-bound').innerText = yHigh;
+
+                                yLow = setToZeroIfNegative(yLow);
+
+                                slrLayerToShow = 'slr-layer-'+yLow+'-'+yHigh;
+                            map.setPaintProperty(slrLayerToShow, 'circle-opacity', 0.1);
+                        }
+                    }
+
+                    slrLayerToClose = slrLayerToShow;
+
+                })
+
+                if (config.use3dTerrain) {
+                    map.addSource('mapbox-dem', {
+                        'type': 'raster-dem',
+                        'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                        'tileSize': 512,
+                        'maxzoom': 14
+                    });
+                    // add the DEM source as a terrain layer with exaggerated height
+                    map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+
+                // add a sky layer that will show when the map is highly pitched
+                    map.addLayer({
+                        'id': 'sky',
+                        'type': 'sky',
+                        'paint': {
+                            'sky-type': 'atmosphere',
+                            'sky-atmosphere-sun': [0.0, 0.0],
+                            'sky-atmosphere-sun-intensity': 15
+                        }
+                    });
+                };
+
+                // surveyed_year stores the years that the shorelines are surveyed in history
+                let surveyed_year = [1700, 1860, 1911, 1942, 1954, 1967, 1974, 1986, 1995, 1997, 1999, 2001, 2006, 2015];
+
+                let enclosed_sources = surveyed_year.map(year => 'enclosed_' + year);
+
+                let enclosed_layers = surveyed_year.map(year => 'enclosed_layer_' + year);
+
+                // add sources and layers of years that are surveyed
+                // surveyed_year layers are NOT removed when not in its chapter
+                surveyed_year.forEach((yr) => {
+                    map.addSource(`surveyed_${yr}`, {
+                        type: 'geojson',
+                        data: 'assets/historical_results/surveyed_shoreline/' + yr + '.geojson'
+                    });
+
+                    map.addLayer({
+                        'id':`surveyed_layer_${yr}`,
+                        'type': 'line',
+                        'source': `surveyed_${yr}`,
+                        'paint': {
+                            'line-color': '#3182bd',
+                            'line-width': 2,
+                            'line-opacity': 0
+                        }
+                    });
+                });
+
+                // set the switches which toggle the visibility of the SURVEYED shorelines
+                // the switches toggle the visibility of the SURVEYED shorelines
+                surveyed_year.forEach((yr) => {
+                    document.getElementById('flexSwitchCheckDefault'+yr).addEventListener('change', function(e) {
+                        if (e.target.checked) {
+                            map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 1);
+                        } else {
+                            map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 0);
+                            //map.setPaintProperty('main-line'+yr, 'fill-opacity', 0);
+                        }
+                    });
+                });
+
+                let previous = all_years_hist_shore.length - 1;
+                let current = 0;
+
+                let timerId = null;
+
+                function playHistShore() {
+
+                    // set the play/pause button to pause
+                    document.getElementById('playpause-hist').classList.remove('bi-play-circle');
+                    document.getElementById('playpause-hist').classList.add('bi-pause-circle');
+
+                    timerId = setInterval(updateShoreline, 200);
+                };
+
+                function updateShoreline() {
+                    if (current == 0) {
+                        previous = all_years_hist_shore.length - 1;
+                    };
+
+                    // add sources and layer of the current year
+                    // addHistShoreline(all_years_hist_shore[current]);
+
+                    // remove the sources and layers of the previous year
+                    // removeHistShoreline(all_years_hist_shore[previous]);
+
+                    // update the year label and range slider
+                    document.getElementById("customRangeLabelshore-change").textContent = all_years_hist_shore[current].toString();
+                    document.getElementById("customRangeshore-change").value = all_years_hist_shore[current].toString();
+
+                    // if the layer and source of the current year NOT exist
+                    // then first remove all existing layers and sources of the historical shorelines, because they are not needed in the batch
+                    // then add the source and layer of the batch that current year belongs to
+                    if (!map.getLayer("coastline_layer_" + all_years_hist_shore[current])) {
+
+                        // mission 1: remove all existing layers and sources of the historical shorelines
+                        activeLayersForHistShore.forEach((layer) => {
+                            if (map.getLayer(layer)) {
+                                map.removeLayer(layer);
+                            }
+                        });
+
+                        activeSourcesForHistShore.forEach((source) => {
+                            if (map.getSource(source)) {
+                                map.removeSource(source);
+                            }
+                        });
+
+                        activeLayersForHistShore = [];
+                        activeSourcesForHistShore = [];
+
+                        // mission 2: add the batch source and layer
+                        for (let i = 0; i < surveyed_year.length - 1; i++) {
+                            if (all_years_hist_shore[current] >= surveyed_year[i] && all_years_hist_shore[current] < surveyed_year[i + 1]) {
+                                for (let j = surveyed_year[i]; j < surveyed_year[i + 1]; j++) {
+
+                                    map.addSource('coastline_' + j, {
+                                        type: 'geojson',
+                                        data: 'assets/historical_results/estimated_shoreline/' + j + '.geojson'
+                                    });
+
+                                    map.addLayer({
+                                        'id': "coastline_layer_" + j,
+                                        'type': 'line',
+                                        'source': "coastline_" + j,
+                                        'paint': {
+                                            'line-color': '#3182bd',
+                                            'line-width': 2,
+                                            'line-opacity': 0
+                                        }
+                                    });
+
+                                    // append the layer and source id to the map-wide variable activeLayersForHistShore and activeSourcesForHistShore
+                                    activeLayersForHistShore.push("coastline_layer_" + j);
+                                    activeSourcesForHistShore.push("coastline_" + j);
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                    // set paint property of the layer of the current year to opacity 1
+                    map.setPaintProperty("coastline_layer_" + all_years_hist_shore[current], 'line-opacity', 1);
+
+                    // set paint property of previous layer to opacity 0
+                    map.setPaintProperty("coastline_layer_" + all_years_hist_shore[previous], 'line-opacity', 0);
+
+                    // show the shaded area that is depicted by the area between two surveyed years
+                    if (surveyed_year.includes(all_years_hist_shore[previous])) {
+
+                        removeAllEnclosedArea();
+
+                        map.addSource('enclosed_' + all_years_hist_shore[previous], {
+                            type: 'geojson',
+                            // Use a URL for the value for the `data` property.
+                            data: 'assets/historical_results/shade_area/enclosed_'+ all_years_hist_shore[previous] +'.geojson'
+                        });
+                        map.addLayer({
+                            'id': 'enclosed_layer_' + all_years_hist_shore[previous],
                             'type': 'fill',
-                            'source': 'enclosed_' + surveyed_year[i],
+                            'source': 'enclosed_' + all_years_hist_shore[previous],
                             'paint': {
                                 'fill-color': '#9ecae1',
                                 'fill-opacity': 0.5
                             }
                         });
-                        break;
                     }
-                }
-            };
 
-            //addHistShoreline(SLIDERYEAR);
+                    // set the previous and current index for the next iteration
+                    previous = current;
+                    current = current + 1;
+                    if (current == all_years_hist_shore.length) {
+                        current = 0;
+                    };
+                };
 
-            // offsetDistOfPoly.forEach(d => {
-            //     map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
-            // });
-
-            //map.setPaintProperty("main-line" + all_years_hist_shore[previous], 'line-opacity', 0);
-
-            //if the current year is not a surveyed year, then close the blurred layers as well
-            // if (!surveyed_year.includes(all_years_hist_shore[previous])) {
-
-            //     map.setPaintProperty("blur-line" + all_years_hist_shore[previous], 'line-opacity', 0);
-            //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[previous], 'line-opacity', 0);
-            //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[previous], 'line-opacity', 0);
-            // };
-
-            //show layers that are toggled on by the switch
-            // toggled on layers should be kept visible
-            // surveyed_year.forEach((yr) => {
-            //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
-            //         map.setPaintProperty('main-line'+yr, 'line-opacity', 1);
-            //     }
-            // });
-
-            // if the surveyed year is toggled on,keep it on.
-            // surveyed_year.forEach((yr) => {
-            //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
-            //         offsetDistOfPoly.forEach(d => {
-            //             map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
-            //         });
-            //     }
-            // });
-
-            // Show the layer for the year on the slider
-            //map.setPaintProperty("main-line"+SLIDERYEAR, 'line-opacity', 1);
-            // offsetDistOfPoly.forEach(d => {
-            //     map.setPaintProperty(`polygon_${SLIDERYEAR}_${d}`, 'fill-opacity', 1);
-            // });
-
-            // if the slider year is not a surveyed year, then show the blurred layers as well
-            // if (!surveyed_year.includes(parseInt(SLIDERYEAR))) {
-            //     map.setPaintProperty("blur-line"+SLIDERYEAR, 'line-opacity', 0.6);
-            //     map.setPaintProperty("blur-line-2"+SLIDERYEAR, 'line-opacity', 0.5);
-            //     map.setPaintProperty("blur-line-3"+SLIDERYEAR, 'line-opacity', 0.25)
-            // };
-
-            // set previous and current index for the next iteration
-            previous = all_years_hist_shore.indexOf(parseInt(SLIDERYEAR));
-            if (previous != all_years_hist_shore.length -1) {
-                current = previous + 1;  // current will be used by the playHistShore function, which is the animation
-            } else {
-                current = 0;
-            };
-        });
-
-        // set the function to play animation of historical shorelines
-
-        playPauseButton = document.getElementById('clickable');
-        playPauseIcon = playPauseButton.querySelector('i');
-
-        // if the button is a play button, then start the animation and change it to a pause button
-        // if the button is a pause button, then pause the animation and change it to a play button
-        playPauseButton.addEventListener('click', () => {
-
-            if (playPauseIcon.classList.contains('bi-play-circle')) {
-                playPauseIcon.classList.remove('bi-play-circle');
-                playPauseIcon.classList.add('bi-pause-circle');
-                playHistShore();
-            } else {
-                playPauseIcon.classList.remove('bi-pause-circle');
-                playPauseIcon.classList.add('bi-play-circle');
-                pauseHistShore();
-            }
-        });
-
-        // setup the instance, pass callback functions
-        scroller
-        .setup({
-
-            step: '.step',
-            offset: 0.5,
-            progress: true,
-            //debug: true
-        })
-        .onStepEnter(response => {
-            var chapter = config.chapters.find(chap => chap.id === response.element.id);
-
-            if (response.element.id=="shore-change") {
-
-                current=0;
-                playHistShore();
-            };
-
-            if (response.element.id=="sea-level-rise") {
-                let slrScenarioSelect = document.getElementById("line-selector");
-                slrScenarioSelect.selectedIndex = 0;
-                let slrVerticalSwitch = document.getElementById("switchVertical");
-                slrVerticalSwitch.checked = false;
-
-                allSvgInvisible();
-                document.querySelectorAll('.line').forEach(function(line) {
-                    line.style.display = 'block';
-                });
-
-                document.querySelectorAll('.confidence-interval').forEach(function(range) {
-                    range.style.display = 'block';
-                });
-
-                addSourceAndLayer(uniquercpallNonVertical);
-            };
-
-            response.element.classList.add('active');
-
-            map[chapter.mapAnimation || 'flyTo'](chapter.location);
-
-            if (config.showMarkers) {
-                marker.setLngLat(chapter.location.center);
-            }
-            // if (chapter.onChapterEnter.length > 0) {
-            //     chapter.onChapterEnter.forEach(setLayerOpacity);
-            // }
-            if (chapter.callback) {
-                window[chapter.callback]();
-            }
-            if (chapter.rotateAnimation) {
-                map.once('moveend', function() {
-                    const rotateNumber = map.getBearing();
-                    map.rotateTo(rotateNumber + 90, {
-                        duration: 24000, easing: function (t) {
-                            return t;
+                // Remove multi-polygons between two shorelines
+                function removeAllEnclosedArea() {
+                    enclosed_layers.forEach((layer) => {
+                        if (map.getLayer(layer)) {
+                            map.removeLayer(layer);
                         }
                     });
+
+                    enclosed_sources.forEach((source) => {
+                        if (map.getSource(source)) {
+                            map.removeSource(source);
+                        }
+                    });
+                }
+
+                // pause the animation
+                function pauseHistShore() {
+                    clearInterval(timerId);
+                    timerId = null;
+
+                    document.getElementById('playpause-hist').classList.remove('bi-pause-circle');
+                    document.getElementById('playpause-hist').classList.add('bi-play-circle');
+                };
+
+                // add source and layer of historical shorelines of the given year
+                // set VISIBLE
+                function addHistShoreline(year) {
+                    map.addSource('coastline_' + year, {
+                        type: 'geojson',
+                        // Use a URL for the value for the `data` property.
+                        data: 'assets/historical_results/estimated_shoreline/' + year + '.geojson'
+                    });
+
+                    map.addLayer({
+                        'id': "coastline_layer_" + year,
+                        'type': 'line',
+                        'source': "coastline_" + year,
+                        'paint': {
+                            'line-color': '#3182bd',
+                            'line-width': 2
+                        },  //color almond
+                    })
+                };
+
+                // remove layer and source of the shoreline of the given year
+                function removeHistShoreline(year) {
+                    let layerName = "coastline_layer_" + year;
+                    let sourceName = "coastline_" + year;
+                    if (map.getLayer(layerName)) {
+                        map.removeLayer("coastline_layer_" + year);
+                    }
+
+                    if (map.getSource(sourceName)) {
+                        map.removeSource("coastline_" + year);
+                    }
+                };
+
+                // function to set all layers in the historical part to invisible
+                // including enclosed area, animation layer, and surveyed layer
+                function setAllHistLayersInvisible() {
+                    removeAllEnclosedArea();
+                    removeHistShoreline(all_years_hist_shore[previous]);
+                    surveyed_year.forEach(yr => {
+                        map.setPaintProperty(`surveyed_layer_${yr}`, 'line-opacity', 0);
+                    });
+                };
+
+                // Get the range slider element by its ID
+                const rangeSlider = document.getElementById('customRangeshore-change');
+
+                // Listen for the 'input' event to the slider
+                rangeSlider.addEventListener('input', function (event) {
+
+                    // Pause the animation
+                    pauseHistShore();
+
+                    // Get the current value
+                    const SLIDERYEAR = event.target.value;
+
+                    // update the label which shows the year
+                    document.getElementById("customRangeLabelshore-change").textContent = SLIDERYEAR;
+
+                    // Hide all layers
+                    //setAllHistLayersInvisible();
+
+                    // set the previous year to invisible
+                    // previous is a map.load() wide variable, which tracks the layer and source that need to be removed
+                    // removeHistShoreline(all_years_hist_shore[previous]);
+
+                    // console.log(`The year that should be removed is ${all_years_hist_shore[previous]}`);
+
+                    // console.log(parseInt(SLIDERYEAR));
+
+                    // set the previous year to opacity 0
+                    map.setPaintProperty("coastline_layer_" + all_years_hist_shore[previous], 'line-opacity', 0);
+
+                    // if layer and source of the slideryear exist
+                    // then set the layer to visible
+                    if (map.getLayer("coastline_layer_" + SLIDERYEAR)) {
+
+                        map.setPaintProperty("coastline_layer_" + SLIDERYEAR, 'line-opacity', 1);
+                    } else {
+
+                        // first remove all loaded layers and sources of the historical shorelines
+                        activeLayersForHistShore.forEach((layer) => {
+                            if (map.getLayer(layer)) {
+                                map.removeLayer(layer);
+                            }
+                        });
+
+                        activeSourcesForHistShore.forEach((source) => {
+                            if (map.getSource(source)) {
+                                map.removeSource(source);
+                            }
+                        });
+
+                        activeLayersForHistShore = [];
+                        activeSourcesForHistShore = [];
+
+                        // second, add the source and layer of the batch that slideryear belongs to
+                        for (let i = 0; i < surveyed_year.length - 1; i++) {
+                            if (parseInt(SLIDERYEAR) >= surveyed_year[i] && parseInt(SLIDERYEAR) < surveyed_year[i + 1]) {
+                                for (let j = surveyed_year[i]; j < surveyed_year[i + 1]; j++) {
+
+                                    map.addSource('coastline_' + j, {
+                                        type: 'geojson',
+                                        data: 'assets/historical_results/estimated_shoreline/' + j + '.geojson'
+                                    });
+
+                                    map.addLayer({
+                                        'id': "coastline_layer_" + j,
+                                        'type': 'line',
+                                        'source': "coastline_" + j,
+                                        'paint': {
+                                            'line-color': '#3182bd',
+                                            'line-width': 2,
+                                            'line-opacity': 0
+                                        }
+                                    });
+
+                                    activeLayersForHistShore.push("coastline_layer_" + j);
+                                    activeSourcesForHistShore.push("coastline_" + j);
+                                }
+
+                                break;
+                            }
+                        }
+                    };
+
+                    map.setPaintProperty("coastline_layer_" + SLIDERYEAR, 'line-opacity', 1);
+
+                    // show the corresponding enclosed area, remove all enclosed first, then add the enclosed I want
+                    removeAllEnclosedArea();
+
+                    // if the current year NOT a surveyed year, then show the enclosed area
+                    if(!surveyed_year.includes(parseInt(SLIDERYEAR))) {
+                        for (let i = 0; i < surveyed_year.length - 1; i++) {
+                            if (parseInt(SLIDERYEAR) >= surveyed_year[i] && parseInt(SLIDERYEAR) <= surveyed_year[i + 1]) {
+                                map.addSource('enclosed_' + surveyed_year[i], {
+                                    type: 'geojson',
+                                    data:'assets/historical_results/shade_area/enclosed_'+ surveyed_year[i] +'.geojson'
+                                });
+
+                                map.addLayer({
+                                    'id': 'enclosed_layer_' + surveyed_year[i],
+                                    'type': 'fill',
+                                    'source': 'enclosed_' + surveyed_year[i],
+                                    'paint': {
+                                        'fill-color': '#9ecae1',
+                                        'fill-opacity': 0.5
+                                    }
+                                });
+                                break;
+                            }
+                        }
+                    };
+
+                    //addHistShoreline(SLIDERYEAR);
+
+                    // offsetDistOfPoly.forEach(d => {
+                    //     map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
+                    // });
+
+                    //map.setPaintProperty("main-line" + all_years_hist_shore[previous], 'line-opacity', 0);
+
+                    //if the current year is not a surveyed year, then close the blurred layers as well
+                    // if (!surveyed_year.includes(all_years_hist_shore[previous])) {
+
+                    //     map.setPaintProperty("blur-line" + all_years_hist_shore[previous], 'line-opacity', 0);
+                    //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[previous], 'line-opacity', 0);
+                    //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[previous], 'line-opacity', 0);
+                    // };
+
+                    //show layers that are toggled on by the switch
+                    // toggled on layers should be kept visible
+                    // surveyed_year.forEach((yr) => {
+                    //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
+                    //         map.setPaintProperty('main-line'+yr, 'line-opacity', 1);
+                    //     }
+                    // });
+
+                    // if the surveyed year is toggled on,keep it on.
+                    // surveyed_year.forEach((yr) => {
+                    //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
+                    //         offsetDistOfPoly.forEach(d => {
+                    //             map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
+                    //         });
+                    //     }
+                    // });
+
+                    // Show the layer for the year on the slider
+                    //map.setPaintProperty("main-line"+SLIDERYEAR, 'line-opacity', 1);
+                    // offsetDistOfPoly.forEach(d => {
+                    //     map.setPaintProperty(`polygon_${SLIDERYEAR}_${d}`, 'fill-opacity', 1);
+                    // });
+
+                    // if the slider year is not a surveyed year, then show the blurred layers as well
+                    // if (!surveyed_year.includes(parseInt(SLIDERYEAR))) {
+                    //     map.setPaintProperty("blur-line"+SLIDERYEAR, 'line-opacity', 0.6);
+                    //     map.setPaintProperty("blur-line-2"+SLIDERYEAR, 'line-opacity', 0.5);
+                    //     map.setPaintProperty("blur-line-3"+SLIDERYEAR, 'line-opacity', 0.25)
+                    // };
+
+                    // set previous and current index for the next iteration
+                    previous = all_years_hist_shore.indexOf(parseInt(SLIDERYEAR));
+                    if (previous != all_years_hist_shore.length -1) {
+                        current = previous + 1;  // current will be used by the playHistShore function, which is the animation
+                    } else {
+                        current = 0;
+                    };
                 });
-            }
-        })
-        .onStepExit(response => {
-            var chapter = config.chapters.find(chap => chap.id === response.element.id);
-            response.element.classList.remove('active');
-            // if (chapter.onChapterExit.length > 0) {
-            //     chapter.onChapterExit.forEach(setLayerOpacity);
-            // }
 
-            if (chapter.id == "shore-change") {
-                pauseHistShore();
-                setAllHistLayersInvisible();
-            }
+                // set the function to play animation of historical shorelines
 
-            if (chapter.id == "sea-level-rise") {
-                removeSourceAndLayer();
-            }
-        });
+                playPauseButton = document.getElementById('clickable');
+                playPauseIcon = playPauseButton.querySelector('i');
 
-        // re-add source and layers to the map when the style is loaded,
-        // because the original source and layers are removed when the style is re-loaded
-        map.on('styledata', function() {
-        // surveyed_year stores the years that the shorelines are surveyed in history
+                // if the button is a play button, then start the animation and change it to a pause button
+                // if the button is a pause button, then pause the animation and change it to a play button
+                playPauseButton.addEventListener('click', () => {
 
-        surveyed_year.forEach((yr) => {
-            if (!map.getSource(`surveyed_${yr}`)) {
-                    map.addSource(`surveyed_${yr}`, {
-                    type: 'geojson',
-                    data: 'assets/historical_results/surveyed_shoreline/' + yr + '.geojson'
-                });
-
-                map.addLayer({
-                    'id':`surveyed_layer_${yr}`,
-                    'type': 'line',
-                    'source': `surveyed_${yr}`,
-                    'paint': {
-                        'line-color': '#3182bd',
-                        'line-width': 2,
-                        'line-opacity': 0
+                    if (playPauseIcon.classList.contains('bi-play-circle')) {
+                        playPauseIcon.classList.remove('bi-play-circle');
+                        playPauseIcon.classList.add('bi-pause-circle');
+                        playHistShore();
+                    } else {
+                        playPauseIcon.classList.remove('bi-pause-circle');
+                        playPauseIcon.classList.add('bi-play-circle');
+                        pauseHistShore();
                     }
                 });
-            }
 
-        });
-    });
-    });
+                // setup the instance, pass callback functions
+                scroller
+                .setup({
 
+                    step: '.step',
+                    offset: 0.5,
+                    progress: true,
+                    //debug: true
+                })
+                .onStepEnter(response => {
+                    var chapter = config.chapters.find(chap => chap.id === response.element.id);
 
+                    if (response.element.id=="shore-change") {
 
+                        current=0;
+                        playHistShore();
+                    };
 
-    // setup resize event
-    window.addEventListener('resize', scroller.resize);
+                    if (response.element.id=="sea-level-rise") {
+                        let slrScenarioSelect = document.getElementById("line-selector");
+                        slrScenarioSelect.selectedIndex = 0;
+                        let slrVerticalSwitch = document.getElementById("switchVertical");
+                        slrVerticalSwitch.checked = false;
+
+                        allSvgInvisible();
+                        document.querySelectorAll('.line').forEach(function(line) {
+                            line.style.display = 'block';
+                        });
+
+                        document.querySelectorAll('.confidence-interval').forEach(function(range) {
+                            range.style.display = 'block';
+                        });
+
+                        addSourceAndLayer(uniquercpallNonVertical);
+                    };
+
+                    response.element.classList.add('active');
+
+                    map[chapter.mapAnimation || 'flyTo'](chapter.location);
+
+                    if (config.showMarkers) {
+                        marker.setLngLat(chapter.location.center);
+                    }
+                    // if (chapter.onChapterEnter.length > 0) {
+                    //     chapter.onChapterEnter.forEach(setLayerOpacity);
+                    // }
+                    if (chapter.callback) {
+                        window[chapter.callback]();
+                    }
+                    if (chapter.rotateAnimation) {
+                        map.once('moveend', function() {
+                            const rotateNumber = map.getBearing();
+                            map.rotateTo(rotateNumber + 90, {
+                                duration: 24000, easing: function (t) {
+                                    return t;
+                                }
+                            });
+                        });
+                    }
+                })
+                .onStepExit(response => {
+                    var chapter = config.chapters.find(chap => chap.id === response.element.id);
+                    response.element.classList.remove('active');
+                    // if (chapter.onChapterExit.length > 0) {
+                    //     chapter.onChapterExit.forEach(setLayerOpacity);
+                    // }
+
+                    if (chapter.id == "shore-change") {
+                        pauseHistShore();
+                        setAllHistLayersInvisible();
+                    }
+
+                    if (chapter.id == "sea-level-rise") {
+                        removeSourceAndLayer();
+                    }
+                });
+
+                // re-add source and layers to the map when the style is loaded,
+                // because the original source and layers are removed when the style is re-loaded
+                map.on('styledata', function() {
+                // surveyed_year stores the years that the shorelines are surveyed in history
+
+                surveyed_year.forEach((yr) => {
+                    if (!map.getSource(`surveyed_${yr}`)) {
+                            map.addSource(`surveyed_${yr}`, {
+                            type: 'geojson',
+                            data: 'assets/historical_results/surveyed_shoreline/' + yr + '.geojson'
+                        });
+
+                        map.addLayer({
+                            'id':`surveyed_layer_${yr}`,
+                            'type': 'line',
+                            'source': `surveyed_${yr}`,
+                            'paint': {
+                                'line-color': '#3182bd',
+                                'line-width': 2,
+                                'line-opacity': 0
+                            }
+                        });
+                    }
+
+                });
+            });
+            });
+        // setup resize event
+        window.addEventListener('resize', scroller.resize);
+        })
     </script>
 
     <script>
