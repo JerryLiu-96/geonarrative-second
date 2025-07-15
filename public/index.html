@@ -632,10 +632,6 @@
             animatePanel.appendChild(range);
             chapter.appendChild(animatePanel);
 
-            // let screenshotBtn = document.createElement('button');
-            // screenshotBtn.setAttribute('id', 'screenshotBtn');
-            // screenshotBtn.innerText = 'Snapshot this year';
-            // chapter.appendChild(screenshotBtn);
         }
 
         // set toggle switches for the surveyed years
@@ -2003,12 +1999,6 @@
                         previous = all_years_hist_shore.length - 1;
                     };
 
-                    // add sources and layer of the current year
-                    // addHistShoreline(all_years_hist_shore[current]);
-
-                    // remove the sources and layers of the previous year
-                    // removeHistShoreline(all_years_hist_shore[previous]);
-
                     // update the year label and range slider
                     document.getElementById("customRangeLabelshore-change").textContent = all_years_hist_shore[current].toString();
                     document.getElementById("customRangeshore-change").value = all_years_hist_shore[current].toString();
@@ -2182,17 +2172,6 @@
                     // update the label which shows the year
                     document.getElementById("customRangeLabelshore-change").textContent = SLIDERYEAR;
 
-                    // Hide all layers
-                    //setAllHistLayersInvisible();
-
-                    // set the previous year to invisible
-                    // previous is a map.load() wide variable, which tracks the layer and source that need to be removed
-                    // removeHistShoreline(all_years_hist_shore[previous]);
-
-                    // console.log(`The year that should be removed is ${all_years_hist_shore[previous]}`);
-
-                    // console.log(parseInt(SLIDERYEAR));
-
                     // set the previous year to opacity 0
                     map.setPaintProperty("coastline_layer_" + all_years_hist_shore[previous], 'line-opacity', 0);
 
@@ -2276,52 +2255,6 @@
                             }
                         }
                     };
-
-                    //addHistShoreline(SLIDERYEAR);
-
-                    // offsetDistOfPoly.forEach(d => {
-                    //     map.setPaintProperty(`polygon_${all_years_hist_shore[previous]}_${d}`, 'fill-opacity', 0);
-                    // });
-
-                    //map.setPaintProperty("main-line" + all_years_hist_shore[previous], 'line-opacity', 0);
-
-                    //if the current year is not a surveyed year, then close the blurred layers as well
-                    // if (!surveyed_year.includes(all_years_hist_shore[previous])) {
-
-                    //     map.setPaintProperty("blur-line" + all_years_hist_shore[previous], 'line-opacity', 0);
-                    //     map.setPaintProperty("blur-line-2" + all_years_hist_shore[previous], 'line-opacity', 0);
-                    //     map.setPaintProperty("blur-line-3" + all_years_hist_shore[previous], 'line-opacity', 0);
-                    // };
-
-                    //show layers that are toggled on by the switch
-                    // toggled on layers should be kept visible
-                    // surveyed_year.forEach((yr) => {
-                    //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
-                    //         map.setPaintProperty('main-line'+yr, 'line-opacity', 1);
-                    //     }
-                    // });
-
-                    // if the surveyed year is toggled on,keep it on.
-                    // surveyed_year.forEach((yr) => {
-                    //     if (document.getElementById('flexSwitchCheckDefault'+yr).checked) {
-                    //         offsetDistOfPoly.forEach(d => {
-                    //             map.setPaintProperty(`polygon_${yr}_${d}`, 'fill-opacity', 1);
-                    //         });
-                    //     }
-                    // });
-
-                    // Show the layer for the year on the slider
-                    //map.setPaintProperty("main-line"+SLIDERYEAR, 'line-opacity', 1);
-                    // offsetDistOfPoly.forEach(d => {
-                    //     map.setPaintProperty(`polygon_${SLIDERYEAR}_${d}`, 'fill-opacity', 1);
-                    // });
-
-                    // if the slider year is not a surveyed year, then show the blurred layers as well
-                    // if (!surveyed_year.includes(parseInt(SLIDERYEAR))) {
-                    //     map.setPaintProperty("blur-line"+SLIDERYEAR, 'line-opacity', 0.6);
-                    //     map.setPaintProperty("blur-line-2"+SLIDERYEAR, 'line-opacity', 0.5);
-                    //     map.setPaintProperty("blur-line-3"+SLIDERYEAR, 'line-opacity', 0.25)
-                    // };
 
                     // set previous and current index for the next iteration
                     previous = all_years_hist_shore.indexOf(parseInt(SLIDERYEAR));
@@ -2415,9 +2348,6 @@
                 .onStepExit(response => {
                     var chapter = config.chapters.find(chap => chap.id === response.element.id);
                     response.element.classList.remove('active');
-                    // if (chapter.onChapterExit.length > 0) {
-                    //     chapter.onChapterExit.forEach(setLayerOpacity);
-                    // }
 
                     if (chapter.id == "shore-change") {
                         pauseHistShore();
