@@ -1178,18 +1178,46 @@
         storyBox.appendChild(gradientSpan);
 
         // create the stepper
-        storyBox.appendChild(createStepper());
+        storyBox.appendChild(createStepper(storyInstanceCounter));
 
         // create a text input field
         const storyTextArea = document.createElement('textarea');
         storyTextArea.id = 'story-text-' + entryId;
         storyTextArea.placeholder = '';
         storyTextArea.classList.add(
-            'peer', 'w-full', 'pl-6', 'pr-4', 'pt-6', 'pb-2', 'text-sm', 'text-gray-800',
-            'bg-transparent', 'border', 'border-transparent', 'rounded-lg','resize-none',
+            'peer', 'w-full', 'p-2', 'text-sm', 'text-gray-800',
+            'bg-white', 'border', 'border-transparent', 'rounded-lg','resize-none',
             'focus:border-transparent',
             'focus:outline-none', 'transition-all', 'duration-300', 'delay-200', 'placeholder-transparent'
         );
+        storyTextArea.addEventListener('input', () => {
+            const step2 = document.getElementById('stepper' + entryId + '-2');
+            const step3 = document.getElementById('stepper' + entryId + '-3');
+
+            // --- Update Step 2 to 'Completed' ---
+            step2.classList.remove('after:border-gray-200');
+            step2.classList.add('text-blue-600', 'after:border-blue-600');
+            const step2Circle = step2.querySelector('span:first-child');
+            step2Circle.classList.remove('bg-white', 'border-4', 'border-blue-600');
+            step2Circle.classList.add('bg-blue-600');
+            const step2Number = step2.querySelector('span > span');
+            step2Number.classList.remove('text-blue-600');
+            step2Number.classList.add('text-white');
+            const step2Label = step2.querySelector('span:last-child');
+            step2Label.classList.remove('font-semibold');
+            step2Label.classList.add('font-medium');
+
+            // --- Update Step 3 to 'Current' ---
+            const step3Circle = step3.querySelector('span:first-child');
+            step3Circle.classList.remove('bg-gray-200');
+            step3Circle.classList.add('bg-white', 'border-4', 'border-blue-600');
+            const step3Number = step3.querySelector('span > span');
+            step3Number.classList.remove('text-gray-500');
+            step3Number.classList.add('text-blue-600');
+            const step3Label = step3.querySelector('span:last-child');
+            step3Label.classList.remove('text-gray-500', 'font-medium');
+            step3Label.classList.add('font-semibold', 'text-blue-600');
+        })
         storyBox.appendChild(storyTextArea);
 
         // create the label
@@ -1197,7 +1225,7 @@
         label.htmlFor = 'story-text-' + entryId;
         label.textContent = 'Click on the map to locate, then share your story here';
         label.classList.add(
-            'absolute', 'left-6', 'top-3.5', 'text-sm', 'text-gray-500',
+            'absolute', 'left-6', 'top-3.5', 'text-xs', 'text-gray-500',
             'transition-all', 'duration-200', 'ease-in-out',
             'peer-placeholder-shown:top-3.5', 'peer-placeholder-shown:text-base',
             'peer-placeholder-shown:text-gray-400', 'peer-focus:top-1',
@@ -1224,6 +1252,36 @@
         pictureInput.multiple = true;
         pictureInput.accept = 'image/*';
         pictureInput.style.display = 'none';
+
+        // stepper from step 3 to step 4
+        pictureInput.addEventListener('input', function () {
+            const step3 = document.getElementById('stepper' + entryId + '-3');
+            const step4 = document.getElementById('stepper' + entryId + '-4');
+
+            // --- Update Step 3 to 'Completed' ---
+            step3.classList.remove('after:border-gray-200');
+            step3.classList.add('text-blue-600', 'after:border-blue-600');
+            const step3Circle = step3.querySelector('span:first-child');
+            step3Circle.classList.remove('bg-white', 'border-4', 'border-blue-600');
+            step3Circle.classList.add('bg-blue-600');
+            const step3Number = step3.querySelector('span > span');
+            step3Number.classList.remove('text-blue-600');
+            step3Number.classList.add('text-white');
+            const step3Label = step3.querySelector('span:last-child');
+            step3Label.classList.remove('font-semibold');
+            step3Label.classList.add('font-medium');
+
+            // --- Update Step 4 to 'Current' ---
+            const step4Circle = step4.querySelector('span:first-child');
+            step4Circle.classList.remove('bg-gray-200');
+            step4Circle.classList.add('bg-white', 'border-4', 'border-blue-600');
+            const step4Number = step4.querySelector('span > span');
+            step4Number.classList.remove('text-gray-500');
+            step4Number.classList.add('text-blue-600');
+            const step4Label = step4.querySelector('span:last-child');
+            step4Label.classList.remove('text-gray-500', 'font-medium');
+            step4Label.classList.add('font-semibold', 'text-blue-600');
+        })
 
         pictureInput.addEventListener('change', function () {
             const files = Array.from(pictureInput.files);
@@ -1265,6 +1323,23 @@
         saveButton.id = 'save-button-' + entryId;
         saveButton.classList.add('btn-save-story', 'px-2','py-1','text-sm','bg-gray-50',`text-${currentTailwindColor}-500`,`hover:bg-${currentTailwindColor}-500`);
 
+        saveButton.addEventListener('click', function () {
+            // stepper from step 4 becomes completed
+            const step4 = document.getElementById('stepper' + entryId + '-4');
+            //step4.classList.remove('after:border-gray-200');
+            step4.classList.add('text-blue-600');
+            const step4Circle = step4.querySelector('span:first-child');
+            step4Circle.classList.remove('bg-white', 'border-4', 'border-blue-600');
+            step4Circle.classList.add('bg-blue-600');
+            const step4Number = step4.querySelector('span > span');
+            step4Number.classList.remove('text-blue-600');
+            step4Number.classList.add('text-white');
+            const step4Label = step4.querySelector('span:last-child');
+            step4Label.classList.remove('font-semibold');
+            step4Label.classList.add('font-medium');
+        })
+        // upon clicking, save the story to the database
+        // get the story text, picture files, and location
         saveButton.addEventListener('click', async function () {
             const storyText= document.getElementById('story-text-' + entryId).value;
             const pictureFiles = document.getElementById('picture-input-' + entryId).files;
@@ -1314,82 +1389,87 @@
         storyEntriesContainer.appendChild(entryContainer);
     }
 
-    function createStepper() {
+    function createStepper(idNum) {
         let stepper = document.createElement('div');
-        stepper.classList.add("bg-white", "p-6", "sm:p-8", "rounded-2xl", "mb-4");
+        stepper.id = 'stepper-' + idNum;
+        stepper.classList.add("bg-transparent", "p-2", "sm:p-6", "rounded-2xl","mt-8");
         let stepperWrapper = document.createElement('div');
         stepperWrapper.classList.add("w-full", "max-w-5xl", "mx-auto");
         let orderedList = document.createElement('ol');
-        orderedList.classList.add('flex','items-center','w-full');
+        orderedList.classList.add('flex','items-center','w-full','mb-0');
 
         let firstStep = document.createElement('li');
+        firstStep.id = 'stepper'+idNum+'-1';
         firstStep.classList.add("flex", "w-full", "items-center", "after:content-['']", "after:w-full", "after:h-1", "after:border-b", "after:border-gray-200", "after:border-4", "after:inline-block");
         let divInStep = document.createElement('div');
         divInStep.classList.add("flex", "flex-col", "items-center", "justify-center", "w-full");
         let spanWrapper = document.createElement('span');
-        spanWrapper.classList.add("flex", "items-center", "justify-center", "w-10", "h-10", "bg-white", "border-4", "border-blue-600", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
+        spanWrapper.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-white", "border-4", "border-blue-600", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let span = document.createElement('span');
         span.classList.add("text-sm", "font-semibold", "text-blue-600");
         span.textContent = "1";
         spanWrapper.appendChild(span);
         divInStep.appendChild(spanWrapper);
         let spanSecond = document.createElement('span');
-        spanSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-blue-600", "mt-2", "text-center");
+        spanSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-blue-600", "mt-1", "text-center");
         spanSecond.textContent = "Locate";
         divInStep.appendChild(spanSecond);
         firstStep.appendChild(divInStep);
         orderedList.appendChild(firstStep);
 
         let secondStep = document.createElement('li');
+        secondStep.id = 'stepper'+idNum+'-2';
         secondStep.classList.add("flex", "w-full", "items-center", "after:content-['']", "after:w-full", "after:h-1", "after:border-b", "after:border-gray-200", "after:border-4", "after:inline-block");
         let divInSecondStep = document.createElement('div');
         divInSecondStep.classList.add("flex", "flex-col", "items-center", "justify-center", "w-full");
         let spanWrapperSecond = document.createElement('span');
-        spanWrapperSecond.classList.add("flex", "items-center", "justify-center", "w-10", "h-10", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
+        spanWrapperSecond.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let spanSecondStep = document.createElement('span');
         spanSecondStep.classList.add("text-sm", "font-semibold", "text-gray-600");
         spanSecondStep.textContent = "2";
         spanWrapperSecond.appendChild(spanSecondStep);
         divInSecondStep.appendChild(spanWrapperSecond);
         let spanSecondSecond = document.createElement('span');
-        spanSecondSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-gray-600", "mt-2", "text-center");
+        spanSecondSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-gray-600", "mt-1", "text-center");
         spanSecondSecond.textContent = "Narrate";
         divInSecondStep.appendChild(spanSecondSecond);
         secondStep.appendChild(divInSecondStep);
         orderedList.appendChild(secondStep);
 
         let thirdStep = document.createElement('li');
+        thirdStep.id = 'stepper'+idNum+'-3';
         thirdStep.classList.add("flex", "w-full", "items-center", "after:content-['']", "after:w-full", "after:h-1", "after:border-b", "after:border-gray-200", "after:border-4", "after:inline-block");
         let divInThirdStep = document.createElement('div');
         divInThirdStep.classList.add("flex", "flex-col", "items-center", "justify-center", "w-full");
         let spanWrapperThird = document.createElement('span');
-        spanWrapperThird.classList.add("flex", "items-center", "justify-center", "w-10", "h-10", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
+        spanWrapperThird.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let spanThird = document.createElement('span');
         spanThird.classList.add("text-sm", "font-semibold", "text-gray-600");
         spanThird.textContent = "3";
         spanWrapperThird.appendChild(spanThird);
         divInThirdStep.appendChild(spanWrapperThird);
         let spanThirdSecond = document.createElement('span');
-        spanThirdSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-gray-600", "mt-2", "text-center");
+        spanThirdSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-gray-600", "mt-1", "text-center");
         spanThirdSecond.textContent = "Enrich";
         divInThirdStep.appendChild(spanThirdSecond);
         thirdStep.appendChild(divInThirdStep);
         orderedList.appendChild(thirdStep);
 
         let fourthStep = document.createElement('li');
+        fourthStep.id = 'stepper'+idNum+'-4';
         fourthStep.classList.add("flex", "w-full", "items-center");
         let divInFourthStep = document.createElement('div');
         divInFourthStep.classList.add("flex", "flex-col", "items-center", "justify-center", "w-full");
         let spanWrapperFourth = document.createElement('span');
-        spanWrapperFourth.classList.add("flex", "items-center", "justify-center", "w-10", "h-10", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
+        spanWrapperFourth.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let spanFourth = document.createElement('span');
         spanFourth.classList.add("text-sm", "font-semibold", "text-gray-600");
         spanFourth.textContent = "4";
         spanWrapperFourth.appendChild(spanFourth);
         divInFourthStep.appendChild(spanWrapperFourth);
         let spanFourthSecond = document.createElement('span');
-        spanFourthSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-gray-600", "mt-2", "text-center");
-        spanFourthSecond.textContent = "Share";
+        spanFourthSecond.classList.add("text-xs", "sm:text-sm", "font-semibold", "text-gray-600", "mt-1", "text-center");
+        spanFourthSecond.textContent = "Save";
         divInFourthStep.appendChild(spanFourthSecond);
         fourthStep.appendChild(divInFourthStep);
         orderedList.appendChild(fourthStep);
@@ -1547,7 +1627,12 @@
                         });
                     }
 
+
+
                     var currentData = map.getSource('user-points')._data;
+
+                    // Remove existing point(s) with the same iconId
+                    currentData.features = currentData.features.filter(f => f.properties.icon !== iconId);
 
                     var newPoint = {
                         "type": "Feature",
@@ -1565,6 +1650,46 @@
                     currentData.features.push(newPoint);
 
                     map.getSource('user-points').setData(currentData);
+
+                    // stepper, move from step 1 to step 2
+                    const step1 = document.getElementById('stepper' + storyInstanceCounter + '-1');
+                    const step2 = document.getElementById('stepper' + storyInstanceCounter + '-2');
+
+                    // change the connecting line color to blue
+                    step1.classList.remove('after:border-gray-200');
+                    step1.classList.add('after:border-blue-600','text-blue-600');
+
+                    // change the first step circle color to solid blue
+                    const step1Circle = step1.querySelector('span:first-child');
+                    step1Circle.classList.remove("bg-white", "border-4", "border-blue-600");
+                    step1Circle.classList.add("bg-blue-600");
+
+                    // change the first step number color to white
+                    const step1Number = step1.querySelector('span > span');
+                    step1Number.classList.remove("text-blue-600");
+                    step1Number.classList.add("text-white");
+
+                    // Change the label to normal weight
+                    const step1Label = step1.querySelector('span:last-child');
+                    step1Label.classList.remove('font-semibold', 'text-blue-600');
+                    step1Label.classList.add('font-medium');
+
+                    // --- Update Step 2 to 'Current' State ---
+
+                    // Change the circle to have a blue border
+                    const step2Circle = step2.querySelector('span:first-child');
+                    step2Circle.classList.remove('bg-gray-200');
+                    step2Circle.classList.add('bg-white', 'border-4', 'border-blue-600');
+
+                    // Change the number to blue
+                    const step2Number = step2.querySelector('span > span');
+                    step2Number.classList.remove('text-gray-500');
+                    step2Number.classList.add('text-blue-600');
+
+                    // Change the label to bold and blue
+                    const step2Label = step2.querySelector('span:last-child');
+                    step2Label.classList.remove('text-gray-500', 'font-medium');
+                    step2Label.classList.add('font-semibold', 'text-blue-600');
                 });
 
                 // set all svg paths invisible, this is for SLR section
