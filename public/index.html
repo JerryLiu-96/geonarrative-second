@@ -496,47 +496,28 @@
     // Call the function with the list of colors
     preloadPNGs(storyBorderColors);
 
-    function createInstructionCard({ number, mainText, subText, theme, containerId }) {
-            const themes = {
-                cyan: { waveFill: 'fill-cyan-200', iconBg: 'bg-cyan-200', iconText: 'text-cyan-700' },
-                green: { waveFill: 'fill-green-200', iconBg: 'bg-green-200', iconText: 'text-green-700' },
-                orange: { waveFill: 'fill-orange-200', iconBg: 'bg-orange-200', iconText: 'text-orange-700' },
-                blue: { waveFill: 'fill-blue-200', iconBg: 'bg-blue-200', iconText: 'text-blue-700' },
-                violet: { waveFill: 'fill-violet-200', iconBg: 'bg-violet-200', iconText: 'text-violet-700' },
-                red: { waveFill: 'fill-red-200', iconBg: 'bg-red-200', iconText: 'text-red-700' },
-            };
-            const currentTheme = themes[theme] || themes.green;
+    function createInstructionCard({ number, mainText, subText, containerId }) {
+
             const container = document.getElementById(containerId);
             if (!container) { console.error(`Error: Container with ID "${containerId}" not found.`); return; }
-            const cardDiv = document.createElement('div');
-            cardDiv.classList.add('relative','flex','w-full','h-20','items-center','justify-around','gap-4','overflow-hidden','rounded-lg','bg-white','p-4','shadow-lg','hover:scale-105','transition','duration-300','ease-in-out');
-            const svgWave = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svgWave.classList.add('absolute','top-8','-left-8','w-20','rotate-90',currentTheme.waveFill);
-            svgWave.setAttribute('viewBox', '0 0 1440 320');
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', 'M0,256L11.4,240C22.9,224,46,192,69,192C91.4,192,114,224,137,234.7C160,245,183,235,206,213.3C228.6,192,251,160,274,149.3C297.1,139,320,149,343,181.3C365.7,213,389,267,411,282.7C434.3,299,457,277,480,250.7C502.9,224,526,192,549,181.3C571.4,171,594,181,617,208C640,235,663,277,686,256C708.6,235,731,149,754,122.7C777.1,96,800,128,823,165.3C845.7,203,869,245,891,224C914.3,203,937,117,960,112C982.9,107,1006,181,1029,197.3C1051.4,213,1074,171,1097,144C1120,117,1143,107,1166,133.3C1188.6,160,1211,224,1234,218.7C1257.1,213,1280,139,1303,133.3C1325.7,128,1349,192,1371,192C1394.3,192,1417,128,1429,96L1440,64L1440,320L1428.6,320C1417.1,320,1394,320,1371,320C1348.6,320,1326,320,1303,320C1280,320,1257,320,1234,320C1211.4,320,1189,320,1166,320C1142.9,320,1120,320,1097,320C1074.3,320,1051,320,1029,320C1005.7,320,983,320,960,320C937.1,320,914,320,891,320C868.6,320,846,320,823,320C800,320,777,320,754,320C731.4,320,709,320,686,320C662.9,320,640,320,617,320C594.3,320,571,320,549,320C525.7,320,503,320,480,320C457.1,320,434,320,411,320C388.6,320,366,320,343,320C320,320,297,320,274,320C251.4,320,229,320,206,320C182.9,320,160,320,137,320C114.3,320,91,320,69,320C45.7,320,23,320,11,320L0,320Z');
-            path.setAttribute('fill-opacity', '1');
-            svgWave.appendChild(path);
-            const numberContainer = document.createElement('div');
-            numberContainer.classList.add('ml-2','flex','h-9','w-9','items-center','justify-center','rounded-full',currentTheme.iconBg);
-            const numberSpan = document.createElement('span');
-            numberSpan.classList.add('font-bold','text-lg',currentTheme.iconText);
-            numberSpan.textContent = number;
-            numberContainer.appendChild(numberSpan);
-            const textContainer = document.createElement('div');
-            textContainer.classList.add('flex','flex-grow','flex-col','items-start','justify-center');
-            const mainTextP = document.createElement('p');
-            mainTextP.classList.add('m-0','cursor-default','text-lg','font-bold',currentTheme.iconText);
-            mainTextP.textContent = mainText;
+            const cardList = document.createElement('li');
+            cardList.classList.add('mb-4','ml-6');
+            const firstSpan = document.createElement('span');
+            firstSpan.classList.add('absolute', 'flex', 'items-center', 'justify-center', 'w-8', 'h-8', 'bg-white', 'rounded-full', '-left-4', 'ring-4', 'ring-white', 'border-2', 'border-blue-600');
+            const spanInFistSpan = document.createElement('span');
+            spanInFistSpan.classList.add('text-blue-600', 'font-bold');
+            spanInFistSpan.textContent = number;
+            firstSpan.appendChild(spanInFistSpan);
+            cardList.appendChild(firstSpan);
+            const title=document.createElement('h3');
+            title.classList.add('font-semibold', 'leading-tight', 'text-blue-700');
+            title.innerHTML = mainText;
+            cardList.appendChild(title);
             const subTextP = document.createElement('p');
-            subTextP.classList.add('m-0','cursor-default','text-sm','text-gray-600');
+            subTextP.classList.add('text-lg', 'text-gray-600', 'hover:scale-105', 'transition', 'duration-300', 'ease-in-out');
             subTextP.innerHTML = subText;
-            textContainer.appendChild(mainTextP);
-            textContainer.appendChild(subTextP);
-            cardDiv.appendChild(svgWave);
-            cardDiv.appendChild(numberContainer);
-            cardDiv.appendChild(textContainer);
-            container.appendChild(cardDiv);
+            cardList.appendChild(subTextP);
+            container.appendChild(cardList);
         }
 
     config.chapters.forEach((record, idx) => {
@@ -572,6 +553,14 @@
             instructionTitle.classList.add('text-lg', 'font-bold', 'capitalize', 'rounded-md');
             instructionTitle.innerText = 'Steps to share your place story:';
             instructionWrapper.appendChild(instructionTitle);
+
+            let instructionListWrapper = document.createElement('div');
+            instructionListWrapper.classList.add('w-full', 'max-w-md', 'mx-auto');
+            let instructionList = document.createElement('ol');
+            instructionList.id = 'instructionList';
+            instructionList.classList.add('relative', 'border-l-2', 'border-gray-200');
+            instructionListWrapper.appendChild(instructionList);
+            instructionWrapper.appendChild(instructionListWrapper);
 
             // Container for all dynamically added story entries
             let storyEntriesContainer = document.createElement('div');
@@ -1132,16 +1121,16 @@
     // --- Data for our cards ---
     // An array of objects, where each object represents a card.
     const cardData = [
-        { number: 1, mainText: 'Have a Story to Share?', subText: 'Click the "Add story" button to start. You will see a colored stripe on the left. This is the <span class="font-bold"> theme color</span>. ', theme: 'cyan' },
-        { number: 2, mainText: 'Locate Your Story', subText: 'Click on the map to indicate where it happened. A pinpoint in the <span class="font-bold"> theme color</span> will appear on the map.', theme: 'green' },
-        { number: 3, mainText: 'Write Your Story', subText: 'Be sure to include when and what happened, who was involved, how it ended, what was the emotion, and any other relevant details.', theme: 'orange' },
-        { number: 4, mainText: 'Perfect Your Story', subText: 'Add pictures to make your story perfect and engaging. Sometimes, other forms of arts speak louder than words.', theme: 'blue' },
-        { number: 5, mainText: 'Save Your Story', subText: 'When you are satisfied with your story, click save. Your story will be stored in our database. To guarantee your privacy, it is anonymous', theme: 'violet' },
-        { number: 6, mainText: 'Have More Stories?', subText: 'Repeat these steps to share as many stories as you like. To differentiate between stories, a different <span class="font-bold">theme color</span> will be applied to each story.', theme: 'red' }
+        { number: 1, mainText: 'Have a Story to Share?', subText: 'Click the <span class="font-bold">Add story</span> button to start. You will see a colored stripe on the left. This is the <span class="font-bold"> theme color</span>.'},
+        { number: 2, mainText: '<span class="font-bold">Locate</span> Your Story', subText: 'Click on the map to indicate where it happened. A pinpoint in the <span class="font-bold"> theme color</span> will appear on the map.'},
+        { number: 3, mainText: '<span class="font-bold">Narrate</span> Your Story', subText: 'Be sure to include when and what happened, who was involved, how it ended, what was the emotion, and any other relevant details.'},
+        { number: 4, mainText: '<span class="font-bold">Enrich</span> Your Story', subText: '<span class="font-bold"> Add pictures </span> to make your story perfect and engaging. Sometimes, other forms of arts speak louder than words.'},
+        { number: 5, mainText: '<span class="font-bold">Save</span> Your Story', subText: 'When you are satisfied with your story, click save. Your story will be stored in our database. To guarantee your privacy, it is anonymous.'},
+        { number: 6, mainText: '<span class="font-bold">Add</span> More Stories?', subText: 'Repeat these steps to share as many stories as you like. To differentiate between stories, a different <span class="font-bold">theme color</span> will be applied to each story.'}
     ];
     // --- Loop through the data and create a card for each item ---
     cardData.forEach(data => {
-        createInstructionCard({ ...data, containerId: 'instructWrapper' });
+        createInstructionCard({ ...data, containerId: 'instructionList' });
     });
 
     function addAStoryEntry() {
@@ -1407,7 +1396,7 @@
         spanWrapper.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-white", "border-4", "border-blue-600", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let span = document.createElement('span');
         span.classList.add("text-sm", "font-semibold", "text-blue-600");
-        span.textContent = "1";
+        span.textContent = "2";
         spanWrapper.appendChild(span);
         divInStep.appendChild(spanWrapper);
         let spanSecond = document.createElement('span');
@@ -1426,7 +1415,7 @@
         spanWrapperSecond.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let spanSecondStep = document.createElement('span');
         spanSecondStep.classList.add("text-sm", "font-semibold", "text-gray-600");
-        spanSecondStep.textContent = "2";
+        spanSecondStep.textContent = "3";
         spanWrapperSecond.appendChild(spanSecondStep);
         divInSecondStep.appendChild(spanWrapperSecond);
         let spanSecondSecond = document.createElement('span');
@@ -1445,7 +1434,7 @@
         spanWrapperThird.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let spanThird = document.createElement('span');
         spanThird.classList.add("text-sm", "font-semibold", "text-gray-600");
-        spanThird.textContent = "3";
+        spanThird.textContent = "4";
         spanWrapperThird.appendChild(spanThird);
         divInThirdStep.appendChild(spanWrapperThird);
         let spanThirdSecond = document.createElement('span');
@@ -1464,7 +1453,7 @@
         spanWrapperFourth.classList.add("flex", "items-center", "justify-center", "w-6", "h-6", "bg-gray-200", "rounded-full", "lg:h-12", "lg:w-12", "shrink-0");
         let spanFourth = document.createElement('span');
         spanFourth.classList.add("text-sm", "font-semibold", "text-gray-600");
-        spanFourth.textContent = "4";
+        spanFourth.textContent = "5";
         spanWrapperFourth.appendChild(spanFourth);
         divInFourthStep.appendChild(spanWrapperFourth);
         let spanFourthSecond = document.createElement('span');
