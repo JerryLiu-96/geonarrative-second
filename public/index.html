@@ -2221,6 +2221,14 @@
                     timerId = setInterval(updateShoreline, 200);
                 };
 
+                function updateRangeSliderTrack(currentValue) {
+                    let rangeSlider = document.getElementById("customRangeshore-change");
+                    let min = rangeSlider.min;
+                    let max = rangeSlider.max;
+                    let percentageOfRange = (currentValue - min) / (max - min) * 100;
+                    rangeSlider.style.setProperty('--p', percentageOfRange + '%');
+                }
+
                 function updateShoreline() {
                     if (current == 0) {
                         previous = all_years_hist_shore.length - 1;
@@ -2229,6 +2237,10 @@
                     // update the year label and range slider
                     document.getElementById("customRangeLabelshore-change").textContent = all_years_hist_shore[current].toString();
                     document.getElementById("customRangeshore-change").value = all_years_hist_shore[current].toString();
+
+                    //update the track of the range slider
+                    // get the value of the range slider, and the max and min values
+                    updateRangeSliderTrack(all_years_hist_shore[current]);
 
                     // if the layer and source of the current year NOT exist
                     // then first remove all existing layers and sources of the historical shorelines, because they are not needed in the batch
@@ -2395,6 +2407,8 @@
 
                     // Get the current value
                     const SLIDERYEAR = event.target.value;
+
+                    updateRangeSliderTrack(SLIDERYEAR);
 
                     // update the label which shows the year
                     document.getElementById("customRangeLabelshore-change").textContent = SLIDERYEAR;
