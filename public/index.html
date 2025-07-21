@@ -706,6 +706,18 @@
             row.appendChild(col2);
             chapter.appendChild(row);
 
+            let uncertaintyLegend = document.createElement('div');
+            uncertaintyLegend.classList.add('mb-4')
+            let uncertaintyLegendTitle = document.createElement('h5');
+            uncertaintyLegendTitle.innerText = 'Legend for uncertainty:';
+            uncertaintyLegendTitle.classList.add('text-left','font-bold');
+            uncertaintyLegend.appendChild(uncertaintyLegendTitle);
+            let uncertaintyLegendImage = document.createElement('img');
+            uncertaintyLegendImage.setAttribute('src', 'img/uncertain_legend.png');
+            uncertaintyLegendImage.setAttribute('alt', 'Uncertainty Legend');
+            uncertaintyLegendImage.classList.add('w-full', 'h-auto', 'mt-2','shadow');
+            uncertaintyLegend.appendChild(uncertaintyLegendImage);
+            chapter.appendChild(uncertaintyLegend);
         }
 
         // add a dropdown selector for the sea level rise
