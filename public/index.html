@@ -31,7 +31,7 @@
 
     <div id="loader" class="loader"></div>
 
-    <nav class="navbar fixed-top navbar-expand-lg" style="background-color: transparent;">
+    <nav class="navbar fixed-top navbar-expand-lg backdrop-blur" style="background-color: transparent;">
       <div class="container-fluid">
         <a class="navbar-brand" href="./" style="color: #154778;">
           <img src="img/nsf_logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
@@ -40,7 +40,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div class="navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -283,51 +283,43 @@
 
     <section id="geonarrative-container">
       <div id="map">
-        <div id="mapstyle-control">
-            <h5 id="mapstyle-title">Map Style</h5> <!-- Add a title -->
+        <div id="mapstyle-control" class="backdrop-blur bg-white/30 rounded-md">
+            <h5 id="mapstyle-title" class="text-black">Map Style</h5> <!-- Add a title -->
             <label for="light-v11">
                 <input id="light-v11" type="radio" name="rtoggle" value="light" checked="checked">
-
                 <img src="img/light-v11.png" alt="Light Style" width="120" height="60">
             </label>
             <label for="satellite-streets-v12">
                 <input id="satellite-streets-v12" type="radio" name="rtoggle" value="satellite">
-
                 <img src="img/satellite-streets-v12.png" alt="Satellite Streets Style" width="120" height="60">
             </label>
             <label for="dark-v11">
                 <input id="dark-v11" type="radio" name="rtoggle" value="dark">
-
                 <img src="img/dark-v11.png" alt="Dark Style" width="120" height="60">
             </label>
             <label for="streets-v12">
                 <input id="streets-v12" type="radio" name="rtoggle" value="streets">
-
                 <img src="img/streets-v12.png" alt="Streets Style" width="120" height="60">
             </label>
             <label for="outdoors-v12">
                 <input id="outdoors-v12" type="radio" name="rtoggle" value="outdoors">
-
                 <img src="img/outdoors-v12.png" alt="Outdoors Style" width="120" height="60">
             </label>
             <label for="satellite-v9">
                 <input id="satellite-v9" type="radio" name="rtoggle" value="satellite">
-
                 <img src="img/satellite-v9.png" alt="Satellite Style" width="120" height="60">
             </label>
             <label for="navigation-day-v1">
                 <input id="navigation-day-v1" type="radio" name="rtoggle" value="navigation-day">
-
                 <img src="img/navigation-day-v1.png" alt="Navigation Day Style" width="120" height="60">
             </label>
             <label for="navigation-night-v1">
                 <input id="navigation-night-v1" type="radio" name="rtoggle" value="navigation-night">
-
                 <img src="img/navigation-night-v1.png" alt="Navigation Night Style" width="120" height="60">
             </label>
         </div>
       </div>
-      <div id="story"></div>
+      <div id="story" class="backdrop-blur"></div>
     </section>
 
     <section id="local stories">
@@ -361,11 +353,7 @@
             navbar.classList.add('hide-nav');
         } else {
             navbar.classList.remove('hide-nav');
-            if (scrollTop > 150) {
-                navbar.classList.add("white-nav");
-            } else {
-                navbar.classList.remove("white-nav");
-            } // Ensure this closing brace matches the corresponding opening brace
+
         }
         lastScrollTop = scrollTop;
       });
@@ -418,8 +406,10 @@
     var story = document.getElementById('story');
     var features = document.createElement('div');
     features.setAttribute('id', 'features');
+    features.classList.add('bg-transparent','ml-4');
 
     var header = document.createElement('div');
+    header.classList.add('bg-transparent');
 
     if (config.title) {
         var titleText = document.createElement('h1');
@@ -522,7 +512,9 @@
 
     config.chapters.forEach((record, idx) => {
         var container = document.createElement('div');
+        container.classList.add('bg-transparent');
         var chapter = document.createElement('div');
+        chapter.classList.add('bg-transparent');
 
         if (record.title) {
             var title = document.createElement('h3');
@@ -1513,10 +1505,104 @@
             const styleList = document.getElementById('mapstyle-control');
             const inputs = styleList.getElementsByTagName('input');
 
+            const h3ElementsinStory = document.querySelectorAll('#story h3');
+            const pElementsinStory = document.querySelectorAll('#story p');
+            const h5ElementsinStory = document.querySelectorAll('#story h5');
+            const labelsinStory = document.querySelectorAll('#story label:not(#customRangeLabelshore-change)');
+            const xAxisLabels = document.querySelectorAll('.x-axis-label');
+            const yAxisLabels = document.querySelectorAll('.y-axis-label');
+            const xAxisSLR = document.querySelectorAll('.x-axis');
+            const yAxisSLR = document.querySelectorAll('.y-axis');
+
             for (const input of inputs) {
                 input.onclick = (layer) => {
                     const layerId = layer.target.id;
                     map.setStyle('mapbox://styles/mapbox/' + layerId);
+
+                    if (['light-v11','navigation-day-v1','streets-v12','outdoors-v12'].includes(layerId)) {
+                        document.getElementById('mapstyle-title').classList.remove('text-black','text-white');
+                        document.getElementById('line-selector').classList.remove('text-black','text-white');
+                        document.getElementById('mapstyle-title').classList.add('text-black');
+                        document.getElementById('line-selector').classList.add('text-black');
+                        h3ElementsinStory.forEach(h3 => {
+                            h3.classList.remove('text-black','text-white');
+                            h3.classList.add('text-black');
+                        });
+                        pElementsinStory.forEach(p => {
+                            p.classList.remove('text-black','text-white');
+                            p.classList.add('text-black');
+                        });
+                        h5ElementsinStory.forEach(h5 => {
+                            h5.classList.remove('text-black','text-white');
+                            h5.classList.add('text-black');
+                        });
+                        labelsinStory.forEach(label => {
+                            label.classList.remove('text-black','text-white');
+                            label.classList.add('text-black');
+                        });
+
+                        d3.select('g.x-axis')
+                        .selectAll('path, line')
+                        .attr('stroke', 'black');
+
+                        d3.select('g.x-axis')
+                        .selectAll('text')
+                        .attr('fill', 'black');
+
+                        d3.select('g.y-axis')
+                        .selectAll('line, path')
+                        .attr('stroke', 'black');
+
+                        d3.select('g.y-axis')
+                        .selectAll('text')
+                        .attr('fill', 'black');
+
+                        d3.select('.x-axis-label').attr('fill', 'black');
+                        d3.select('.y-axis-label').attr('fill', 'black');
+
+                    } else {
+                        document.getElementById('mapstyle-title').classList.remove('text-black','text-white');
+                        document.getElementById('line-selector').classList.remove('text-black','text-white');
+                        document.getElementById('mapstyle-title').classList.add('text-white');
+                        document.getElementById('line-selector').classList.add('text-white');
+                        h3ElementsinStory.forEach(h3 => {
+                            h3.classList.remove('text-black','text-white');
+                            h3.classList.add('text-white');
+                        });
+                        pElementsinStory.forEach(p => {
+                            p.classList.remove('text-black','text-white');
+                            p.classList.add('text-white');
+                        });
+                        h5ElementsinStory.forEach(h5 => {
+                            h5.classList.remove('text-black','text-white');
+                            h5.classList.add('text-white');
+                        });
+                        labelsinStory.forEach(label => {
+                            label.classList.remove('text-black','text-white');
+                            label.classList.add('text-white');
+                        });
+
+                        d3.select('g.x-axis')
+                        .selectAll('path, line')
+                        .attr('stroke', 'white');
+
+                        d3.select('g.x-axis')
+                        .selectAll('text')
+                        .attr('fill', 'white');
+
+                        d3.select('g.y-axis')
+                        .selectAll('line, path')
+                        .attr('stroke', 'white');
+
+                        d3.select('g.y-axis')
+                        .selectAll('text')
+                        .attr('fill', 'white');
+
+                        d3.select('.x-axis-label').attr('fill', 'white');
+                        d3.select('.y-axis-label').attr('fill', 'white');
+
+
+                    }
                 }
             };
 
@@ -2316,7 +2402,8 @@
                             'source': 'enclosed_' + all_years_hist_shore[previous],
                             'paint': {
                                 'fill-color': '#9ecae1',
-                                'fill-opacity': 0.5
+                                'fill-opacity': 0.5,
+                                'fill-outline-color': 'rgba(0, 0, 0, 0)'
                             }
                         });
                     }

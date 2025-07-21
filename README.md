@@ -2,16 +2,17 @@
 
 Ziyang Liu | Urban Design and Planning | University of Washington
 ## Highlights
-This tutorial walks you through steps to create a geospatial application for participatory mapping, and is a fit for you if you are interested in:
-- Geospatial visualization and participatory mapping
-- **Full-stack** Geospatial web application development
-- Using **Mapbox GL JS** for web mapping
-- Using **Tailwind CSS** for styling
-- Using **Node.js** for back-end development
-- Using **PostgreSQL** and **PostGIS** for database management
+This tutorial walks you through steps to create a geospatial application for participatory mapping, and is a fit for you if you are interested in learning:
+- Geospatial visualization and participatory mapping;
+- **Full-stack** Geospatial web application development;
+- How to use **Mapbox GL JS** to create a web mapping;
+- How to use **Tailwind CSS** to style web applications;
+- How to use **Node.js** for back-end development;
+- How to use **PostgreSQL** and **PostGIS** for database management;
 - Deploying web applications to **Heroku**
+- Keeping sensitive information, e.g., credentials and tokens, in a secured way;
 - Building a participatory geonarrative to share place-based knowledge
-## Introduction
+## 1. Introduction
 
 This participatory geonarrative is a full-stack web application that allows participants to share their place-based knowledge with multiple media formats related to the South Beach area. Though no need to be an expert, to follow this tutorial, you should have (or be willing to learn) the following skills and knowledge:
 - A basic knowledge of front-end technologies: HTML, CSS, JavaScript
@@ -166,12 +167,16 @@ This command creates a `package.json` file in the `tailwind` directory, which is
 ### 4.3 Setting Up the Web Server
 The web server is a Node.js application that handles requests from the web client, serves the static files of the web client, and provides APIs for the web client to interact with the PostgreSQL database.
 - In the root directory of your project, create a file named `index.js`. This file will be the main server file.
-- also in the root directory, create a `.env` file. This file contains URL to your local PostgreSQL database, which is used for development purposes. The `.env` file should contain the following:
+- Also in the root directory, create a `.env` file. This file contains URL to your local PostgreSQL database, which is used for development purposes. The `.env` file should contain the following:
   ```plaintext
   DATABASE_URL=postgres://username:password@localhost:5432/database_name
   ```
   Replace `username`, `password`, and `database_name` with your PostgreSQL database credentials.
-- since the credentials are sensitive information, you should not commit the `.env` file to your GitHub repository. To do so, create a `.gitignore` file in the root directory of your project and add the following line to it:
+  > (Optional) You may also want to keep your Mapbox GL JS access token in the `.env` file. If you do so, add the following line to the `.env` file:
+    ```plaintext
+    MAPBOX_ACCESS_TOKEN=your_mapbox_access_token
+    ```
+- Since the database credentials are sensitive information, you should not commit the `.env` file to your GitHub repository. This is why you cannot find a `.env` file in my repository. To do so, create a `.gitignore` file in the root directory of your project and add the following line to it:
   ```plaintext
   .env
   ```
@@ -179,7 +184,7 @@ The web server is a Node.js application that handles requests from the web clien
   ```bash
   npm init -y
   ```
-  This creates a `package.json` file in the root directory, which is the configuration file for the Node.js application.
+  This creates a `package.json` file in the root directory, which is the configuration file for the `Node.js` application.
 - Install the required dependencies by running the following:
   ```bash
   npm install express pg multer cors dotenv cross-env body-parser
@@ -251,6 +256,14 @@ The web server is a Node.js application that handles requests from the web clien
     fs.mkdirSync('uploads');
   }
   ```
+  - set up the Mapbox GL JS access token:
+  ```javascript
+  // Set up Mapbox access token
+  app.get('/api/mapbox-token', (req, res) => {
+    res.json({ token: process.env.MAPBOX_ACCESS_TOKEN });
+  });
+  ```
+  When in the development environment, the access token is loaded from the `.env` file. When in production, the access token is set as an environment variable in Heroku. In section 4.5.3, we will cover how to set the Mapbox access token in Heroku.
   - set up endpoints for the web server:
   ```javascript
   app.post('/api/save-story', upload.array('images', 10), async (req, res) => {
@@ -326,6 +339,7 @@ Heroku is a cloud platform that allows you to deploy and manage web applications
 - Choose buildpacks:
   - In the "Settings" tab of your Heroku app, scroll down to the "Buildpacks" section.
   - Click "Add buildpack" and select "Node.js". This will ensure that Heroku uses Node.js to run your application.
+
 ### 4.5 Setting Up the PostgreSQL Database
 This tutorial uses PostgreSQL as the database to store place-based stories contributed by users. The database schema is defined in the `database.sql` file, which is executed to create the necessary tables in the database.
 
@@ -379,6 +393,12 @@ Once you do this, you will have a "Local Sandbox" server connection in pgAdmin,
   - Copy and paste the content of the `database.sql` file into the Query Tool.
   - Click on the "Execute" button (the lightning bolt icon) to run the SQL commands in the `database.sql` file. This will create the necessary tables in the database.
 - > After this step, you have successfully set up a PostgreSQL database on Heroku for your app. This database has the same schema as your local database.
+#### 4.5.3 Saving Mapbox Access Token
+In the local development environment, the Mapbox access token is saved in the `.env` file. In the production environment on Heroku, you can set the Mapbox access token as an environment variable. To do so, follow these steps:
+- In the Heroku app dashboard, go to the "Settings" tab.
+- Under the "Config Vars" section, click on "Reveal Config Vars".
+- Add a new config var with the key `MAPBOX_ACCESS_TOKEN` and the value set to your Mapbox access token.
+- Click "Add" to save the config var.
 
 ### 4.6 Accessing the Participatory Geonarrative
 When you are developing the participatory geonarrative, you will need to access it locally by running the web server on your local machine. When you deploy the participatory geonarrative to Heroku, you can access it on the internet. In this section, we will cover both instances.
