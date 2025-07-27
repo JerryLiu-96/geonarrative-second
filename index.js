@@ -9,6 +9,9 @@ const path = require('path');
 const multer = require('multer'); // For file uploads
 const fs = require('fs');
 
+const { S3Client } = require('@aws-sdk/client-s3'); // AWS SDK S3 client
+const multerS3 = require('multer-s3'); // multer-s3 connector
+
 // 2. Load environment variables from .env file for local development
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -25,23 +28,33 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
+// --- Configure AWS S3 Client ---
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' })); // Handle large JSON data
 
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-      cb(null, 'uploads/'); // Save files to the 'uploads' directory
-  },
-  filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      // Sanitize the original filename: keep only letters, numbers, dots, dashes, and underscores
-      const safeName = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-      cb(null, uniqueSuffix + '-' + safeName);
-  }
+// --- Configure Multer to use S3 for storage ---
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.AWS_BUCKET_NAME,
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      // Create a unique file name
+      cb(null, Date.now().toString() + '-' + file.originalname);
+    },
+  }),
 });
-const upload = multer({ storage: storage });
 
 // Ensure the 'uploads' directory exists
 if (!fs.existsSync('uploads')) {
@@ -61,14 +74,15 @@ app.post('/api/save-story', upload.array('images', 10), async (req, res) => {
     let {words, longitude, latitude} = req.body;
     let files = req.files || [];
 
-    let imagePaths = files.map(file => file.path);
+    // Instead of local paths, we now get S3 URLs from multer-s3
+    const imageUrls = files.map(file => file.location);
 
     let query = `
       INSERT INTO stories (words, images, location)
       VALUES ($1, $2, ST_SetSRID(ST_MakePoint($3, $4), 4326)::geography)
       RETURNING id
     `;
-    let values = [words, JSON.stringify(imagePaths), longitude, latitude];
+    let values = [words, JSON.stringify(imageUrls), longitude, latitude];
     let result = await client.query(query, values);
 
     res.status(200).json({ message: 'Story saved successfully!', id: result.rows[0].id });
@@ -81,8 +95,6 @@ app.post('/api/save-story', upload.array('images', 10), async (req, res) => {
   }
 })
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Serve the frontend files
 app.use(express.static('public'));
 
