@@ -1158,7 +1158,7 @@
         const storyBox = document.createElement('section');
         storyBox.id = 'story-box-' + entryId;
         storyBox.classList.add(
-            'relative', 'w-7/8', 'group','border', 'pl-2','pr-2','ml-1.5','mr-1.5',
+            'relative', 'w-9/10', 'group','border', 'pl-2','pr-2','ml-1.5','mr-1.5',
             'border-gray-200','rounded-lg','shadow-md', 'focus-within:ring-2',
             `focus-within:ring-${currentTailwindColor}-500`);
 
@@ -1178,12 +1178,30 @@
         storyTextArea.id = 'story-text-' + entryId;
         storyTextArea.placeholder = '';
         storyTextArea.classList.add(
-            'peer', 'w-full', 'p-2', 'text-sm', 'text-gray-800',
-            'bg-white', 'border', 'border-transparent', 'rounded-lg','resize-none',
-            'focus:border-transparent',
+            'peer', 'w-full', 'block', 'p-2','mb-0', 'text-sm', 'text-gray-800',
+            'bg-white', 'border', 'border-transparent', 'rounded-t-lg','resize-none',
+            'focus:border-transparent','min-h-24', 'max-h-48',
             'focus:outline-none', 'transition-all', 'duration-300', 'delay-200', 'placeholder-transparent'
         );
-        storyTextArea.addEventListener('input', () => {
+
+        // Three things will happen: 1. change the instruct word; 2. change the stpper; 3. textarea grow as users type more lines
+        storyTextArea.addEventListener('input', function () {
+            const label = document.getElementById('input-label-' + entryId);
+            label.textContent = 'After wording, upload pictures.';
+
+            // First, reset the height to 'auto'
+            this.style.height = 'auto';
+
+            // Then, set the height to match the content's full height
+            this.style.height = this.scrollHeight + 'px';
+
+            // This handles showing the scrollbar only when the max-height is reached
+            if (this.scrollHeight > this.clientHeight) {
+                this.style.overflowY = 'scroll';
+            } else {
+                this.style.overflowY = 'hidden';
+            };
+
             const step2 = document.getElementById('stepper' + entryId + '-2');
             const step3 = document.getElementById('stepper' + entryId + '-3');
 
@@ -1216,7 +1234,8 @@
         // create the label
         const label = document.createElement('label');
         label.htmlFor = 'story-text-' + entryId;
-        label.textContent = 'Click on the map to locate, then share your story here';
+        label.id = 'input-label-'+ entryId;
+        label.textContent = 'Click on the map to locate. Pinch to zoom';
         label.classList.add(
             'absolute', 'left-6', 'top-3.5', 'text-xs', 'text-gray-500',
             'transition-all', 'duration-200', 'ease-in-out',
@@ -1229,7 +1248,7 @@
         storyBox.appendChild(label);
 
         const controlsDiv = document.createElement('div');
-        controlsDiv.classList.add('story-box-controls');
+        controlsDiv.classList.add('story-box-controls','bg-white','rounded-b-lg');
 
         const pictureLabel = document.createElement('label');
         pictureLabel.htmlFor = 'picture-input-' + entryId;
@@ -1237,7 +1256,11 @@
         const pictureIcon = document.createElement('i');
         pictureIcon.classList.add('bi', 'bi-image');
         pictureIcon.style.fontSize = '1.5em';
+        const pictureSpan = document.createElement('span');
+        pictureSpan.classList.add('text-sm','font-medium','pl-1','text-gray-600')
+        pictureSpan.textContent = 'Add Pic';
         pictureLabel.appendChild(pictureIcon);
+        pictureLabel.appendChild(pictureSpan);
 
         const pictureInput = document.createElement('input');
         pictureInput.type = 'file';
@@ -1246,8 +1269,11 @@
         pictureInput.accept = 'image/*';
         pictureInput.style.display = 'none';
 
-        // stepper from step 3 to step 4
+        // stepper from step 3 to step 4, also change the word label to 'Last, click Save to finish.'
         pictureInput.addEventListener('input', function () {
+            const label = document.getElementById('input-label-' + entryId);
+            label.textContent = 'Last, click Save to finish.';
+
             const step3 = document.getElementById('stepper' + entryId + '-3');
             const step4 = document.getElementById('stepper' + entryId + '-4');
 
@@ -1312,7 +1338,7 @@
         locationDisplay.classList.add('pinpoint-location-display');
 
         const saveButton = document.createElement('button');
-        saveButton.innerText = 'Save It';
+        saveButton.innerText = 'Save';
         saveButton.id = 'save-button-' + entryId;
         saveButton.classList.add('btn-save-story', 'px-2','py-1','text-sm','bg-gray-50',`text-${currentTailwindColor}-500`,`hover:bg-${currentTailwindColor}-500`);
 
@@ -1732,11 +1758,14 @@
                         }
                     };
 
-                    document.getElementById('location-display-' + storyInstanceCounter).innerText = `Location: ${coordinates.lng.toFixed(4)}, ${coordinates.lat.toFixed(4)}`;
+                    document.getElementById('location-display-' + storyInstanceCounter).innerText = `Loc: ${coordinates.lng.toFixed(3)}, ${coordinates.lat.toFixed(3)}`;
 
                     currentData.features.push(newPoint);
 
                     map.getSource('user-points').setData(currentData);
+
+                    const label = document.getElementById('input-label-' + storyInstanceCounter);
+                    label.textContent = 'Then, start wording...';
 
                     // stepper, move from step 1 to step 2
                     const step1 = document.getElementById('stepper' + storyInstanceCounter + '-1');
