@@ -9,6 +9,7 @@ This tutorial walks you through steps to create a geospatial application for par
 - How to use **Tailwind CSS** to style web applications;
 - How to use **Node.js** for back-end development;
 - How to use **PostgreSQL** and **PostGIS** for database management;
+- How to use **Amazon S3** to save large objects;
 - Deploying web applications to **Heroku**
 - Keeping sensitive information, e.g., credentials and tokens, in a secured way;
 - Building a participatory geonarrative to share place-based knowledge
@@ -25,11 +26,14 @@ This participatory geonarrative is a full-stack web application that allows part
 
 If you are new to these topics, or if you don't have the required dependencies installed, please follow these resources below to set up your development environment.
 - [Node.js](https://nodejs.org/en/): download and install the Node.js
-- [PostgreSQL](https://neon.com/postgresql/postgresql-getting-started): though Heroku provides a PostgreSQL database, and we will use Heroku's on-cloud database for our product, it is a good practice to also install PostgreSQL locally for development purposes.
+- [PostgreSQL](https://neon.com/postgresql/postgresql-getting-started): Heroku provides a PostgreSQL database, and we will use Heroku's on-cloud database for our product. I recommend you to also install PostgreSQL in our local environment. It is a good practice to separate database for product and for development, and I will use local database for development.
   - [Postgres.app](https://postgresapp.com/): The developer of this tutorial uses Postgres.app on Mac, which is a simple way to install PostgreSQL on macOS.
   - [pgAdmin 4](https://www.pgadmin.org/download/): is a popular, open-source, web-based graphical user interface (GUI) tool used for managing and developing PostgreSQL databases.
 - [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides/): Mapbox GL JS is a JavaScript library for interactive maps.
 - [Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs): Heroku is a cloud platform as a service (PaaS) that enables developers to build, deploy, and manage applications and services.
+- [Amazon S3](https://aws.amazon.com/s3/): Amazon Simple Storage Service (Amazon S3) is an object storage service offering industry-leading scalability, data availability, security, and performance. I use Amazon S3 in this project for two reasons:
+  - Storing large binary files (like images) in a database is an "anti-pattern" that leads to significant problems as your application grows. Therefore, I will save images in Amazon S3 and save URLs to images in PostGreSQL.
+  - Heroku's ephemeral filesystem will delete saved files when dyno restarts.
 
 ## 2. Fork the Repository
 This tutorial will walk you through the whole process of creating the participatory geonarrative. But you can also skip the tutorial and directly use the code in this repository. To do so, you need to fork this repository to your own GitHub account. In GitHub, forking a repository creates a personal copy of someone else's project in your own account, allowing you to experiment with changes or contribute to the original project without directly modifying it.

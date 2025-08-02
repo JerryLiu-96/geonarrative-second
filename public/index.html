@@ -10,10 +10,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/geonarrative.css">
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.js"></script>
     <link href='https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.css' rel='stylesheet' />
-    <script src='https://api.mapbox.com/mapbox-gl-js/v1.13.1/mapbox-gl.js'></script>
+
+    <link href='https://cdn.jsdelivr.net/npm/mapbox-gl-north/dist/mapbox-gl-north.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/mapbox-gl-north/dist/mapbox-gl-north.min.js'></script>
     <script src="https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mapbox-map-image-export@2.4.1/index.min.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
@@ -287,6 +289,10 @@
             <h5 id="mapstyle-title" class="text-black">Map Style</h5> <!-- Add a title -->
             <label for="light-v11">
                 <input id="light-v11" type="radio" name="rtoggle" value="light" checked="checked">
+                <img src="img/light-v11.png" alt="Light Style" width="120" height="60">
+            </label>
+            <label for="standard">
+                <input id="standard" type="radio" name="rtoggle" value="standard">
                 <img src="img/light-v11.png" alt="Light Style" width="120" height="60">
             </label>
             <label for="satellite-streets-v12">
@@ -1258,7 +1264,7 @@
         pictureIcon.style.fontSize = '1.5em';
         const pictureSpan = document.createElement('span');
         pictureSpan.classList.add('text-sm','font-medium','pl-1','text-gray-600')
-        pictureSpan.textContent = 'Add Pic';
+        pictureSpan.textContent = 'Upload';
         pictureLabel.appendChild(pictureIcon);
         pictureLabel.appendChild(pictureSpan);
 
@@ -1540,6 +1546,9 @@
                 preserveDrawingBuffer: true
             });
 
+            const north = new mapboxgl.NorthControl();
+map.addControl(north, 'top-left');
+
             const styleList = document.getElementById('mapstyle-control');
             const inputs = styleList.getElementsByTagName('input');
 
@@ -1666,7 +1675,320 @@
             const moreCertainColor = '#2171b5';
             const lessCertainColor = '#6baed6';
 
-            map.on("load", function() {
+            // JSON of all point of interets I want to add to the map
+            const myPois = {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Westport Jetty',
+                        'icon': 'dot-9' // Use the 'dam' Maki icon
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.141, 46.905] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Shoalwater Bay Indian Reservation',
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.015, 46.721] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Ocosta School',
+                        'icon': 'college' // Use the 'college' Maki icon
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.099, 46.869] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'North Cove',
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.066799, 46.734641] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Grayland Bch State Pk',
+                        'icon': 'park', // Use the 'dot' Maki icon
+                        'display-color':'#2E8B57'
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.09514, 46.782176] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Tokeland',
+
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-123.982443, 46.707804] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Cohasset Beach',
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.103358, 46.870495] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Bay City',
+
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.060188, 46.864195] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Westport',
+
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.102802, 46.892634] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Ocosta',
+
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.040752, 46.888719] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Markham',
+
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-123.997487, 46.904618] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Mallard Slough',
+
+                        'display-color':'#2E8B57'
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.058407, 46.839942] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Westport Light State Park',
+                        'icon': 'park', // Use the 'dot' Maki icon
+                        'display-color':'#2E8B57'
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.123917, 46.894421] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Twin Harbors State Park',
+                        'icon': 'park', // Use the 'dot' Maki icon
+                        'display-color':'#2E8B57'
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.110742, 46.853065] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Grays Harbor',
+
+                        'display-color':'#1D84B5',
+                        'font-size': 16
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-124.09269, 46.919849] // lng, lat
+                    }
+                    },
+                    {
+                    'type': 'Feature',
+                    'properties': {
+                        'title': 'Willapa Bay',
+
+                        'display-color':'#51a2d5',
+                        'font-size':16
+
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-123.980769, 46.694872] // lng, lat
+                    }
+                    }
+                ]
+                };
+
+            map.on("style.load", function() {
+                map.addSource('mapbox-dem', {
+                    type: 'raster-dem',
+                    url: 'mapbox://mapbox.terrain-rgb',
+                    tileSize: 512,
+                    maxzoom: 14
+                });
+
+                map.addSource('hillshade-dem', {
+                    type: 'raster-dem',
+                    url: 'mapbox://mapbox.terrain-rgb',
+                    tileSize: 512,
+                    maxzoom: 14
+                });
+
+                // Set terrain using that source
+                map.setTerrain({ source: 'mapbox-dem', exaggeration: 5 }); // exaggeration >1 makes terrain more pronounced
+
+                map.addLayer({
+                    id: 'hillshade',
+                    type: 'hillshade',
+                    source: 'hillshade-dem',
+                    layout: { visibility: 'visible' },
+                    paint: {
+                        'hillshade-shadow-color': '#473B24',
+                        'hillshade-highlight-color': '#FFF3B0',
+                        'hillshade-accent-color': '#F9D976',
+                        'hillshade-exaggeration': 0.6
+                    }
+                    });
+
+
+                //map.setLayoutProperty('settlement-label', 'visibility', 'none');
+                map.setLayoutProperty('poi-label', 'visibility', 'none');
+                map.setLayoutProperty('natural-point-label', 'visibility', 'none');
+                map.setConfigProperty('basemap', 'showPointOfInterestLabels', false);
+                //map.setLayoutProperty('settlement-major-label', 'visibility', 'none');
+                //map.setLayoutProperty('settlement-minor-label', 'visibility', 'none');
+                //map.setLayoutProperty('settlement-subdivision-label', 'visibility', 'none');
+
+                map.addSource('my-pois-source', {
+                    'type': 'geojson',
+                    'data': myPois
+                });
+
+                // 2. Add the layer to display the POIs
+                map.addLayer({
+                    'id': 'pois-layer',
+                    'type': 'symbol',
+                    'source': 'my-pois-source',
+                    'filter': ['has', 'icon'],
+                    'layout': {
+                        // Get the icon name from the 'icon' property.
+                        'icon-image': ['get', 'icon'],
+
+                        // Get the title text from the 'title' property.
+                        'text-field': ['get', 'title'],
+                        'text-size': [
+                            'coalesce',
+                            ['get', 'font-size'], // 1. Try to get the font size from the data
+                            10                    // 2. If it's missing, use 10px as the default
+                        ],
+                        'text-allow-overlap': true,
+
+
+                        // Allow icons to overlap each other
+                        'icon-allow-overlap': true,
+
+                        // Don't show text if it overlaps with other text
+                        'text-optional': true,
+
+                        // Position the text below the icon
+                        'text-anchor': 'top',
+                        'text-offset': [0, 0.8]
+                    },
+                    'paint': {
+                        'text-color': [
+                            'coalesce',
+                            ['get', 'display-color'], // 1. Try to get the color from the feature's property.
+                            '#000000'                  // 2. If 'display_color' is missing or null, use black as the default.
+                        ],
+                        'text-halo-color': '#FFFFFF',
+                        'text-halo-width': 1
+                    }
+                });
+
+                map.addLayer({
+                    'id': 'pois-layer-withno-icon',
+                    'type': 'symbol',
+                    'source': 'my-pois-source',
+                    'filter': ['!', ['has', 'icon']],
+                    'layout': {
+                        // Get the title text from the 'title' property.
+                        'text-field': ['get', 'title'],
+                        'text-size': [
+                            'coalesce',
+                            ['get', 'font-size'], // 1. Try to get the font size from the data
+                            10                    // 2. If it's missing, use 10px as the default
+                        ],
+
+                        // Don't show text if it overlaps with other text
+                        'text-optional': true,
+                        'text-allow-overlap': true
+
+                    },
+                    'paint': {
+                        'text-color': [
+                            'coalesce',
+                            ['get', 'display-color'], // 1. Try to get the color from the feature's property.
+                            '#000000'                  // 2. If 'display_color' is missing or null, use black as the default.
+                        ],
+                        'text-halo-color': '#FFFFFF',
+                        'text-halo-width': 1
+                    }
+                });
 
                 // Initialize the tooltip (this is necessary to activate the tooltip functionality)
                 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -1694,31 +2016,6 @@
                 });
 
                 // Handle map style changes
-                map.on('styledata', function () {
-                    // Re-add the 'user-points' source if it doesn't exist
-                    if (!map.getSource('user-points')) {
-                        map.addSource('user-points', {
-                            'type': 'geojson',
-                            'data': {
-                                'type': 'FeatureCollection',
-                                'features': [] // Keep the existing features if needed
-                            }
-                        });
-                    }
-
-                    // Re-add the 'point-layer' layer if it doesn't exist
-                    if (!map.getLayer('point-layer')) {
-                        map.addLayer({
-                            'id': 'point-layer',
-                            'type': 'symbol',
-                            'source': 'user-points',
-                            'layout': {
-                                'icon-image': ['get', 'icon'],
-                                'icon-size': 0.8,
-                            }
-                        });
-                    }
-                });
 
                 map.on('click', function(e) {
                     var coordinates = e.lngLat;
@@ -1739,8 +2036,6 @@
                             map.addImage(iconId, image);
                         });
                     }
-
-
 
                     var currentData = map.getSource('user-points')._data;
 
