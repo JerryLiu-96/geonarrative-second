@@ -13,9 +13,6 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.js"></script>
     <link href='https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.css' rel='stylesheet' />
-
-    <link href='https://cdn.jsdelivr.net/npm/mapbox-gl-north/dist/mapbox-gl-north.css' rel='stylesheet' />
-    <script src='https://cdn.jsdelivr.net/npm/mapbox-gl-north/dist/mapbox-gl-north.min.js'></script>
     <script src="https://watergis.github.io/mapbox-gl-export/mapbox-gl-export.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mapbox-map-image-export@2.4.1/index.min.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
@@ -1546,9 +1543,6 @@
                 preserveDrawingBuffer: true
             });
 
-            const north = new mapboxgl.NorthControl();
-map.addControl(north, 'top-left');
-
             const styleList = document.getElementById('mapstyle-control');
             const inputs = styleList.getElementsByTagName('input');
 
@@ -1675,7 +1669,7 @@ map.addControl(north, 'top-left');
             const moreCertainColor = '#2171b5';
             const lessCertainColor = '#6baed6';
 
-            // JSON of all point of interets I want to add to the map
+            // JSON of all point of interets I want to add to the basemap
             const myPois = {
                 'type': 'FeatureCollection',
                 'features': [
